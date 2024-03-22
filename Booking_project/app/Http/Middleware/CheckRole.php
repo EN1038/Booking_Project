@@ -18,7 +18,7 @@ class CheckRole
         if (!auth()->check() || auth()->user()->level_user != 'admin') {
             // หากไม่ได้รับอนุญาตให้เข้าถึง ทำการ Redirect ไปยังหน้าที่เหมาะสม
             if(auth()->user()->level_user === 'user'){
-                return redirect('/');
+                return redirect('DashBoard_User');
             }else{
                 return redirect('Login');
             }

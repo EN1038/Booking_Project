@@ -34,15 +34,16 @@ class LevelUserController extends Controller
         // dd($request);
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            // การยืนยันตัวตนสำเร็จ
             return redirect('DashBoard_Admin'); // Redirect ไปยังหน้าที่ผู้ใช้งานเข้ามาจากก่อนหน้า
         }
         return back();
     }
 
-    public function logout()
+    function logout()
     {
         auth()->logout();
         return redirect('Login');
     }
+
+    
 }

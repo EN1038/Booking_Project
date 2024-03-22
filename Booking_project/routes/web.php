@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LevelUserController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,3 +43,6 @@ Route::get('Register',[LevelUserController::class,'register'])->name('register')
 Route::post('Insert_register',[LevelUserController::class,'insert_register'])->name('insert_register');
 Route::post('Insert_login',[LevelUserController::class,'Authlogin'])->name('insert_login');
 Route::get('Logout',[LevelUserController::class,'logout'])->name('logout');
+
+//User
+Route::get('DashBoard_User',[UserController::class,'dashboardUser'])->name('dashboard_user');
