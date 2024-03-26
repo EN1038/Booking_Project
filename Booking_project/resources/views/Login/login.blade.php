@@ -11,8 +11,8 @@
 @elseif (session('error'))
     <script>
         Swal.fire({
-        title: 'ไม่สามารถบันทึกข้อมูลได้!',
-        text: 'ข้อมูลที่ส่งมาไม่มีค่าในระบบ',
+        title: 'รหัสผ่านผิด!',
+        text: 'รหัสผ่านผิดอะ',
         icon: 'error'
     });
     </script>
@@ -23,11 +23,11 @@
         <form action="{{route('insert_login')}}" method="POST">
             @csrf
             <div class="mb-3">
-                <label for="name_user" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="กรอกชื่อ" name="email">
+                <label for="passwordNumber_user" class="form-label">รหัสประจำตัว</label>
+                <input type="passwordNumber_user" class="form-control" id="passwordNumber_user" placeholder="กรอกรหัสประจำตัว" name="passWordNumber_user">
             </div>
             <div class="mb-3">
-                <label for="Password" class="form-label">Password</label>
+                <label for="Password" class="form-label">รหัสผ่าน</label>
                 <input type="password" class="form-control" id="exampleInputPassword1" placeholder="กรอกรหัสผ่าน" name="password">
             </div>
             <div class="mb-3">

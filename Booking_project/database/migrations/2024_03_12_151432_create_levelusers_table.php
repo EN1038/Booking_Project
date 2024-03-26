@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('levelusers', function (Blueprint $table) {
             $table->id();
             $table->string('name_user');
+            $table->string('passWordNumber_user');
             $table->string('email');
             $table->string('level_user');
             $table->string('password');

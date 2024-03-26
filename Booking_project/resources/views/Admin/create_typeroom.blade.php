@@ -59,6 +59,11 @@
 </div>
 @else
 <h1 class="text-center">ไม่มี้จา</h1>
+<div class="col-12 d-flex flex-row justify-content-end align-items-center">
+  <button type="button" class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#createTypeRooms">
+      สร้างประเภท
+  </button>
+</div>
 @endif
 
 {{-- modal create type rooms --}}

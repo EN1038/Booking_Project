@@ -28,7 +28,10 @@ Route::group(['middleware' => ['check.role']], function () {
     Route::get('Create_Rooms',[AdminController::class,'create_room'])->name('create_room');
     Route::post('Insert_Rooms',[AdminController::class,'insert_room'])->name('insert_room');
     Route::get('Delete_rooms/{id}',[AdminController::class,'delete_room'])->name('delete_room');
+    Route::get('Delete_listrooms/{id}',[AdminController::class,'delete_listroom'])->name('delete_listroom');
     Route::get('Change_status/{id}',[AdminController::class,'change_status'])->name('change_status');
+    Route::get('listRoom/{id}',[AdminController::class,'view_listroom'])->name('view_listroom');
+    Route::post('update/{id}',[AdminController::class,'update_room'])->name('update_room');
     //Type_Room
     Route::get('Create_TypeRooms',[AdminController::class,'create_typeroom'])->name('create_typeroom');
     Route::post('Insert_type_rooms', [AdminController::class,'insert_typeroom'])->name('insert_typeroom');

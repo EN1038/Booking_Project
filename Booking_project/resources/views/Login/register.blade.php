@@ -26,7 +26,11 @@
                 <input type="text" class="form-control" id="name_user" placeholder="กรอกชื่อ" name="name_user">
             </div>
             <div class="mb-3">
-                <label for="Email1" class="form-label">ใส่อีเมล</label>
+                <label for="passwordNumber_user" class="form-label">รหัสประจำตัว</label>
+                <input type="text" class="form-control" id="passwordNumber_user" placeholder="กรอกรหัสประจำตัว" name="passwordNumber_user">
+            </div>
+            <div class="mb-3">
+                <label for="Email1" class="form-label">อีเมล</label>
                 <input type="email" class="form-control" id="Email1" placeholder="ใส่อีเมล" name="email">
               </div>
               <div class="mb-3">

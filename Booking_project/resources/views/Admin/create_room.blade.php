@@ -3,16 +3,16 @@
 @if(session('success'))
     <script>
         Swal.fire({
-            title: 'บันทึกข้อมูลเรียบร้อย!',
-            text: 'ข้อมูลได้ถูกบันทึกเรียบร้อยแล้ว',
+            title: 'สำเร็จ!',
+            text: '{{ session('success') }}',
             icon: 'success'
         });
     </script>
 @elseif (session('error'))
     <script>
         Swal.fire({
-        title: 'ไม่สามารถบันทึกข้อมูลได้!',
-        text: 'ข้อมูลที่ส่งมาไม่มีค่าในระบบ',
+        title: 'ผิดพลาด!',
+        text: '{{ session('error') }}',
         icon: 'error'
     });
     </script>
@@ -28,43 +28,37 @@
             สร้างประเภทห้อง
         </a>
     </div>
-   
-    <div class="col-12 px-4">
-        <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">ID</th>
-                <th scope="col">ชื่อห้อง</th>
-                <th scope="col">เวลาการทำงาน</th>
-                <th scope="col">สถานะของห้อง</th>
-                <th scope="col">ประเภทของห้อง</th>
-                <th scope="col">อื่นๆ</th>
-              </tr>
-            </thead>
+    <h1>ห้องที่สร้างไว้</h1>
+    <div class="container text-center">
+        <div class="row">
             @foreach ($room as $items)
-            <tbody>
-              <tr>
-                <th>{{$items->id}}</th>
-                <td>{{$items->name_room}}</td>
-                <td>{{$items->time_working}}</td>
-                <td><a href="{{route('change_status',$items->id)}}" class="btn {{ $items->status_room === 'On' ? 'btn-success' : 'btn-danger' }}">
+            <div class="col-6 border border-danger">
+                
+                <a href="{{route('view_listroom',$items->id)}}">{{$items->name_room}}</a>
+                <a href="{{route('change_status',$items->id)}}" class="btn {{ $items->status_room === 'On' ? 'btn-success' : 'btn-danger' }}">
                   {{ $items->status_room }}
-              </a></td>
-          
-                <td>{{$items->typeRoom->name_type}}</td>
-                <td>
-                    <a href="{{route('delete_room',$items->id)}}" class="btn btn-danger" onclick="return confirmDelete(event)">ลบ</a>
-                </td>
-              </tr>
-            </tbody>
+                  <a href="{{route('delete_room',$items->id)}}" class="btn btn-danger" onclick="return confirmDelete(event)">ลบ</a>
+                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateRooms{{$items->id}}">แก้ไข</button>
+              </a>
+              </div>
             @endforeach
-          </table>
-    </div>
+        </div>
+      </div>
+    
     
 
 </div>
   @else
     <h1 class="text-center">ไม่มี้จา</h1>
+    <div class="col-12 d-flex flex-row justify-content-end align-items-center">
+      <button type="button" class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#createRooms">
+          สร้างห้อง
+      </button>
+      <a href="{{route('create_typeroom')}}" type="button" class="btn btn-secondary m-1">
+          สร้างประเภทห้อง
+      </a>
+  </div>
+ 
   @endif
     
     {{-- modal create rooms --}}
@@ -114,6 +108,35 @@
           </div>
         </div>
     </div>
+    
+    @foreach ($room as $items)
+    <div class="modal fade" id="updateRooms{{$items->id}}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">แก้ไขชื่อห้อง</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="{{route('update_room',$items->id)}}" method="POST">
+              @csrf
+              <div class="mb-3">
+                  <label for="nameRooms" class="form-label">กรอกชื่อห้อง</label>
+                  <input type="text" class="form-control text-center" id="updateNameRoom" name="updateNameRoom" placeholder="{{$items->name_room}}" oninput="validationName()">
+                  <label for="errorNameRoom" class="form-label mx-3 text-danger fw-bold" id="errorNameRoom"></label>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ปิด</button>
+            <button type="submit" class="btn btn-primary">สร้างห้อง</button>
+          </div>
+          </form>
+        </div>
+      </div>
+  </div>
+    @endforeach
+    {{-- update --}}
+    
 
      
       

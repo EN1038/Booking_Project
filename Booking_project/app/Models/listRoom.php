@@ -13,8 +13,12 @@ class listRoom extends Model
         // ระบุฟิลด์อื่นๆ ที่ต้องการให้สามารถ mass assignment ได้ตามต้องการ
     ];
     public function typeRoom()
-    {
-        
-        return $this->belongsTo(TypeRoom::class, 'id_type_room', 'id');
-    }
+{
+    return $this->belongsTo(TypeRoom::class, 'id_type_room');
+}
+
+public function workTimes()
+{
+    return $this->hasMany(Work_Time::class, 'id_room');
+}
 }

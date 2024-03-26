@@ -7,19 +7,27 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Room;
 use App\Models\listRoom;
 use App\Models\typeRoom;
+use App\Models\work_time;
 
 
 class AdminController extends Controller
 {
     //
     function dashBoard_admin(){
-        return view('Admin.dashboard');
+        $room = listRoom::with('typeRoom')->get();
+        return view('Admin.dashboard',compact('room'));
+    }
+
+    function view_listroom($id){
+        $workTimes = work_time::with('listRoom')->where('id_room', $id)->get();
+        return view('Admin.list_workTime_room',compact('workTimes'));
     }
 
     function create_room(){
         $room = listRoom::with('typeRoom')->get();
         $type_rooms = typeRoom::all();
-        return view('Admin.create_room',compact('type_rooms','room'));
+        $work_times = work_time::with('listRoom')->get();
+        return view('Admin.create_room',compact('type_rooms','room','work_times'));
     }
 
     function api_room(){
@@ -28,24 +36,55 @@ class AdminController extends Controller
     }
 
     function insert_room(Request $request){
-        if($request->has('nameRoom') && $request->has('type_room')&& $request->has('time_working')&& $request->has('status_room')){
+        if($request->has('nameRoom') && $request->has('type_room')&& $request->has('time_start_working')&& $request->has('status_room')){
             
-            foreach ($request->time_working as $time) {
-                $room = new listRoom();
-                $room->name_room = $request->nameRoom;
-                $room->time_working = $time;
-                $room->status_room = $request->status_room;
-                $room->id_type_room = $request->type_room;
-                $room->save(); // บันทึกแถวใหม่ลงในฐานข้อมูล
-            };
+            $room = new listRoom();
+$room->name_room = $request->nameRoom;
+$room->status_room = $request->status_room;
+$room->id_type_room = $request->type_room;
+$room->save();
+
+$id_room = $room->id; // รับค่า id ของห้องที่เพิ่งสร้าง
+
+foreach ($request->time_start_working as $index => $start_time) {
+    $end_time = $request->time_end_working[$index]; // เวลาสิ้นสุดทำงานสำหรับ index เดียวกัน
+
+    $time_work = new work_time();
+    $time_work->name_start_workTime = $start_time;
+    $time_work->name_end_workTime = $end_time; // เวลาสิ้นสุดทำงาน
+    $time_work->id_room = $id_room; // ใช้ id ของห้องที่เพิ่งสร้าง
+    $time_work->save();
+    }
+
             return back()->with('success', true);
         }else{
             return back()->with('error', true);
         }
     }
 
+    function update_room(Request $request,$id){
+        // ค้นหาห้องที่ต้องการอัปเดต
+            $room = ListRoom::find($id);
+
+            if (!$room) {
+                return back()->with('error', 'ไม่พบห้องที่ต้องการอัปเดต');
+            }
+
+            // อัปเดตข้อมูลห้อง
+            $room->name_room = $request->updateNameRoom;
+            $room->save();
+
+            return back()->with('success', 'อัปเดตห้องเรียบร้อยแล้ว');
+    }
+
     function delete_room($id){
         listRoom::find($id)->delete();
+        work_time::where('id_room', $id)->delete();
+        return back();
+    }
+
+    function delete_listroom($id){
+        work_time::find($id)->delete();
         return back();
     }
 

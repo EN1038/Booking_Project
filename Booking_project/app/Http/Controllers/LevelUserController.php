@@ -21,6 +21,7 @@ class LevelUserController extends Controller
         $hashedPassword = Hash::make($request->password);
         $register = new Leveluser();
         $register->name_user = $request->name_user;
+        $register->passWordNumber_user = $request->passwordNumber_user;
         $register->email = $request->email;
         $register->level_user = $request->selectStatus;
         $register->password = $hashedPassword;
@@ -32,11 +33,12 @@ class LevelUserController extends Controller
     function Authlogin(Request $request)
     {
         // dd($request);
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('passWordNumber_user', 'password');
+        // dd($credentials);
         if (Auth::attempt($credentials)) {
             return redirect('DashBoard_Admin'); // Redirect ไปยังหน้าที่ผู้ใช้งานเข้ามาจากก่อนหน้า
         }
-        return back();
+        return back()->with('error', true);
     }
 
     function logout()

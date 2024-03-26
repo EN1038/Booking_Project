@@ -51,10 +51,45 @@ function createOptionTime() {
         input.value = currentTime;
         input.classList.add('form-control','text-center','my-2');
         input.readOnly = true;
-        input.name = 'time_working[]';
+        input.id = 'time_start'+count;
+        input.name = 'time_start_working[]';
         sr_div.appendChild(input);
 
-        count+=1;
+        if(count != 0){
+            var time_now = document.getElementById('time_start'+count);
+            var div_after = document.getElementById('div'+(count-1));
+            var time = time_now.value;
+            
+            // แยกชั่วโมงและนาทีออกจากกัน
+            var parts = time.split(':');
+            var hours = parseInt(parts[0], 10);
+            var minutes = parseInt(parts[1], 10);
+
+            // แปลงเวลาเป็นวินาที
+            var timeInSeconds = hours * 3600 + minutes * 60;
+
+            // ลบหนึ่งนาที
+            timeInSeconds -= 60;
+
+            // แปลงเวลากลับเป็นชั่วโมงและนาที
+            var newHours = Math.floor(timeInSeconds / 3600);
+            var newMinutes = Math.floor((timeInSeconds % 3600) / 60);
+
+            // รวมเวลาใหม่
+            var newTime = (newHours < 10 ? '0' : '') + newHours + ':' + (newMinutes < 10 ? '0' : '') + newMinutes;
+
+
+            const inputs = document.createElement('input');
+            inputs.value = newTime;
+            inputs.classList.add('form-control','text-center','my-2');
+            inputs.hidden = true;
+            inputs.name = 'time_end_working[]';
+            div_after.appendChild(inputs);
+
+            
+        }
+
+        
         // เพิ่มเวลาโดยใช้ timeDuration
         currentHour += durationHour;
         currentMinute += durationMinute;
@@ -65,12 +100,19 @@ function createOptionTime() {
         
         // ตรวจสอบว่าเกินเวลาสิ้นสุดหรือไม่
         if (currentHour > endHour || (currentHour === endHour && currentMinute > endMinute)) {
-            break;
+            const inputs = document.createElement('input');
+            inputs.value = '16:30';
+            inputs.classList.add('form-control','text-center','my-2');
+            inputs.hidden = true;
+            inputs.name = 'time_end_working[]';
+            sr_div.appendChild(inputs);
         }
 
-      
+        count+=1;
     }
 }
+
+
 
 function formatTime(hour, minute) {
     return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
