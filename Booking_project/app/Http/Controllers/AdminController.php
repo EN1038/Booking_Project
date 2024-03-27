@@ -8,6 +8,8 @@ use App\Models\Room;
 use App\Models\listRoom;
 use App\Models\typeRoom;
 use App\Models\work_time;
+use App\Models\booking;
+use App\Models\book_details;
 
 
 class AdminController extends Controller
@@ -39,22 +41,22 @@ class AdminController extends Controller
         if($request->has('nameRoom') && $request->has('type_room')&& $request->has('time_start_working')&& $request->has('status_room')){
             
             $room = new listRoom();
-$room->name_room = $request->nameRoom;
-$room->status_room = $request->status_room;
-$room->id_type_room = $request->type_room;
-$room->save();
+            $room->name_room = $request->nameRoom;
+            $room->status_room = $request->status_room;
+            $room->id_type_room = $request->type_room;
+            $room->save();
 
-$id_room = $room->id; // รับค่า id ของห้องที่เพิ่งสร้าง
+            $id_room = $room->id; // รับค่า id ของห้องที่เพิ่งสร้าง
 
-foreach ($request->time_start_working as $index => $start_time) {
-    $end_time = $request->time_end_working[$index]; // เวลาสิ้นสุดทำงานสำหรับ index เดียวกัน
+            foreach ($request->time_start_working as $index => $start_time) {
+                $end_time = $request->time_end_working[$index]; // เวลาสิ้นสุดทำงานสำหรับ index เดียวกัน
 
-    $time_work = new work_time();
-    $time_work->name_start_workTime = $start_time;
-    $time_work->name_end_workTime = $end_time; // เวลาสิ้นสุดทำงาน
-    $time_work->id_room = $id_room; // ใช้ id ของห้องที่เพิ่งสร้าง
-    $time_work->save();
-    }
+                $time_work = new work_time();
+                $time_work->name_start_workTime = $start_time;
+                $time_work->name_end_workTime = $end_time; // เวลาสิ้นสุดทำงาน
+                $time_work->id_room = $id_room; // ใช้ id ของห้องที่เพิ่งสร้าง
+                $time_work->save();
+                }
 
             return back()->with('success', true);
         }else{
@@ -142,5 +144,11 @@ foreach ($request->time_start_working as $index => $start_time) {
         }else{
             return back()->with('error', true);
         }
+    }
+
+    function status_room(){
+        $book_details = book_details::with('booking')->get();
+        $book = book_details::with('Leveluser')->get();
+        return view('Admin.status_room',compact('book_details','book'));
     }
 }

@@ -1,5 +1,22 @@
 @extends('Layout.layout_user.layout')
 @section('content')
+@if(session('success'))
+    <script>
+        Swal.fire({
+            title: 'สำเร็จ!',
+            text: '{{ session('success') }}',
+            icon: 'success'
+        });
+    </script>
+@elseif (session('error'))
+    <script>
+        Swal.fire({
+        title: 'ผิดพลาด!',
+        text: '{{ session('error') }}',
+        icon: 'error'
+    });
+    </script>
+@endif
 {{Auth::user()->name_user;}}
   <div class="container text-center">
     <div class="row">
@@ -29,28 +46,31 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="" method="POST">
-          {{$items->typeRoom->number_user}}
+        <form action="{{route('booking_rooms',$items->id)}}" method="POST">
+          @csrf
           <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">กรอกชื่อคน</label>
+            <input type="text" class="form-control mb-1" name="id_room" value="{{$items->id}}" readonly hidden>
+            <label for="exampleInputEmail1" class="form-label">กรอกชื่อ {{$items->typeRoom->number_user}} คนเพื่อทำการจอง</label>
             @for ($i = 0; $i < $items->typeRoom->number_user; $i++)
-            <input type="text" class="form-control" id="nameone" >
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            <input type="text" class="form-control mb-1" id="nameone" placeholder="ใส่ชื่อคนที่ {{$i+1}}" name="pass_number[]">
             @endfor
           </div>
-          
-          
-        </form>
-        @foreach ($work_times as $time)
+          <label for="chooseTime" class="form-label">โปรดเลือกเวลาที่จะทำการจอง</label>
+          <select class="form-select" aria-label="Default select example" name="select_time">
+            <option selected hidden disabled>เลือกเวลา</option>
+            @foreach ($work_times as $time)
             @if ($items->id == $time->id_room)
-              {{$time->name_start_workTime}}-{{$time->name_end_workTime}}
+              <option value="{{$time->id}}">{{$time->name_start_workTime}}-{{$time->name_end_workTime}}</option>
             @endif
         @endforeach
+          </select>
+        
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+        <button type="submit" class="btn btn-primary">ทำการจอง</button>
       </div>
+    </form>
     </div>
   </div>
 </div>

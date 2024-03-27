@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Booking | DashBoardAdmins</title>
+    <title>Booking | DashBoardUser</title>
 </head>
 
 {{-- Bootstrap --}}
@@ -21,7 +21,7 @@
 <body class="container">
     <nav class="d-flex flex-row justify-content-center align-items-center p-3 bg-primary text-light">
         <div class="col">
-            <span>Admin | DashBoard</span>
+            <span>User | DashBoard</span>
         </div>
         <div class="col d-flex flex-row justify-content-end  align-items-center ">
             <a href="{{route('dashboard_admin')}}" class="mx-3 link-light text-decoration-none">Home</a>

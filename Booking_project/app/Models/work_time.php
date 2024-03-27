@@ -13,5 +13,9 @@ class work_time extends Model
 {
     return $this->belongsTo(ListRoom::class, 'id_room');
 }
+public function booking()
+{
+    return $this->hasMany(Booking::class, 'workTime_id');
+}
 
 }
