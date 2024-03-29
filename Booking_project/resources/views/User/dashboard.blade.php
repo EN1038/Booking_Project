@@ -21,6 +21,7 @@
   <div class="container text-center">
     <div class="row">
       @foreach ($room as $items)
+      @if ($items->status_room == 'On')
       <div class="col-4  ">
         <div class="card">
           <img src="https://d27jswm5an3efw.cloudfront.net/app/uploads/2019/07/insert-image-html.jpg" class="card-img-top " alt="...">
@@ -32,6 +33,8 @@
           </div>
         </div>
       </div>
+      @endif
+      
       @endforeach
     </div>
   </div>
