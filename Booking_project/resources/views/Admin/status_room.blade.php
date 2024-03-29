@@ -1,6 +1,22 @@
 @extends('Layout.layout_admin.layout')
 @section('content')
-
+@if(session('success'))
+    <script>
+        Swal.fire({
+            title: 'สำเร็จ!',
+            text: '{{ session('success') }}',
+            icon: 'success'
+        });
+    </script>
+@elseif (session('error'))
+    <script>
+        Swal.fire({
+        title: 'ผิดพลาด!',
+        text: '{{ session('error') }}',
+        icon: 'error'
+    });
+    </script>
+@endif
 <div class="col-12 px-4">
     <table class="table">
         <thead>
@@ -30,7 +46,7 @@
                         <td>{{$items->booking->work_time->listRoom->typeRoom->name_type}}</td>
                         <td>{{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</td>
                         <td>
-                            <select class="form-select" aria-label="Default select example">
+                            <select class="form-select" onchange="changStatus()" data-status="{{$items->booking->status_book}}" data-id="{{$items->booking_id}}"  {{($items->booking->status_book === 'ยืนยันการจอง' || $items->booking->status_book === 'ปฎิเสธการจอง') ? 'disabled' : '' }}>
                                 <option value="{{$items->booking->status_book}}" class="text-warning" selected hidden>{{$items->booking->status_book}}</option>
                                 <option value="ยืนยันการจอง" class="text-success">ยืนยันการจอง</option>
                                 <option value="ปฎิเสธการจอง" class="text-danger">ปฎิเสธการจอง</option>
@@ -65,5 +81,5 @@
   </div>
 </div>
 @endforeach
-
+<script src="{{asset('js/Admin/statusRoom.js')}}"></script>
 @endsection

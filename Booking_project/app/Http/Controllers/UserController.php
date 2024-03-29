@@ -13,23 +13,25 @@ use App\Models\Leveluser;
 class UserController extends Controller
 {
     //
-    function dashboardUser(){
+    function dashboardUser()
+    {
         $room = listRoom::with('typeRoom')->get();
         $work_times = work_time::with('listRoom')->get();
-        return view('User.dashboard',compact('room','work_times'));
+        return view('User.dashboard', compact('room', 'work_times'));
     }
 
-    function booking_rooms(Request $request){ 
-        if($request->pass_number && $request->select_time){
+    function booking_rooms(Request $request)
+    {
+        if ($request->pass_number && $request->select_time) {
 
             $booking = new booking();
-                $booking->workTime_id = $request->select_time;
-                $booking->status_book = 'รอการยืนยันการจอง';
-                $booking->save();
+            $booking->workTime_id = $request->select_time;
+            $booking->status_book = 'รอการยืนยันการจอง';
+            $booking->save();
 
-                $id_book = $booking->id;
+            $id_book = $booking->id;
 
-            foreach($request->pass_number as $pass_user){
+            foreach ($request->pass_number as $pass_user) {
                 $level_user = Leveluser::where('passWordNumber_user', $pass_user)->first();
                 if ($level_user) {
                     $book_detail = new book_details();
@@ -40,15 +42,25 @@ class UserController extends Controller
                     // หากไม่พบข้อมูลในตาราง user สามารถส่งค่าอื่น ๆ กลับได้ตามที่คุณต้องการ
                     return back()->with('error', 'ไม่มีชื่อผู้ใช้ในระบบ');
                 }
-                
             }
-                return back()->with('success', 'ทำการจองห้องเรียบร้อย รอการยืนยัน');
-        }else{
+            return back()->with('success', 'ทำการจองห้องเรียบร้อย รอการยืนยัน');
+        } else {
             return back()->with('error', 'กรอกข้อมูลไม่ครบ');
         }
     }
 
-    function update_statuus($id){
-
+    function update_statuus($id, $value)
+    {
+        booking::find($id)->update([
+            'status_book' => $value
+        ]);
+        if($value == 'ยืนยันการจอง'){
+            return back()->with('success', 'ทำการยืนยันการจองห้องเรียบร้อย');
+        }else if($value == 'ปฎิเสธการจอง'){
+            return back()->with('success', 'ทำการปฎิเสธการจองห้องเรียบร้อย');
+        }else{
+            return back()->with('error', 'การอัปเดทล้มเหลว');
+        }
+        
     }
 }
