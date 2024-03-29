@@ -29,7 +29,13 @@
                         <td>{{$items->booking->work_time->listRoom->name_room}}</td>
                         <td>{{$items->booking->work_time->listRoom->typeRoom->name_type}}</td>
                         <td>{{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</td>
-                        <td><button class="btn btn-primary">{{$items->booking->status_book}}</button> </td>
+                        <td>
+                            <select class="form-select" aria-label="Default select example">
+                                <option value="{{$items->booking->status_book}}" class="text-warning" selected hidden>{{$items->booking->status_book}}</option>
+                                <option value="ยืนยันการจอง" class="text-success">ยืนยันการจอง</option>
+                                <option value="ปฎิเสธการจอง" class="text-danger">ปฎิเสธการจอง</option>
+                              </select>
+                        </td>
                     </tr>
                 </tbody>
             @endif

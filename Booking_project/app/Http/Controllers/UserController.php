@@ -42,14 +42,13 @@ class UserController extends Controller
                 }
                 
             }
-
-            
                 return back()->with('success', 'ทำการจองห้องเรียบร้อย รอการยืนยัน');
         }else{
             return back()->with('error', 'กรอกข้อมูลไม่ครบ');
         }
-        
+    }
 
-        
+    function update_statuus($id){
+
     }
 }
