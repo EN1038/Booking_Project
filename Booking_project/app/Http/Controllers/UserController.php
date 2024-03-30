@@ -63,4 +63,9 @@ class UserController extends Controller
         }
         
     }
+
+    function history($id){
+        $book_details = book_details::with('booking')->where('user_id',$id)->get();
+        return view('User.history',compact('book_details'));
+    }
 }

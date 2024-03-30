@@ -43,6 +43,7 @@ Route::group(['middleware' => ['check.role']], function () {
 
 Route::post('Booking_Rooms', [UserController::class, 'booking_rooms'])->name('booking_rooms');
 Route::get('Update_status/{id}/{value}', [UserController::class, 'update_statuus'])->name('update_statuus');
+Route::get('History/{id}', [UserController::class, 'history'])->name('history');
 
 
 //Login

@@ -54,8 +54,9 @@
           <div class="mb-3">
             <input type="text" class="form-control mb-1" name="id_room" value="{{$items->id}}" readonly hidden>
             <label for="exampleInputEmail1" class="form-label">กรอกชื่อ {{$items->typeRoom->number_user}} คนเพื่อทำการจอง</label>
-            @for ($i = 0; $i < $items->typeRoom->number_user; $i++)
-            <input type="text" class="form-control mb-1" id="nameone" placeholder="ใส่ชื่อคนที่ {{$i+1}}" name="pass_number[]">
+            <input type="text" class="form-control mb-1" id="nameone" name="pass_number[]" value="{{Auth::user()->passWordNumber_user;}}" readonly>
+            @for ($i = 1; $i < $items->typeRoom->number_user; $i++)
+            <input type="text" class="form-control mb-1" id="nameone" placeholder="ใส่ชื่อคนที่ {{$i+1}}" name="pass_number[]" >
             @endfor
           </div>
           <label for="chooseTime" class="form-label">โปรดเลือกเวลาที่จะทำการจอง</label>
