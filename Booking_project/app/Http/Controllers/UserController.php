@@ -49,15 +49,13 @@ class UserController extends Controller
         }
     }
 
-    function update_statuus($id, $value)
+    function update_status_user($id, $value)
     {
         booking::find($id)->update([
             'status_book' => $value
         ]);
-        if($value == 'ยืนยันการจอง'){
-            return back()->with('success', 'ทำการยืนยันการจองห้องเรียบร้อย');
-        }else if($value == 'ปฎิเสธการจอง'){
-            return back()->with('success', 'ทำการปฎิเสธการจองห้องเรียบร้อย');
+        if($value == 'ยกเลิกการจอง'){
+            return back()->with('success', 'ทำการยกเลิกการจองห้องเรียบร้อย');
         }else{
             return back()->with('error', 'การอัปเดทล้มเหลว');
         }

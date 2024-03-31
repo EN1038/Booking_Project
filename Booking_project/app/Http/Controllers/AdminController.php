@@ -151,4 +151,17 @@ class AdminController extends Controller
         $book = book_details::with('Leveluser')->get();
         return view('Admin.status_room',compact('book_details','book'));
     }
+
+    function update_status_admin($id,$value){
+        booking::find($id)->update([
+            'status_book' => $value
+        ]);
+        if($value == 'ยืนยันการจอง'){
+            return back()->with('success', 'ทำการยืนยันการจองห้องเรียบร้อย');
+        }else if($value == 'ปฎิเสธการจอง'){
+            return back()->with('success', 'ทำการปฎิเสธการจองห้องเรียบร้อย');
+        }else{
+            return back()->with('error', 'การอัปเดทล้มเหลว');
+        }
+    }
 }

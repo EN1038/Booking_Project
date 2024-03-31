@@ -34,6 +34,7 @@ Route::group(['middleware' => ['check.role']], function () {
     Route::post('update/{id}', [AdminController::class, 'update_room'])->name('update_room');
     //status_room
     Route::get('Status_room', [AdminController::class, 'status_room'])->name('status_room');
+    Route::get('Update_status_admin/{id}/{value}', [AdminController::class, 'update_status_admin'])->name('update_status_admin');
     //Type_Room
     Route::get('Create_TypeRooms', [AdminController::class, 'create_typeroom'])->name('create_typeroom');
     Route::post('Insert_type_rooms', [AdminController::class, 'insert_typeroom'])->name('insert_typeroom');
@@ -42,7 +43,7 @@ Route::group(['middleware' => ['check.role']], function () {
 });
 
 Route::post('Booking_Rooms', [UserController::class, 'booking_rooms'])->name('booking_rooms');
-Route::get('Update_status/{id}/{value}', [UserController::class, 'update_statuus'])->name('update_statuus');
+Route::get('Update_status_user/{id}/{value}', [UserController::class, 'update_status_user'])->name('update_status_user');
 Route::get('History/{id}', [UserController::class, 'history'])->name('history');
 
 
