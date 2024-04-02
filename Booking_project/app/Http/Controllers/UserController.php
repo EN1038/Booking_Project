@@ -17,7 +17,12 @@ class UserController extends Controller
     {
         $room = listRoom::with('typeRoom')->get();
         $work_times = work_time::with('listRoom')->get();
-        return view('User.dashboard', compact('room', 'work_times'));
+        $book_details = book_details::with('booking')->get();
+
+        $filtered_work_times = $work_times->reject(function ($work_time) {
+            return booking::where('workTime_id', $work_time->id)->exists();
+        });
+        return view('User.dashboard', compact('room', 'work_times', 'book_details', 'filtered_work_times'));
     }
 
     function booking_rooms(Request $request)
@@ -54,16 +59,16 @@ class UserController extends Controller
         booking::find($id)->update([
             'status_book' => $value
         ]);
-        if($value == 'ยกเลิกการจอง'){
+        if ($value == 'ยกเลิกการจอง') {
             return back()->with('success', 'ทำการยกเลิกการจองห้องเรียบร้อย');
-        }else{
+        } else {
             return back()->with('error', 'การอัปเดทล้มเหลว');
         }
-        
     }
 
-    function history($id){
-        $book_details = book_details::with('booking')->where('user_id',$id)->get();
-        return view('User.history',compact('book_details'));
+    function history($id)
+    {
+        $book_details = book_details::with('booking')->where('user_id', $id)->get();
+        return view('User.history', compact('book_details'));
     }
 }

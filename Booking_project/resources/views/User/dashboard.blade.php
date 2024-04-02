@@ -30,6 +30,15 @@
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#listRoom{{$items->id}}">
               ทำการจอง
             </button>
+            <div class="row">
+              @foreach ($filtered_work_times as $time)
+                @if ($items->id == $time->id_room)
+                {{$time->name_start_workTime}}
+                @endif
+                  
+
+              @endforeach
+            </div>
           </div>
         </div>
       </div>

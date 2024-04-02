@@ -1,5 +1,22 @@
 @extends('Layout.layout_user.layout')
 @section('content')
+@if(session('success'))
+    <script>
+        Swal.fire({
+            title: 'สำเร็จ!',
+            text: '{{ session('success') }}',
+            icon: 'success'
+        });
+    </script>
+@elseif (session('error'))
+    <script>
+        Swal.fire({
+        title: 'ผิดพลาด!',
+        text: '{{ session('error') }}',
+        icon: 'error'
+    });
+    </script>
+@endif
 <table class="table">
     <thead>
       <tr>

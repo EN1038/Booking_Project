@@ -13,6 +13,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
 
+{{-- font --}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300&display=swap" rel="stylesheet">
+
 {{-- Sweetaa Alert --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -24,14 +29,15 @@
             <span>Admin | DashBoard</span>
         </div>
         <div class="col d-flex flex-row justify-content-end  align-items-center ">
-            <a href="{{route('dashboard_admin')}}" class="mx-3 link-light text-decoration-none">Home</a>
-            <a href="{{route('create_room')}}" class="mx-3 link-light text-decoration-none">Create Room</a>
-            <a href="{{route('status_room')}}" class="mx-3 link-light text-decoration-none">About</a>
+            <a href="{{route('dashboard_admin')}}" class="mx-3 link-light text-decoration-none">หน้าแรก</a>
+            <a href="{{route('create_room')}}" class="mx-3 link-light text-decoration-none">สร้างห้อง</a>
+            <a href="{{route('status_room')}}" class="mx-3 link-light text-decoration-none">จองห้อง</a>
+            <a href="{{route('history_room')}}" class="mx-3 link-light text-decoration-none">ประวัติ</a>
             @if (Auth::check())
-            <a href="#" class="mx-3 link-light text-decoration-none">{{Auth::user()->name_user;}}</a>
-            <a href="{{route('logout')}}" class="mx-3 link-light text-decoration-none">Logout</a>
+            <a class="mx-3 link-light text-decoration-none">{{Auth::user()->name_user;}}</a>
+            <a href="{{route('logout')}}" class="mx-3 link-light text-decoration-none">ออกจากระบบ</a>
             @else
-            <a href="{{route('login')}}" class="mx-3 link-light text-decoration-none">Login</a>
+            <a href="{{route('login')}}" class="mx-3 link-light text-decoration-none">เข้าสู่ระบบ</a>
             @endif
             
             
