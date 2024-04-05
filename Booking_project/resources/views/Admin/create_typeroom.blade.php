@@ -32,6 +32,7 @@
               <th scope="col">ชื่อประเภท</th>
               <th scope="col">ระยะเวลาการใช้งาน</th>
               <th scope="col">จำนวนคนขั้นต่ำ</th>
+              <th scope="col">เวลาก่อนยกเลิกการจอง</th>
               <th scope="col">อื่นๆ</th>
             </tr>
           </thead>
@@ -41,6 +42,7 @@
               <td>{{$items->name_type}}</td>
               <td>{{$items->time_duration}}</td>
               <td>{{$items->number_user}}</td>
+              <td>{{$items->time_cancel}}</td>
               <td>
                 <button type="button" class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#editTypeRooms{{$items->id}}">
                   แก้ไข
@@ -99,6 +101,15 @@
           <label for="ErrorTime" class="form-label mx-3 text-danger fw-bold" id="ErrorTime"></label>
           <input type="time" class="form-control" id="trueTime" name="trueTime" hidden>      
         </div>
+        <div class="mb-3">
+          <label for="timeBeforCancel" class="form-label">เวลาในการยกเลิกการจอง</label>
+          <div class="d-flex flex-row justify-contents-center align-items-center">
+            <input type="number" class="form-control text-center" id="timeBeforCancel" name="timeBeforCancel" placeholder="กรอกเวลาในการยกเลิกการจอง"> 
+            <label for="minuteDuration" class="form-label mx-3">นาที</label>
+          </div> 
+          <label for="ErrorTimeCancel" class="form-label mx-3 text-danger fw-bold" id="ErrorTimeCancel"></label>
+          <input type="time" class="form-control" id="trueTimeCancel" name="trueTimeCancel" hidden>
+        </div>
     </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary d-none rounded-5" id="buttonCreate" disabled>สร้างประเภทห้อง</button>
@@ -145,6 +156,15 @@
           </div>
           <label for="ErrorTime" class="form-label mx-3 text-danger fw-bold" id="editErrorTime{{$items->id}}"></label>
           <input type="time" class="form-control" id="editTrueTime{{$items->id}}" name="editTrueTime" hidden>      
+        </div>
+        <div class="mb-3">
+          <label for="timeBeforCancel" class="form-label">เวลาในการยกเลิกการจอง</label>
+          <div class="d-flex flex-row justify-contents-center align-items-center">
+            <input type="number" class="form-control text-center" id="timeEditBeforCancel{{$items->id}}" name="timeEditBeforCancel" data-id="{{$items->id}}" placeholder="กรอกเวลาในการยกเลิกการจอง" onchange="convertEditMinutesToTime()"> 
+            <label for="minuteDuration" class="form-label mx-3">นาที</label>
+          </div> 
+          <label for="ErrorTimeCancel" class="form-label mx-3 text-danger fw-bold" id="ErrorEditTimeCancel{{$items->id}}"></label>
+          <input type="time" class="form-control" id="trueEditTimeCancel{{$items->id}}" name="trueEditTimeCancel">
         </div>
     </div>
       <div class="modal-footer">

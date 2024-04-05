@@ -134,6 +134,7 @@ class AdminController extends Controller
             $data = new typeRoom();
             $data->name_type = $request->nameTypeRooms;
             $data->time_duration = $request->trueTime;
+            $data->time_cancel = $request->trueTimeCancel;
             $data->number_user = $request->numberUser;
             $data->save();
 
@@ -145,11 +146,11 @@ class AdminController extends Controller
 
     function edit_type_rooms(Request $request, $id)
     {
-        if ($request->has('editNameTypeRooms') && $request->has('editNumberUser') && $request->has('editTrueTime')) {
-
+        if ($request->has('editNameTypeRooms') && $request->has('editNumberUser') && $request->has('editTrueTime') && $request->has('trueEditTimeCancel')) {
             typeRoom::find($id)->update([
                 'name_type' => $request->editNameTypeRooms,
                 'time_duration' => $request->editTrueTime,
+                'time_cancel' => $request->trueEditTimeCancel,
                 'number_user' => $request->editNumberUser,
             ]);
 

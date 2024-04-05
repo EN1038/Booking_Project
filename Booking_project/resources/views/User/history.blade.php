@@ -31,7 +31,7 @@
             <td>{{$items->booking->work_time->listRoom->name_room}}</td>
             <td>{{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</td>
             <td>
-                <select class="form-select" onchange="changStatus()" data-status="{{$items->booking->status_book}}" data-id="{{$items->booking_id}}"  {{$items->booking->status_book === 'ยกเลิกการจอง' ? 'disabled' : '' }}>
+                <select class="form-select" onchange="changStatus()" data-status="{{$items->booking->status_book}}" data-id="{{$items->booking_id}}"  {{$items->booking->status_book === 'ยกเลิกการจอง' || $items->booking->status_book === 'ยืนยันการจอง' ? 'disabled' : '' }}>
                     <option value="{{$items->booking->status_book}}" class="text-warning" selected hidden>{{$items->booking->status_book}}</option>
                     <option value="ยกเลิกการจอง" class="text-danger">ยกเลิกการจอง</option>
                   </select>

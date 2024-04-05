@@ -9,6 +9,7 @@ use App\Models\work_time;
 use App\Models\book_details;
 use App\Models\booking;
 use App\Models\Leveluser;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -16,18 +17,59 @@ class UserController extends Controller
     function dashboardUser()
     {
         $room = listRoom::with('typeRoom')->get();
-        $work_times = work_time::with('listRoom')->get();
         $book_details = book_details::with('booking')->get();
 
-        $filtered_work_times = $work_times->reject(function ($work_time) {
-            return booking::where('workTime_id', $work_time->id)->exists();
-        });
-        return view('User.dashboard', compact('room', 'work_times', 'book_details', 'filtered_work_times'));
+        // ดึงวันที่ปัจจุบัน
+        $today = Carbon::today()->toDateString();
+
+        // ดึงข้อมูล booking ที่มีวันที่สร้างเท่ากับวันปัจจุบัน
+        $booking = booking::with('work_time')
+            ->whereDate('created_at', $today)
+            ->where('status_book', 'ยืนยันการจอง')
+            ->get();
+
+        // ดึง work_times ที่ไม่เหมือนกับค่าที่ได้จาก booking ในคอลัม workTime_id
+        $work_times = work_time::with('listRoom')
+            ->whereNotIn('id', $booking->pluck('workTime_id'))
+            ->get();
+
+
+        return view('User.dashboard', compact('room', 'work_times', 'book_details'));
     }
 
     function booking_rooms(Request $request)
     {
-        if ($request->pass_number && $request->select_time) {
+        $today = Carbon::today()->toDateString();
+
+        $bookValidation = Booking::where('workTime_id', $request->select_time)
+            ->whereDate('created_at', $today)
+            ->where('status_book', 'ยืนยันการจอง')
+            ->first();
+
+            foreach ($request->pass_number as $pass_user) {
+                $userValidation = Leveluser::where('passWordNumber_user', $pass_user)->first();
+                if ($userValidation) {
+                    $findBookdetails = Book_Details::where('user_id', $userValidation->id)
+                                                  ->whereDate('created_at', $today)
+                                                  ->get();
+                    foreach ($findBookdetails as $find) {
+                        $findBooking = Booking::where('id', $find->booking_id)
+                                              ->where(function($query) {
+                                                  $query->where('status_book', 'ยืนยันการจอง')
+                                                        ->orWhere('status_book', 'รอการยืนยันการจอง');
+                                              })
+                                              ->exists();
+                        if ($findBooking) {
+                            return back()->with('error', 'มีชื่อผู้ใช้ทำการลงทะเบียนการจองในวันนี้ไปแล้ว');
+                        }
+                    }
+                } else {
+                    return back()->with('error', 'ไม่พบข้อมูลผู้ใช้');
+                }
+            }
+            
+
+        if (!$bookValidation) {
 
             $booking = new booking();
             $booking->workTime_id = $request->select_time;
@@ -50,7 +92,7 @@ class UserController extends Controller
             }
             return back()->with('success', 'ทำการจองห้องเรียบร้อย รอการยืนยัน');
         } else {
-            return back()->with('error', 'กรอกข้อมูลไม่ครบ');
+            return back()->with('error', 'เวลานี้มีการเข้าจองแล้ว');
         }
     }
 

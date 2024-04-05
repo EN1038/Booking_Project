@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name_type');
             $table->time('time_duration');
+            $table->time('time_cancel');
             $table->integer('number_user');
             $table->timestamps();
         });
