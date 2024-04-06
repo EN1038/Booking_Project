@@ -13,16 +13,14 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
 
-{{-- font --}}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300&display=swap" rel="stylesheet">
-
 {{-- Sweetaa Alert --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 {{-- Font Awesome --}}
 <script src="https://kit.fontawesome.com/fee57be653.js" crossorigin="anonymous"></script>
+
+{{-- CSS --}}
+<link rel="stylesheet" href="{{asset('css/Admin/layout.css')}}">
 <body class="container">
     <nav class="d-flex flex-row justify-content-center align-items-center p-3 bg-dark text-light">
         <div class="col">
@@ -42,10 +40,13 @@
             
             
         </div>
-    </nav>    
+    </nav>
+    
     @yield('content')
     <footer class="d-flex flex-row justify-content-center align-items-center p-3 bg-dark text-light">
         <span>Footer</span>
     </footer>
+
+    <script src="{{asset('js/Admin/layout_admin.js')}}"></script>
 </body>
 </html>

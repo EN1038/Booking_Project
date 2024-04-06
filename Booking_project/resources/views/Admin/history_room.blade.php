@@ -27,9 +27,10 @@
         <th scope="col">ชื่อคนทำการจอง</th>
             <th scope="col">ชื่อห้อง</th>
             <th scope="col">ประเภทห้อง</th>
+            <th scope="col">วันที่ถูกจอง</th>
             <th scope="col">ระยะเวลาการใช้งาน</th>
             <th scope="col">สถานะ</th>
-            <th scope="col">วันที่ถูกจอง</th>
+            
       </tr>
     </thead>
     <tbody>
@@ -48,11 +49,12 @@
                         </button></td>
                         <td>{{$items->booking->work_time->listRoom->name_room}}</td>
                         <td>{{$items->booking->work_time->listRoom->typeRoom->name_type}}</td>
+                        <td>{{ $items->booking->created_at->toDateString() }}</td>
                         <td>{{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</td>
                         <td>
                             {{$items->booking->status_book}}
                         </td>
-                        <td>{{ $items->booking->created_at->toDateString() }}</td>
+                        
                     </tr>
                 </tbody>
             @endif

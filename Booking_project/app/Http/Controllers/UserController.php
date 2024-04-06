@@ -46,28 +46,28 @@ class UserController extends Controller
             ->where('status_book', 'ยืนยันการจอง')
             ->first();
 
-            foreach ($request->pass_number as $pass_user) {
-                $userValidation = Leveluser::where('passWordNumber_user', $pass_user)->first();
-                if ($userValidation) {
-                    $findBookdetails = Book_Details::where('user_id', $userValidation->id)
-                                                  ->whereDate('created_at', $today)
-                                                  ->get();
-                    foreach ($findBookdetails as $find) {
-                        $findBooking = Booking::where('id', $find->booking_id)
-                                              ->where(function($query) {
-                                                  $query->where('status_book', 'ยืนยันการจอง')
-                                                        ->orWhere('status_book', 'รอการยืนยันการจอง');
-                                              })
-                                              ->exists();
-                        if ($findBooking) {
-                            return back()->with('error', 'มีชื่อผู้ใช้ทำการลงทะเบียนการจองในวันนี้ไปแล้ว');
-                        }
+        foreach ($request->pass_number as $pass_user) {
+            $userValidation = Leveluser::where('passWordNumber_user', $pass_user)->first();
+            if ($userValidation) {
+                $findBookdetails = Book_Details::where('user_id', $userValidation->id)
+                    ->whereDate('created_at', $today)
+                    ->get();
+                foreach ($findBookdetails as $find) {
+                    $findBooking = Booking::where('id', $find->booking_id)
+                        ->where(function ($query) {
+                            $query->where('status_book', 'ยืนยันการจอง')
+                                ->orWhere('status_book', 'รอยืนยันการจอง');
+                        })
+                        ->exists();
+                    if ($findBooking) {
+                        return back()->with('error', 'มีชื่อผู้ใช้ทำการลงทะเบียนการจองในวันนี้ไปแล้ว');
                     }
-                } else {
-                    return back()->with('error', 'ไม่พบข้อมูลผู้ใช้');
                 }
+            } else {
+                return back()->with('error', 'ไม่พบข้อมูลผู้ใช้');
             }
-            
+        }
+
 
         if (!$bookValidation) {
 
@@ -108,12 +108,16 @@ class UserController extends Controller
         }
     }
 
-    function history($id)
+    function statusRoom($id)
     {
         $currentDate = Carbon::now()->toDateString();
         $book_details = book_details::with('booking')->where('user_id', $id)->whereDate('created_at', $currentDate)->get();
-        return view('User.history', compact('book_details'));
+        return view('User.status_user', compact('book_details'));
     }
 
-    
+    function history($id)
+    {
+        $book_details = book_details::with('booking')->where('user_id', $id)->get();
+        return view('User.history_user', compact('book_details'));
+    }
 }

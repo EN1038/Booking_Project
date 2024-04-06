@@ -25,8 +25,8 @@
         </div>
         <div class="col d-flex flex-row justify-content-end  align-items-center ">
             <a href="{{route('dashboard_admin')}}" class="mx-3 link-light text-decoration-none">จองห้อง</a>
-            <a href="{{ route('history', Auth::user()->id) }}" class="mx-3 link-light text-decoration-none">เช็คสถานะการจอง</a>
-            <a href="{{route('create_room')}}" class="mx-3 link-light text-decoration-none">Create Room</a>
+            <a href="{{ route('statusRoom', Auth::user()->id) }}" class="mx-3 link-light text-decoration-none">เช็คสถานะการจอง</a>
+            <a href="{{route('history', Auth::user()->id)}}" class="mx-3 link-light text-decoration-none">ประวัติการจอง</a>
             @if (Auth::check())
             <a href="#" class="mx-3 link-light text-decoration-none">{{Auth::user()->name_user;}}</a>
             <a href="{{route('logout')}}" class="mx-3 link-light text-decoration-none">Logout</a>
