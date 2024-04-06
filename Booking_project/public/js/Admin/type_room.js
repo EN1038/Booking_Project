@@ -195,6 +195,7 @@ function conFirmCreateTypeRoom() {
     const errorNumberUser = document.getElementById('errorNumberUser');
     const errornameTypeRooms = document.getElementById('errornameTypeRooms');
     const errorTime = document.getElementById('ErrorTime');
+    var minutea = document.getElementById('timeBeforCancel')
     var errorTimeCancel = document.getElementById('ErrorTimeCancel');
     buttonConfirm.innerHTML = '<i class="fa-solid fa-spinner fa-spin-pulse"></i> รอสักครู่';
     buttonUndu.innerHTML = 'กรอกค่าใหม่';
@@ -207,6 +208,7 @@ function conFirmCreateTypeRoom() {
         minute.readOnly = true;
         numberUser.readOnly = true;
         nameTypeRooms.readOnly = true;
+        minutea.readOnly = true;
         combineTime()
         validate_NumberUser()
         validate_NameTypeRoom()
@@ -231,6 +233,7 @@ function UndoValue() {
     const minute = document.getElementById("minuteInput");
     const numberUser = document.getElementById('numberUser');
     const nameTypeRooms = document.getElementById('nameTypeRooms');
+    var minutea = document.getElementById('timeBeforCancel')
     buttonConfirm.innerHTML = 'ตรวจสอบ';
     buttonUndu.innerHTML = '<i class="fa-solid fa-spinner fa-spin-pulse"></i> รอสักครู่'
     setTimeout(function () {
@@ -242,6 +245,7 @@ function UndoValue() {
         minute.readOnly = false;
         numberUser.readOnly = false;
         nameTypeRooms.readOnly = false;
+        minutea.readOnly = false;
     }, 1000);
 }
 

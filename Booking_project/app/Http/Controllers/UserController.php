@@ -110,7 +110,10 @@ class UserController extends Controller
 
     function history($id)
     {
-        $book_details = book_details::with('booking')->where('user_id', $id)->get();
+        $currentDate = Carbon::now()->toDateString();
+        $book_details = book_details::with('booking')->where('user_id', $id)->whereDate('created_at', $currentDate)->get();
         return view('User.history', compact('book_details'));
     }
+
+    
 }

@@ -186,4 +186,10 @@ class AdminController extends Controller
         $book_details = book_details::with('booking')->get();
         return view('Admin.history_room', compact('book_details'));
     }
+
+    function api_history()
+    {
+        $book_details = book_details::with(['booking', 'work_time'])->get();
+        return response()->json($book_details);
+    }
 }

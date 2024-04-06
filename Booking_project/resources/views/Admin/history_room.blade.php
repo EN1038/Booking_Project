@@ -17,7 +17,11 @@
     });
     </script>
 @endif
-<table class="table">
+<div class="d-flex justify-content-end">
+  <input type="date" id="searchInput" onchange="searchTable()" class="form-control m-2 w-25" placeholder="ค้นหา...">
+</div>
+
+<table class="table" id="dataTable">
     <thead>
       <tr>
         <th scope="col">ชื่อคนทำการจอง</th>
@@ -25,6 +29,7 @@
             <th scope="col">ประเภทห้อง</th>
             <th scope="col">ระยะเวลาการใช้งาน</th>
             <th scope="col">สถานะ</th>
+            <th scope="col">วันที่ถูกจอง</th>
       </tr>
     </thead>
     <tbody>
@@ -47,6 +52,7 @@
                         <td>
                             {{$items->booking->status_book}}
                         </td>
+                        <td>{{ $items->booking->created_at->toDateString() }}</td>
                     </tr>
                 </tbody>
             @endif
@@ -74,4 +80,5 @@
   </div>
 </div>
 @endforeach
+<script src="{{asset('js/Admin/history_room.js')}}"></script>
 @endsection
