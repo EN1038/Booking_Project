@@ -3,7 +3,6 @@ function changStatus() {
     var status_now = event.target.dataset.status;
     var id = event.target.dataset.id;
     var herf = 'http://127.0.0.1:8000/Update_status_admin/';
-    console.log(herf)
     if (event.target.value === 'ยืนยันการจอง') {
         Swal.fire({
             title: 'คุณแน่ใจหรือไม่?',
@@ -41,3 +40,21 @@ function changStatus() {
     }
 
 }
+
+function checkStatus() {
+    var select = document.querySelector('.form-select');
+    var status = select.value;
+
+    if (status === 'ยืนยันการจอง') {
+        select.classList.remove('text-danger', 'text-warning');
+        select.classList.add('text-success');
+    } else if (status === 'ปฎิเสธการจอง') {
+        select.classList.remove('text-success', 'text-warning');
+        select.classList.add('text-danger');
+    } else if (status === 'ยกเลิกการจอง') {
+        select.classList.remove('text-success', 'text-danger');
+        select.classList.add('text-warning');
+    }
+}
+
+checkStatus()

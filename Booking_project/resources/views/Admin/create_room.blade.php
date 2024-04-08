@@ -17,37 +17,34 @@
     });
     </script>
 @endif
+<link rel="stylesheet" href="{{asset('css/Admin/create_room.css')}}">
   @if (count($room)>0)
-  <div class="d-flex flex-column justify-content-center align-items-center">
-    <h1>สร้างห้อง</h1>
+  <div class="row">
+    <h1 class="text-center fw-bold text-greenlight ">สร้างห้อง</h1>
     <div class="col-12 d-flex flex-row justify-content-end align-items-center">
-        <button type="button" class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#createRooms">
-            สร้างห้อง
+        <button type="button" class="btn btn-primary m-1 rounded-5" data-bs-toggle="modal" data-bs-target="#createRooms">
+          <i class="fa-solid fa-plus"></i> สร้างห้อง
         </button>
-        <a href="{{route('create_typeroom')}}" type="button" class="btn btn-secondary m-1">
-            สร้างประเภทห้อง
-        </a>
     </div>
-    <h1>ห้องที่สร้างไว้</h1>
-    <div class="container text-center">
-        <div class="row">
-            @foreach ($room as $items)
-            <div class="col-6 border border-danger">
-                
-                <a href="{{route('view_listroom',$items->id)}}">{{$items->name_room}}</a>
-                <a href="{{route('change_status',$items->id)}}" class="btn {{ $items->status_room === 'On' ? 'btn-success' : 'btn-danger' }}">
-                  {{ $items->status_room }}
-                  <a href="{{route('delete_room',$items->id)}}" class="btn btn-danger" onclick="return confirmDelete(event)">ลบ</a>
-                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateRooms{{$items->id}}">แก้ไข</button>
+    @foreach ($room as $items)
+    <div class="col-md-6 col-xl-4 mt-1">
+      <div class="card shadow bg">
+        <div class="card-body">
+          <h5 class="card-title">ชื่อห้อง <span>{{$items->name_room}}</span> <a href="{{route('view_listroom',$items->id)}}"> <i class="fa-solid fa-up-right-from-square text-info fs-5"></i></a></h5>
+          <p class="card-text">ประเภทห้อง <span>{{$items->typeRoom->name_type}}</span></p>               
+          <p class="card-text">ห้องถูกสร้างเมื่อ <span>{{$items->created_at->toDateString()}}</span></p>               
+                <a href="{{route('change_status',$items->id)}}" class="rounded-5 btn {{ $items->status_room === 'On' ? 'btn-success' : 'btn-danger' }}">
+                  <i class="fa-solid fa-power-off"></i> {{ $items->status_room }}</a>
+                  <a href="{{route('delete_room',$items->id)}}" class="btn btn-danger rounded-5" onclick="return confirmDelete(event)"><i class="fa-solid fa-trash-arrow-up"></i> ลบ</a>
+                  <button class="btn btn-primary rounded-5" data-bs-toggle="modal" data-bs-target="#updateRooms{{$items->id}}"><i class="fa-solid fa-gear"></i> แก้ไข</button>
               </a>
-              </div>
-            @endforeach
         </div>
       </div>
-    
-    
+    </div>
+    @endforeach
+    {{$room->links()}} 
+  </div>
 
-</div>
   @else
     <h1 class="text-center">ไม่มี้จา</h1>
     <div class="col-12 d-flex flex-row justify-content-end align-items-center">
@@ -101,8 +98,8 @@
                 <label for="errorSelectStatus" class="form-label mx-3 text-danger fw-bold" id="errorSelectStatus" ></label>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ปิด</button>
-              <button type="submit" class="btn btn-primary">สร้างห้อง</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-circle-xmark"></i> ปิด</button>
+              <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> สร้างห้อง</button>
             </div>
             </form>
           </div>
@@ -127,8 +124,8 @@
               </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ปิด</button>
-            <button type="submit" class="btn btn-primary">สร้างห้อง</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-circle-xmark"></i> ปิด</button>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> สร้างห้อง</button>
           </div>
           </form>
         </div>

@@ -10,6 +10,7 @@ use App\Models\book_details;
 use App\Models\booking;
 use App\Models\Leveluser;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -20,7 +21,7 @@ class UserController extends Controller
         $book_details = book_details::with('booking')->get();
 
         // ดึงวันที่ปัจจุบัน
-        $today = Carbon::today()->toDateString();
+        $today = Carbon::now()->toDateString();
 
         // ดึงข้อมูล booking ที่มีวันที่สร้างเท่ากับวันปัจจุบัน
         $booking = booking::with('work_time')
@@ -39,30 +40,24 @@ class UserController extends Controller
 
     function booking_rooms(Request $request)
     {
-        $today = Carbon::today()->toDateString();
-
+        $today = Carbon::now()->setTimezone('Asia/Bangkok');
         $bookValidation = Booking::where('workTime_id', $request->select_time)
             ->whereDate('created_at', $today)
-            ->where('status_book', 'ยืนยันการจอง')
+            ->whereIn('status_book', ['ยืนยันการจอง', 'รอยืนยันการจอง'])
             ->first();
+
 
         foreach ($request->pass_number as $pass_user) {
             $userValidation = Leveluser::where('passWordNumber_user', $pass_user)->first();
             if ($userValidation) {
                 $findBookdetails = Book_Details::where('user_id', $userValidation->id)
-                    ->whereDate('created_at', $today)
-                    ->get();
-                foreach ($findBookdetails as $find) {
-                    $findBooking = Booking::where('id', $find->booking_id)
-                        ->where(function ($query) {
-                            $query->where('status_book', 'ยืนยันการจอง')
-                                ->orWhere('status_book', 'รอยืนยันการจอง');
-                        })
-                        ->exists();
-                    if ($findBooking) {
-                        return back()->with('error', 'มีชื่อผู้ใช้ทำการลงทะเบียนการจองในวันนี้ไปแล้ว');
+                    ->whereDate('book_details.created_at', $today)
+                    ->join('bookings', 'book_details.booking_id', '=', 'bookings.id')
+                    ->whereIn('bookings.status_book', ['ยืนยันการจอง', 'รอยืนยันการจอง'])
+                    ->exists();
+                    if ($findBookdetails) {
+                        return back()->with('error', 'มีชื่อผู้ใช้ทำการลงทะเบียนการจองไปแล้ว');
                     }
-                }
             } else {
                 return back()->with('error', 'ไม่พบข้อมูลผู้ใช้');
             }
@@ -73,7 +68,7 @@ class UserController extends Controller
 
             $booking = new booking();
             $booking->workTime_id = $request->select_time;
-            $booking->status_book = 'รอการยืนยันการจอง';
+            $booking->status_book = 'รอยืนยันการจอง';
             $booking->save();
 
             $id_book = $booking->id;
@@ -98,26 +93,38 @@ class UserController extends Controller
 
     function update_status_user($id, $value)
     {
-        booking::find($id)->update([
-            'status_book' => $value
-        ]);
-        if ($value == 'ยกเลิกการจอง') {
-            return back()->with('success', 'ทำการยกเลิกการจองห้องเรียบร้อย');
+        if ($id != auth::user()->id) {
+            return view('Login.login');
         } else {
-            return back()->with('error', 'การอัปเดทล้มเหลว');
+            booking::find($id)->update([
+                'status_book' => $value
+            ]);
+            if ($value == 'ยกเลิกการจอง') {
+                return back()->with('success', 'ทำการยกเลิกการจองห้องเรียบร้อย');
+            } else {
+                return back()->with('error', 'การอัปเดทล้มเหลว');
+            }
         }
     }
 
     function statusRoom($id)
     {
-        $currentDate = Carbon::now()->toDateString();
-        $book_details = book_details::with('booking')->where('user_id', $id)->whereDate('created_at', $currentDate)->get();
-        return view('User.status_user', compact('book_details'));
+        if ($id != auth::user()->id) {
+            return view('Login.login');
+        } else {
+            $currentDate = Carbon::now()->toDateString();
+            $book_details = book_details::with('booking')->where('user_id', $id)->whereDate('created_at', $currentDate)->get();
+            return view('User.status_user', compact('book_details'));
+        }
     }
 
     function history($id)
     {
-        $book_details = book_details::with('booking')->where('user_id', $id)->get();
-        return view('User.history_user', compact('book_details'));
+        if ($id != auth::user()->id) {
+            return view('Login.login');
+        } else {
+            $book_details = book_details::with('booking')->where('user_id', $id)->get();
+            return view('User.history_user', compact('book_details'));
+        }
     }
 }

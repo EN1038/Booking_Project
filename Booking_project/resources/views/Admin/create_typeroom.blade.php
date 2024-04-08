@@ -17,47 +17,37 @@
     });
     </script>
 @endif
+<link rel="stylesheet" href="{{asset('css/Admin/typeRoom.css')}}">
 @if (count($type_rooms)>0)
-<div class="d-flex flex-column justify-content-center align-items-center">
-  <h1>สร้างประเภทห้อง</h1>
-  <div class="col-12 d-flex flex-row justify-content-end align-items-center">
-      <button type="button" class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#createTypeRooms">
-          สร้างประเภท
-      </button>
-  </div>
-  <div class="col-12 px-4">
-      <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">ชื่อประเภท</th>
-              <th scope="col">ระยะเวลาการใช้งาน</th>
-              <th scope="col">จำนวนคนขั้นต่ำ</th>
-              <th scope="col">เวลาก่อนยกเลิกการจอง</th>
-              <th scope="col">อื่นๆ</th>
-            </tr>
-          </thead>
-          @foreach ($type_rooms as $items)
-          <tbody> 
-            <tr>
-              <td>{{$items->name_type}}</td>
-              <td>{{$items->time_duration}}</td>
-              <td>{{$items->number_user}}</td>
-              <td>{{$items->time_cancel}}</td>
-              <td>
-                <button type="button" class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#editTypeRooms{{$items->id}}">
-                  แก้ไข
-              </button>
-                  <a href="{{route('delete_type_rooms',$items->id)}}" class="btn btn-danger" onclick="return confirmDelete(event)">ลบ</a>
-              </td>
-            </tr>
-          </tbody>
-          @endforeach
-        </table> 
-        {{$type_rooms->links()}}
-        
-  </div>
-  
-
+<div class="row">
+  <h1 class="text-center fw-bold text-greenlight">สร้างประเภทห้อง</h1>
+    <div class="d-flex flex-column justify-content-center align-items-center">
+      <div class="col-12 d-flex flex-row justify-content-end align-items-center">
+          <button type="button" class="btn btn-primary m-1 rounded-5" data-bs-toggle="modal" data-bs-target="#createTypeRooms">
+            <i class="fa-solid fa-plus"></i> สร้างประเภท
+          </button>
+      </div>
+    </div>
+    @foreach ($type_rooms as $items)
+    <div class="col-xl-6 mt-1">
+      <div class="card shadow bg">
+        <div class="card-body">
+          <h5 class="card-title">ชื่อประเภท <span>{{$items->name_type}}</span></h5>
+          <p class="card-text">ระยะเวลาการใช้งาน <span>{{ date('H', strtotime($items->time_duration)) !== '00' ? date('H', strtotime($items->time_duration)) . ' ชั่วโมง ' : '' }}{{ substr(date('i', strtotime($items->time_duration)), -2) }} นาที</span></p>               
+          <p class="card-text">เวลาก่อนยกเลิกการจอง <span>{{ date('H', strtotime($items->time_cancel)) !== '00' ? date('H', strtotime($items->time_cancel)) . ' ชั่วโมง ' : '' }}{{ substr(date('i', strtotime($items->time_cancel)), -2) }} นาที</span></p>               
+          <p class="card-text">จำนวนคนขั้นต่ำ <span>{{$items->number_user}} คน</span></p> 
+          <div class="col-12 d-flex flex-row justify-content-end align-items-center">
+            <a href="{{route('delete_type_rooms',$items->id)}}" class="btn btn-danger rounded-5 mx-1" onclick="return confirmDelete(event)"><i class="fa-solid fa-trash-arrow-up"></i> ลบ</a>
+            <button type="button" class="btn btn-primary m-1 rounded-5" data-bs-toggle="modal" data-bs-target="#editTypeRooms{{$items->id}}">
+             <i class="fa-solid fa-gear"></i> แก้ไข
+             </button>
+           </a>
+          </div>             
+        </div>
+      </div>
+    </div>
+    @endforeach
+  {{$type_rooms->links()}} 
 </div>
 @else
 <h1 class="text-center">ไม่มี้จา</h1>
@@ -112,10 +102,10 @@
         </div>
     </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary d-none rounded-5" id="buttonCreate" disabled>สร้างประเภทห้อง</button>
-        <button type="button" class="btn btn-secondary d-none rounded-5" id="buttonUndu" onclick="UndoValue()">กรอกค่าใหม่</button>
+        <button type="submit" class="btn btn-primary d-none rounded-5" id="buttonCreate" disabled><i class="fa-solid fa-plus"></i> สร้างประเภทห้อง</button>
+        <button type="button" class="btn btn-secondary d-none rounded-5" id="buttonUndu" onclick="UndoValue()"> กรอกค่าใหม่</button>
         <button type="button" class="btn btn-success rounded-5" id="buttonConfirm" onclick="conFirmCreateTypeRoom()">ตรวจสอบ</button>
-        <button type="button" class="btn btn-danger rounded-5" data-bs-dismiss="modal" id="bottomClose">ปิด</button>
+        <button type="button" class="btn btn-danger rounded-5" data-bs-dismiss="modal" id="bottomClose"><i class="fa-solid fa-circle-xmark"></i> ปิด</button>
       </div> 
     </form>
   </div>
@@ -164,11 +154,11 @@
             <label for="minuteDuration" class="form-label mx-3">นาที</label>
           </div> 
           <label for="ErrorTimeCancel" class="form-label mx-3 text-danger fw-bold" id="ErrorEditTimeCancel{{$items->id}}"></label>
-          <input type="time" class="form-control" id="trueEditTimeCancel{{$items->id}}" name="trueEditTimeCancel">
+          <input type="time" class="form-control" id="trueEditTimeCancel{{$items->id}}" name="trueEditTimeCancel" hidden>
         </div>
     </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary rounded-5" disabled id="editButtonCreate{{$items->id}}">สร้างประเภทห้อง</button>
+        <button type="submit" class="btn btn-primary rounded-5" disabled id="editButtonCreate{{$items->id}}"><i class="fa-solid fa-plus"></i> สร้างประเภทห้อง</button>
       </div> 
       </form>
     </div>

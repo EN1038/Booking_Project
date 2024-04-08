@@ -10,7 +10,9 @@ use App\Models\typeRoom;
 use App\Models\work_time;
 use App\Models\booking;
 use App\Models\book_details;
-
+use App\Models\Leveluser;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -23,13 +25,15 @@ class AdminController extends Controller
 
     function view_listroom($id)
     {
-        $workTimes = work_time::with('listRoom')->where('id_room', $id)->get();
-        return view('Admin.list_workTime_room', compact('workTimes'));
+
+        $room = listRoom::with('typeRoom')->where('id', $id)->first();
+        $workTimes = work_time::with('listRoom')->where('id_room', $id)->paginate(9);
+        return view('Admin.list_workTime_room', compact('workTimes', 'room'));
     }
 
     function create_room()
     {
-        $room = listRoom::with('typeRoom')->get();
+        $room = listRoom::with('typeRoom')->paginate(9);
         $type_rooms = typeRoom::all();
         $work_times = work_time::with('listRoom')->get();
         return view('Admin.create_room', compact('type_rooms', 'room', 'work_times'));
@@ -87,6 +91,7 @@ class AdminController extends Controller
 
     function delete_room($id)
     {
+
         listRoom::find($id)->delete();
         work_time::where('id_room', $id)->delete();
         return back()->with('success', 'ทำการลบสำเร็จ');
@@ -94,12 +99,14 @@ class AdminController extends Controller
 
     function delete_listroom($id)
     {
+
         work_time::find($id)->delete();
         return back()->with('success', 'ทำการลบสำเร็จ');
     }
 
     function change_status($id)
     {
+
         $room = listRoom::where('id', $id)->first();
         $status = $room->status_room;
         if ($status === 'On') {
@@ -116,7 +123,7 @@ class AdminController extends Controller
 
     function create_typeroom()
     {
-        $type_rooms = typeRoom::paginate(10);
+        $type_rooms = typeRoom::paginate(9);
         return view('Admin.create_typeroom', compact('type_rooms'));
     }
 
@@ -146,6 +153,7 @@ class AdminController extends Controller
 
     function edit_type_rooms(Request $request, $id)
     {
+
         if ($request->has('editNameTypeRooms') && $request->has('editNumberUser') && $request->has('editTrueTime') && $request->has('trueEditTimeCancel')) {
             typeRoom::find($id)->update([
                 'name_type' => $request->editNameTypeRooms,
@@ -162,13 +170,29 @@ class AdminController extends Controller
 
     function status_room()
     {
-        $book_details = book_details::with('booking')->get();
-        $book = book_details::with('Leveluser')->get();
+        $today = Carbon::now()->setTimezone('Asia/Bangkok');
+        $book_details = book_details::with('booking')
+            ->whereDate('created_at', $today)
+            ->latest()
+            ->paginate(15);
+
+        $book = book_details::with('Leveluser')
+            ->whereDate('created_at', $today)
+            ->groupBy('booking_id')
+            ->select('booking_id', DB::raw('GROUP_CONCAT(user_id) as user_ids'))
+            ->get();
+
+        foreach ($book as $item) {
+            $user_ids = explode(',', $item->user_ids);
+            $users = Leveluser::whereIn('id', $user_ids)->pluck('name_user')->toArray();
+            $item->user_names = implode(', ', $users);
+        }
         return view('Admin.status_room', compact('book_details', 'book'));
     }
 
     function update_status_admin($id, $value)
     {
+
         booking::find($id)->update([
             'status_book' => $value
         ]);
@@ -183,13 +207,24 @@ class AdminController extends Controller
 
     function history_room()
     {
-        $book_details = book_details::with('booking')->get();
-        return view('Admin.history_room', compact('book_details'));
-    }
+        $today = Carbon::now()->setTimezone('Asia/Bangkok');
 
-    function api_history()
-    {
-        $book_details = book_details::with(['booking', 'work_time'])->get();
-        return response()->json($book_details);
+        $book_details = book_details::with('booking')
+            ->whereDate('created_at', $today)
+            ->latest()
+            ->paginate(15);
+
+        $book = book_details::with('Leveluser')
+            ->whereDate('created_at', $today)
+            ->groupBy('booking_id')
+            ->select('booking_id', DB::raw('GROUP_CONCAT(user_id) as user_ids'))
+            ->get();
+
+        foreach ($book as $item) {
+            $user_ids = explode(',', $item->user_ids);
+            $users = Leveluser::whereIn('id', $user_ids)->pluck('name_user')->toArray();
+            $item->user_names = implode(', ', $users);
+        }
+        return view('Admin.history_room', compact('book_details', 'book'));
     }
 }

@@ -10,14 +10,17 @@ use Illuminate\Support\Facades\Hash;
 class LevelUserController extends Controller
 {
     //
-    function login(){
+    function login()
+    {
         return view('Login.login');
     }
-    function register(){
+    function register()
+    {
         return view('Login.register');
     }
 
-    function insert_register(Request $request){
+    function insert_register(Request $request)
+    {
         $hashedPassword = Hash::make($request->password);
         $register = new Leveluser();
         $register->name_user = $request->name_user;
@@ -36,7 +39,7 @@ class LevelUserController extends Controller
         $credentials = $request->only('passWordNumber_user', 'password');
         // dd($credentials);
         if (Auth::attempt($credentials)) {
-            return redirect('DashBoard_Admin'); // Redirect ไปยังหน้าที่ผู้ใช้งานเข้ามาจากก่อนหน้า
+            return redirect('/'); // Redirect ไปยังหน้าที่ผู้ใช้งานเข้ามาจากก่อนหน้า
         }
         return back()->with('error', true);
     }
@@ -46,6 +49,4 @@ class LevelUserController extends Controller
         auth()->logout();
         return redirect('Login');
     }
-
-    
 }

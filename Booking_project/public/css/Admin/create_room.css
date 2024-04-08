@@ -1,0 +1,29 @@
+:root {
+    --root-bgcardhover: #14ac65;
+    --root-txcardhover: #ffffff;
+}
+
+.bg {
+    border-radius: 15px;
+    transition: all 0.5s;
+}
+
+.bg:hover {
+    background: linear-gradient(to right, #ffffff, #14ac65, #000000);
+    /* Gradient สีจากเขียวไปสีแดง */
+    background-size: 200% 250%;
+    /* ความกว้างของ Gradient */
+    color: var(--root-txcardhover);
+    transition: background-position 1s ease;
+    /* ทำให้การเปลี่ยนเส้นทางของ Gradient มีความนุ่มนวล */
+}
+
+.bg:hover {
+    background-position: right;
+    /* การเลื่อน Gradient ไปทางขวา */
+}
+
+.bg:hover span {
+    color: #13d178;
+    font-weight: bold;
+}

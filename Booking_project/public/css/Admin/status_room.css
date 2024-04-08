@@ -1,0 +1,80 @@
+:root {
+    --root-bgtbhover: #14ac65;
+    --root-txtbhover: #ffffff;
+    --root-borderbottom: #16ac66;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+}
+
+table tr {
+    border-bottom: 1px solid var(--root-borderbottom);
+}
+
+table th,
+table td {
+    padding: 8px;
+    text-align: center;
+}
+
+table th {
+    font-size: 18px;
+    background-color: rgb(255, 255, 255);
+    color: black;
+}
+
+table tr:hover {
+    background-color: var(--root-bgtbhover);
+    color: var(--root-txtbhover);
+    border-bottom: 1px solid var(--root-borderbottom);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* เพิ่มเงาด้านล่าง */
+}
+
+
+@media screen and (max-width: 900px) {
+
+    table thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+    }
+
+    table tr {
+        border-bottom: 3px solid var(--root-borderbottom);
+        display: block;
+        margin-bottom: .625em;
+    }
+
+
+    table td {
+        border-bottom: 1px solid var(--root-borderbottom);
+        display: block;
+        font-size: .8em;
+        text-align: right;
+    }
+
+
+    table td::before {
+        /*
+      * aria-label has no advantage, it won't be read inside a table
+      content: attr(aria-label);
+      */
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    table td:last-child {
+        border-bottom: 0;
+    }
+}

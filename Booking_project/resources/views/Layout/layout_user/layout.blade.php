@@ -24,7 +24,7 @@
             <span>User | DashBoard</span>
         </div>
         <div class="col d-flex flex-row justify-content-end  align-items-center ">
-            <a href="{{route('dashboard_admin')}}" class="mx-3 link-light text-decoration-none">จองห้อง</a>
+            <a href="{{route('dashboard_user')}}" class="mx-3 link-light text-decoration-none">จองห้อง</a>
             <a href="{{ route('statusRoom', Auth::user()->id) }}" class="mx-3 link-light text-decoration-none">เช็คสถานะการจอง</a>
             <a href="{{route('history', Auth::user()->id)}}" class="mx-3 link-light text-decoration-none">ประวัติการจอง</a>
             @if (Auth::check())
@@ -41,5 +41,12 @@
     <footer class="d-flex flex-row justify-content-center align-items-center p-3 bg-primary text-light">
         <span>Footer</span>
     </footer>
+    <footer class="footer fixed-bottom bg-dark text-light">
+    <div class="container py-3">
+        <div class="text-center">
+            <!-- ส่วนของ Footer ที่ต้องการแสดง -->
+        </div>
+    </div>
+</footer>
 </body>
 </html>

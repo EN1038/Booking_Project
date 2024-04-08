@@ -8,7 +8,7 @@
 </head>
 <body>
     <a href="{{route('dashboard_admin')}}">Admins</a>
-    <a href="#">Users</a>
+    <a href="{{route('dashboard_user')}}">Users</a>
 
     <p>cdn sweetalert2</p>
 </body>
