@@ -15,7 +15,7 @@ function changStatus() {
             cancelButtonText: 'ยกเลิก'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = herf+id+'/'+select.value;
+                window.location.href = herf + id + '/' + select.value;
             } else {
                 select.value = status_now;
             }
@@ -32,7 +32,7 @@ function changStatus() {
             cancelButtonText: 'ยกเลิก'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = herf+id+'/'+select.value;
+                window.location.href = herf + id + '/' + select.value;
             } else {
                 select.value = status_now;
             }
@@ -42,9 +42,9 @@ function changStatus() {
 }
 
 function checkStatus() {
-    var select = document.querySelector('.form-select');
+    var select = document.querySelectorAll('.form-select');
     var status = select.value;
-
+    console.log(select)
     if (status === 'ยืนยันการจอง') {
         select.classList.remove('text-danger', 'text-warning');
         select.classList.add('text-success');

@@ -1,4 +1,4 @@
-function showDurationTime(){
+function showDurationTime() {
     const typeRoomsSelect = document.getElementById('select_typeRoom');
     const timeDurationDisplay = document.getElementById('time_duration');
     const selectedOption = typeRoomsSelect.options[typeRoomsSelect.selectedIndex];
@@ -43,23 +43,23 @@ function createOptionTime() {
         }
         const div = document.createElement('div');
         div.classList.add('col-4');
-        div.id = 'div'+count;
+        div.id = 'div' + count;
         fild_timeDuration.appendChild(div);
 
-        const sr_div = document.getElementById('div'+count);
+        const sr_div = document.getElementById('div' + count);
         const input = document.createElement('input');
         input.value = currentTime;
-        input.classList.add('form-control','text-center','my-2');
+        input.classList.add('form-control', 'text-center', 'my-2');
         input.readOnly = true;
-        input.id = 'time_start'+count;
+        input.id = 'time_start' + count;
         input.name = 'time_start_working[]';
         sr_div.appendChild(input);
 
-        if(count != 0){
-            var time_now = document.getElementById('time_start'+count);
-            var div_after = document.getElementById('div'+(count-1));
+        if (count != 0) {
+            var time_now = document.getElementById('time_start' + count);
+            var div_after = document.getElementById('div' + (count - 1));
             var time = time_now.value;
-            
+
             // แยกชั่วโมงและนาทีออกจากกัน
             var parts = time.split(':');
             var hours = parseInt(parts[0], 10);
@@ -81,15 +81,15 @@ function createOptionTime() {
 
             const inputs = document.createElement('input');
             inputs.value = newTime;
-            inputs.classList.add('form-control','text-center','my-2');
+            inputs.classList.add('form-control', 'text-center', 'my-2');
             inputs.hidden = true;
             inputs.name = 'time_end_working[]';
             div_after.appendChild(inputs);
 
-            
+
         }
 
-        
+
         // เพิ่มเวลาโดยใช้ timeDuration
         currentHour += durationHour;
         currentMinute += durationMinute;
@@ -97,18 +97,18 @@ function createOptionTime() {
             currentHour += 1;
             currentMinute -= 60;
         }
-        
+
         // ตรวจสอบว่าเกินเวลาสิ้นสุดหรือไม่
         if (currentHour > endHour || (currentHour === endHour && currentMinute > endMinute)) {
             const inputs = document.createElement('input');
             inputs.value = '16:30';
-            inputs.classList.add('form-control','text-center','my-2');
+            inputs.classList.add('form-control', 'text-center', 'my-2');
             inputs.hidden = true;
             inputs.name = 'time_end_working[]';
             sr_div.appendChild(inputs);
         }
 
-        count+=1;
+        count += 1;
     }
 }
 
@@ -118,82 +118,145 @@ function formatTime(hour, minute) {
     return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 }
 
-function validationName(){
-    const nameRooms = document.getElementById('nameRooms').value;
+function validationName(event) {
+    const nameRooms = event.target.value;
     const errorNameRoom = document.getElementById('errorNameRoom');
+    const button = document.getElementById('btn-create');
+    console.log(button)
+    if (nameRooms.length > 20) {
+        errorNameRoom.classList.remove('d-none');
+        errorNameRoom.textContent = 'ข้อความยาวเกินไป';
+        button.disabled = true;
+        return;
+    }
+
+    if (nameRooms === "") {
+        errorNameRoom.classList.remove('d-none');
+        errorNameRoom.textContent = 'กรุณากรอกชื่อ';
+        button.disabled = true;
+        return;
+    }
+
+    fetch('/api/Rooms')
+        .then(response => {
+            // ตรวจสอบสถานะการเชื่อมต่อ
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            // แปลงข้อมูลเป็น JSON
+            return response.json();
+        })
+        .then(data => {
+            // สร้างอาเรย์เพื่อเก็บ name_room โดยไม่ซ้ำกัน
+            const uniqueNames = [];
+
+            data.forEach(item => {
+                // ตรวจสอบว่า name_room ไม่ซ้ำกับที่มีอยู่ในอาเรย์ uniqueNames แล้วจึงเพิ่มเข้าไป
+                if (!uniqueNames.includes(item.name_room)) {
+                    uniqueNames.push(item.name_room);
+                }
+            });
+            // ตรวจสอบว่า nameRoom ซ้ำกับค่าในอาเรย์ uniqueNames หรือไม่
+            if (uniqueNames.includes(nameRooms)) {
+                const nameRoom = event.target;
+                const buttonx = document.getElementById('btn-create');
+                nameRoom.value = '';
+                errorNameRoom.classList.remove('d-none');
+                errorNameRoom.textContent = 'มีชื่อนี้อยู่ในระบบแล้ว โปรดใช้ชื่ออื่น'
+                buttonx.disabled = true;
+                return;
+            }
+        })
+        .catch(error => {
+            // ดำเนินการเมื่อเกิดข้อผิดพลาด
+            console.error('There was a problem with your fetch operation:', error);
+        });
+
+    errorNameRoom.classList.add('d-none');
+    button.disabled = false;
+
+}
+
+function validationNameEdit(event) {
+    const nameRooms = event.target.value;
+    const id = event.target.dataset.id;
+    const errorNameRoom = document.getElementById('errorNameRoom' + id);
+    const button = document.getElementById('editName' + id);
 
     if (nameRooms.length > 20) {
         errorNameRoom.classList.remove('d-none');
         errorNameRoom.textContent = 'ข้อความยาวเกินไป';
+        button.disabled = true;
         return;
     }
 
-    if(nameRooms === ""){
+    if (nameRooms === "") {
         errorNameRoom.classList.remove('d-none');
-        errorNameRoom.textContent = 'กรุณากรอกชื่อ'
+        errorNameRoom.textContent = 'กรุณากรอกชื่อ';
+        button.disabled = true;
         return;
     }
-    errorNameRoom.classList.add('d-none');
 
-    api_room(nameRooms);
-}
-
-function api_room(nameRoom){
     fetch('/api/Rooms')
-    .then(response => {
-        // ตรวจสอบสถานะการเชื่อมต่อ
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        // แปลงข้อมูลเป็น JSON
-        return response.json();
-    })
-    .then(data => {
-        // สร้างอาเรย์เพื่อเก็บ name_room โดยไม่ซ้ำกัน
-        const uniqueNames = [];
-        data.forEach(item => {
-            // ตรวจสอบว่า name_room ไม่ซ้ำกับที่มีอยู่ในอาเรย์ uniqueNames แล้วจึงเพิ่มเข้าไป
-            if (!uniqueNames.includes(item.name_room)) {
-                uniqueNames.push(item.name_room);
+        .then(response => {
+            // ตรวจสอบสถานะการเชื่อมต่อ
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        });
-        
-        // ตรวจสอบว่า nameRoom ซ้ำกับค่าในอาเรย์ uniqueNames หรือไม่
-        if (uniqueNames.includes(nameRoom)) {
-            const nameRooms = document.getElementById('nameRooms');
-            const errorNameRoom = document.getElementById('errorNameRoom');
+            // แปลงข้อมูลเป็น JSON
+            return response.json();
+        })
+        .then(data => {
+            // สร้างอาเรย์เพื่อเก็บ name_room โดยไม่ซ้ำกัน
+            const uniqueNames = [];
 
-            nameRooms.value = "";
-            errorNameRoom.classList.remove('d-none');
-            errorNameRoom.textContent ='มีชื่อนี้อยู่ในระบบแล้ว โปรดใช้ชื่ออื่น'
-        }
-    })
-    .catch(error => {
-        // ดำเนินการเมื่อเกิดข้อผิดพลาด
-        console.error('There was a problem with your fetch operation:', error);
-    });
+            data.forEach(item => {
+                // ตรวจสอบว่า name_room ไม่ซ้ำกับที่มีอยู่ในอาเรย์ uniqueNames แล้วจึงเพิ่มเข้าไป
+                if (!uniqueNames.includes(item.name_room)) {
+                    uniqueNames.push(item.name_room);
+                }
+            });
+            // ตรวจสอบว่า nameRoom ซ้ำกับค่าในอาเรย์ uniqueNames หรือไม่
+            if (uniqueNames.includes(nameRooms)) {
+                const nameEditRoom = event.target;
+                nameEditRoom.value = "";
+                errorNameRoom.classList.remove('d-none');
+                errorNameRoom.textContent = 'มีชื่อนี้อยู่ในระบบแล้ว โปรดใช้ชื่ออื่น'
+                button.disabled = true;
+                return;
+            }
+        })
+        .catch(error => {
+            // ดำเนินการเมื่อเกิดข้อผิดพลาด
+            console.error('There was a problem with your fetch operation:', error);
+        });
+
+    errorNameRoom.classList.add('d-none');
+    button.disabled = false;
 }
-function validateSelectType(){
+
+
+function validateSelectType() {
     const time_duration = document.getElementById('time_duration');
     const errorSelectType = document.getElementById('errorSelectType');
-    
-    if(time_duration.value === ""){
+
+    if (time_duration.value === "") {
         errorSelectType.classList.remove('d-none');
         errorSelectType.textContent = 'โปรดเลือกประเภทของห้อง';
-    }else{
+    } else {
         errorSelectType.classList.add('d-none');
     }
-    
+
 }
 
-function validateSelectStatus(){
+function validateSelectStatus() {
     const selectStatus = document.getElementById('selectStatus');
     const errorSelectStatus = document.getElementById('errorSelectStatus');
-    
+
     errorSelectStatus.classList.remove('d-none');
     errorSelectStatus.textContent = 'โปรดเลือกสถานะของห้อง';
 
-    if(selectStatus.value === "On" || selectStatus.value === 'Off'){
+    if (selectStatus.value === "On" || selectStatus.value === 'Off') {
         errorSelectStatus.classList.add('d-none');
     }
 
@@ -233,7 +296,5 @@ function confirmDelete(event) {
 //     // validateSelectType()
 
 
-api_room()
-validationName()
 validateSelectType()
 validateSelectStatus()

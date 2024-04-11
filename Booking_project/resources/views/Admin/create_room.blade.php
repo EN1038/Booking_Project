@@ -30,13 +30,14 @@
     <div class="col-md-6 col-xl-4 mt-1">
       <div class="card shadow bg">
         <div class="card-body">
-          <h5 class="card-title">ชื่อห้อง <span>{{$items->name_room}}</span> <a href="{{route('view_listroom',$items->id)}}"> <i class="fa-solid fa-up-right-from-square text-info fs-5"></i></a></h5>
+          <h5 class="card-title">ชื่อห้อง <span>{{$items->name_room}}</span></h5>
           <p class="card-text">ประเภทห้อง <span>{{$items->typeRoom->name_type}}</span></p>               
           <p class="card-text">ห้องถูกสร้างเมื่อ <span>{{$items->created_at->toDateString()}}</span></p>               
                 <a href="{{route('change_status',$items->id)}}" class="rounded-5 btn {{ $items->status_room === 'On' ? 'btn-success' : 'btn-danger' }}">
                   <i class="fa-solid fa-power-off"></i> {{ $items->status_room }}</a>
                   <a href="{{route('delete_room',$items->id)}}" class="btn btn-danger rounded-5" onclick="return confirmDelete(event)"><i class="fa-solid fa-trash-arrow-up"></i> ลบ</a>
                   <button class="btn btn-primary rounded-5" data-bs-toggle="modal" data-bs-target="#updateRooms{{$items->id}}"><i class="fa-solid fa-gear"></i> แก้ไข</button>
+                  <a href="{{route('view_listroom',$items->id)}}" class="btn btn-secondary rounded-5 text-light"><i class="fa-solid fa-up-right-from-square"></i> เวลา</a>
               </a>
         </div>
       </div>
@@ -67,11 +68,15 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form action="{{route('insert_room')}}" method="POST">
+              <form action="{{route('insert_room')}}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
+                  <label for="formFile" class="form-label">เลือกรูปที่ใช้แสดง</label>
+                  <input class="form-control" type="file" id="formFile" name="image_room">
+                </div>
+                <div class="mb-3">
                     <label for="nameRooms" class="form-label">กรอกชื่อห้อง</label>
-                    <input type="text" class="form-control text-center" id="nameRooms" name="nameRoom" placeholder="กรอกชื่อห้องที่ต้องการ" oninput="validationName()">
+                    <input type="text" class="form-control text-center" id="nameRooms" name="nameRoom" placeholder="กรอกชื่อห้องที่ต้องการ" oninput="validationName(event)">
                     <label for="errorNameRoom" class="form-label mx-3 text-danger fw-bold" id="errorNameRoom"></label>
                 </div>
                 <label for="typeRooms" class="form-label">เลือกประเภทห้อง</label>
@@ -99,7 +104,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-circle-xmark"></i> ปิด</button>
-              <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> สร้างห้อง</button>
+              <button type="submit" class="btn btn-primary" id="btn-create" disabled><i class="fa-solid fa-plus" ></i> สร้างห้อง</button>
             </div>
             </form>
           </div>
@@ -119,13 +124,13 @@
               @csrf
               <div class="mb-3">
                   <label for="nameRooms" class="form-label">กรอกชื่อห้อง</label>
-                  <input type="text" class="form-control text-center" id="updateNameRoom" name="updateNameRoom" placeholder="{{$items->name_room}}" oninput="validationName()">
-                  <label for="errorNameRoom" class="form-label mx-3 text-danger fw-bold" id="errorNameRoom"></label>
+                  <input type="text" class="form-control text-center" id="updateNameRoom{{$items->id}}" data-id="{{$items->id}}" name="updateNameRoom" placeholder="{{$items->name_room}}" oninput="validationNameEdit(event)">
+                  <label for="errorNameRoom" class="form-label mx-3 text-danger fw-bold" id="errorNameRoom{{$items->id}}"></label>
               </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-circle-xmark"></i> ปิด</button>
-            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> สร้างห้อง</button>
+            <button type="submit" class="btn btn-primary" id="editName{{$items->id}}" disabled><i class="fa-solid fa-plus"></i> แก้ไขชื่อห้อง</button>
           </div>
           </form>
         </div>

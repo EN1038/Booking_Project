@@ -4,7 +4,12 @@
 }
 
 .bg {
-    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.5);
+    /* ปรับความโปร่งใสตามความต้องการ */
+    backdrop-filter: blur(10px);
+    /* ปรับระดับของความเบลอตามความต้องการ */
+    border-radius: 10px;
+    /* ปรับรูปร่างของการ์ดตามความต้องการ */
     transition: all 0.5s;
 }
 

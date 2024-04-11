@@ -76,7 +76,7 @@
           </div>
           @if(Auth::check())
           <div class="text-start ps-1 mb-2">
-            <span class="text-title ">TITLE</span>
+            <span class="text-title ">หัวข้อหลัก</span>
           </div>
           <a href="{{route('dashboard_admin')}}" class="text-decoration-none">
             <div class="hover-btn d-flex flex-row mb-1 rounded-3  align-items-center">
@@ -128,10 +128,23 @@
               </div>
             </div>
           </a>
+          <div class="text-start ps-1 mb-2">
+            <span class="text-title ">หัวข้อรอง</span>
+          </div>
+          <a href="{{route('booking_admin')}}" class="text-decoration-none">
+            <div class="hover-btn d-flex flex-row mb-1 rounded-3  align-items-center">
+              <div class="col-2 fs-4 text-center">
+                <i class="fa-solid fa-bookmark"></i>
+              </div>
+              <div class="col d-flex align-items-center justify-content-center fs-7">
+                <span class="divToHide ">จองห้อง</span>
+              </div>
+            </div>
+          </a>
         </div>
         <div class="d-flex flex-column text-white px-3 ">
           <div class="text-start ps-1 mb-2">
-            <span class="text-title ">COSTOM</span>
+            <span class="text-title ">จัดการ</span>
           </div>
           <div class="text-decoration-none">
   

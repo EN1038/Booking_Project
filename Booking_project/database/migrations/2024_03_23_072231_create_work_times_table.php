@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->time('name_start_workTime');
             $table->time('name_end_workTime');
+            $table->string('status_wt');
             $table->string('id_room');
             $table->timestamps();
         });

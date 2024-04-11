@@ -32,6 +32,7 @@ Route::group(['middleware' => ['check.role']], function () {
     Route::get('Change_status/{id}', [AdminController::class, 'change_status'])->name('change_status');
     Route::get('listRoom/{id}', [AdminController::class, 'view_listroom'])->name('view_listroom');
     Route::post('update/{id}', [AdminController::class, 'update_room'])->name('update_room');
+    Route::get('update_wt/{id}', [AdminController::class, 'update_wt'])->name('update_wt');
     //status_room
     Route::get('Status_room', [AdminController::class, 'status_room'])->name('status_room');
     Route::get('Update_status_admin/{id}/{value}', [AdminController::class, 'update_status_admin'])->name('update_status_admin');
@@ -42,6 +43,9 @@ Route::group(['middleware' => ['check.role']], function () {
     Route::post('Insert_type_rooms', [AdminController::class, 'insert_typeroom'])->name('insert_typeroom');
     Route::get('Delete_type_room/{id}', [AdminController::class, 'delete_type_rooms'])->name('delete_type_rooms');
     Route::post('Edit_type_room/{id}', [AdminController::class, 'edit_type_rooms'])->name('edit_type_rooms');
+    //Bookin_admin
+    Route::get('Booking_Admin', [AdminController::class, 'booking_admin'])->name('booking_admin');
+    Route::post('insert_BookinAdmin', [AdminController::class, 'insert_booking_admin'])->name('insert_booking_admin');
 });
 
 Route::post('Booking_Rooms', [UserController::class, 'booking_rooms'])->name('booking_rooms');
