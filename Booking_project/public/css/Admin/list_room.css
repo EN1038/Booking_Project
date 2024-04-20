@@ -1,6 +1,17 @@
 :root {
     --root-bgcardhover: #14ac65;
     --root-txcardhover: #ffffff;
+
+    --root-background: #212529;
+    --root-bghover: #39393975;
+    --root-text: #e9e9e9;
+    --root-icons: #1b8f59;
+    --root-txhover: #1b8f59;
+    --root-title: #a5a5a5;
+    --root-bgtbhover: #14ac65;
+    --root-txtbhover: #ffffff;
+    --root-borderbottom: #068348;
+
 }
 
 .bg {
@@ -32,4 +43,38 @@
     color: #13d178;
     font-weight: bold;
 
+}
+
+/* เพิ่มสีให้กับลิงก์ทั้งหมดใน pagination */
+.pagination .page-link {
+    color: #000;
+    /* สีข้อความ */
+    background-color: #ffffff;
+    /* สีพื้นหลัง */
+    border-color: var(--root-txhover);
+    /* สีเส้นขอบ */
+    margin-top: 10px;
+}
+
+;
+
+/* เพิ่มสีให้กับลิงก์ที่ถูกเลือกใน pagination */
+.pagination .page-item.active .page-link {
+    color: #ffffff;
+    /* สีข้อความ */
+    background-color: var(--root-txhover);
+    /* สีพื้นหลัง */
+    border-color: var(--root-txhover);
+    /* สีเส้นขอบ */
+}
+
+/* เพิ่มสีให้กับลิงก์ที่เมื่อนำเม้าส์ไปชี้ที่ลิงก์ */
+.pagination .page-item .page-link:hover {
+    color: #ffffff;
+    /* สีข้อความ */
+    background-color: var(--root-icons);
+    /* สีพื้นหลัง */
+    border-color: var(--root-icons);
+    /* สีเส้นขอบ */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }

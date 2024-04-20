@@ -122,7 +122,7 @@ function validationName(event) {
     const nameRooms = event.target.value;
     const errorNameRoom = document.getElementById('errorNameRoom');
     const button = document.getElementById('btn-create');
-    console.log(button)
+
     if (nameRooms.length > 20) {
         errorNameRoom.classList.remove('d-none');
         errorNameRoom.textContent = 'ข้อความยาวเกินไป';
@@ -295,6 +295,65 @@ function confirmDelete(event) {
 //     // createOptionTime()
 //     // validateSelectType()
 
+function validationImg() {
+    var fileInput = event.target;
+    var errorLabel = document.getElementById("errorImgRoom");
+    const button = document.getElementById('btn-create');
+    // ตรวจสอบว่ามีการเลือกไฟล์หรือไม่
+    if (fileInput.files.length === 0) {
+        errorLabel.textContent = "โปรดเลือกรูปภาพ";
+        button.disabled = true;
+    } else {
+        // ตรวจสอบขนาดของไฟล์
+        var maxSize = 2 * 1024 * 1024; // ขนาดสูงสุดของไฟล์ภาพ (2MB)
+        if (fileInput.files[0].size > maxSize) {
+            errorLabel.textContent = "ขนาดของไฟล์ภาพต้องไม่เกิน 2MB";
+            button.disabled = true;
+        } else {
+            // ตรวจสอบชนิดของไฟล์ภาพ
+            var allowedExtensions = ["jpg", "jpeg", "png", "gif"];
+            var extension = fileInput.files[0].name.split(".").pop().toLowerCase();
+            if (!allowedExtensions.includes(extension)) {
+                errorLabel.textContent = "รูปภาพไม่ได้รับอนุญาตให้ใช้";
+                button.disabled = true;
+            } else {
+                // ล้างข้อความผิดพลาดหากไม่มีปัญหา
+                errorLabel.textContent = "";
+            }
+        }
+    }
+
+}
+
+function validationEditImg() {
+    var fileInput = event.target;
+    var id = event.target.dataset.id;
+    var errorLabel = document.getElementById("errorImgRoom" + id);
+    const button = document.getElementById('editName' + id);
+    // ตรวจสอบว่ามีการเลือกไฟล์หรือไม่
+    if (fileInput.files.length === 0) {
+        errorLabel.textContent = "โปรดเลือกรูปภาพ";
+        button.disabled = true;
+    } else {
+        // ตรวจสอบขนาดของไฟล์
+        var maxSize = 2 * 1024 * 1024; // ขนาดสูงสุดของไฟล์ภาพ (2MB)
+        if (fileInput.files[0].size > maxSize) {
+            errorLabel.textContent = "ขนาดของไฟล์ภาพต้องไม่เกิน 2MB";
+            button.disabled = true;
+        } else {
+            // ตรวจสอบชนิดของไฟล์ภาพ
+            var allowedExtensions = ["jpg", "jpeg", "png", "gif"];
+            var extension = fileInput.files[0].name.split(".").pop().toLowerCase();
+            if (!allowedExtensions.includes(extension)) {
+                errorLabel.textContent = "รูปภาพไม่ได้รับอนุญาตให้ใช้";
+                button.disabled = true;
+            } else {
+                // ล้างข้อความผิดพลาดหากไม่มีปัญหา
+                errorLabel.textContent = "";
+            }
+        }
+    }
+}
 
 validateSelectType()
 validateSelectStatus()

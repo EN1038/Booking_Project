@@ -97,6 +97,43 @@ function convertMinutesToTime() {
     input.value = formattedTime;
 }
 
+function convertMinutesToTimeLate() {
+    var errorTimeLate = document.getElementById('ErrorTimeLate');
+    var minute = document.getElementById('timeBeforLate')
+    var input = document.getElementById('trueTimeLate');
+    var hours = Math.floor(minute.value / 60);
+    var minutes = minute.value % 60;
+
+    if (minute.value.includes(".")) {
+        errorTimeLate.textContent = 'รูปแบบเวลาไม่ถูกต้อง';
+        errorTimeLate.classList.remove('d-none');
+        return;
+    }
+
+    if (/[^0-9]/g.test(minute.value)) {
+        errorTimeLate.textContent = 'รูปแบบเวลาไม่ถูกต้อง';
+        errorTimeLate.classList.remove('d-none');
+        return;
+    }
+
+    if (minute.value === "") {
+        errorTimeLate.textContent = 'กรุณากรอกเวลาให้ครบทุกช่อง'
+        errorTimeLate.classList.remove('d-none');
+        return;
+    }
+
+    if (parseInt(minute.value) < 0 || parseInt(minute.value) > 59) {
+        errorTimeLate.textContent = 'รูปแบบเวลาไม่ถูกต้อง'
+        errorTimeLate.classList.remove('d-none');
+        return;
+    }
+
+    // แปลงชั่วโมงและนาทีให้อยู่ในรูปแบบที่ถูกต้อง (ในกรณีที่ต้องการให้แสดงเลขหน่วยนับเป็นเลขคู่ เช่น 00, 01, 02, ... 59)
+    var formattedTime = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
+    errorTimeLate.classList.add('d-none')
+    input.value = formattedTime;
+}
+
 function convertEditMinutesToTime() {
     var id = event.target.dataset.id;
     var errorTimeCancel = document.getElementById('ErrorEditTimeCancel' + id);
@@ -133,6 +170,46 @@ function convertEditMinutesToTime() {
     var formattedTime = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
 
     errorTimeCancel.classList.add('d-none')
+    input.value = formattedTime;
+    conf
+    irmEdit(id)
+}
+function convertEditMinutesToTimeLate() {
+    var id = event.target.dataset.id;
+    var errorTimeLate = document.getElementById('ErrorEditTimeLate' + id);
+    var minute = event.target.value;
+    var input = document.getElementById('trueEditTimeLate' + id);
+    var hours = Math.floor(minute / 60);
+    var minutes = minute % 60;
+
+    if (minute.includes(".")) {
+        errorTimeLate.textContent = 'รูปแบบเวลาไม่ถูกต้อง';
+        errorTimeLate.classList.remove('d-none');
+        return;
+    }
+
+    if (/[^0-9]/g.test(minute)) {
+        errorTimeLate.textContent = 'รูปแบบเวลาไม่ถูกต้อง';
+        errorTimeLate.classList.remove('d-none');
+        return;
+    }
+
+    if (minute === "") {
+        errorTimeLate.textContent = 'กรุณากรอกเวลาให้ครบทุกช่อง'
+        errorTimeLate.classList.remove('d-none');
+        return;
+    }
+
+    if (parseInt(minute) < 0 || parseInt(minute.value) > 59) {
+        errorTimeLate.textContent = 'รูปแบบเวลาไม่ถูกต้อง'
+        errorTimeLate.classList.remove('d-none');
+        return;
+    }
+
+    // แปลงชั่วโมงและนาทีให้อยู่ในรูปแบบที่ถูกต้อง (ในกรณีที่ต้องการให้แสดงเลขหน่วยนับเป็นเลขคู่ เช่น 00, 01, 02, ... 59)
+    var formattedTime = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
+
+    errorTimeLate.classList.add('d-none')
     input.value = formattedTime;
     confirmEdit(id)
 }
@@ -197,6 +274,7 @@ function conFirmCreateTypeRoom() {
     const errorTime = document.getElementById('ErrorTime');
     var minutea = document.getElementById('timeBeforCancel')
     var errorTimeCancel = document.getElementById('ErrorTimeCancel');
+    var errorTimeLate = document.getElementById('ErrorTimeLate');
     buttonConfirm.innerHTML = '<i class="fa-solid fa-spinner fa-spin-pulse"></i> รอสักครู่';
     buttonUndu.innerHTML = 'กรอกค่าใหม่';
     setTimeout(function () {
@@ -213,7 +291,8 @@ function conFirmCreateTypeRoom() {
         validate_NumberUser()
         validate_NameTypeRoom()
         convertMinutesToTime()
-        if (!errorNumberUser.classList.contains('d-none') && !errorTime.classList.contains('d-none') && !errornameTypeRooms.classList.contains('d-none') && !errorTimeCancel.classList.contains('d-none')) {
+        convertMinutesToTimeLate()
+        if (!errorNumberUser.classList.contains('d-none') && !errorTime.classList.contains('d-none') && !errornameTypeRooms.classList.contains('d-none') && !errorTimeCancel.classList.contains('d-none')&& !errorTimeLate.classList.contains('d-none')) {
             buttonCreate.disabled = true;
         } else {
             buttonCreate.disabled = false;

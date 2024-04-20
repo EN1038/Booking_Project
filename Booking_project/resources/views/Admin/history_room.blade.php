@@ -62,6 +62,7 @@
         @endforeach
     </tbody>
   </table>
+  {{ $book_details->withQueryString()->links('pagination::bootstrap-4') }}
 </div>
 
 {{-- MODAL USER --}}

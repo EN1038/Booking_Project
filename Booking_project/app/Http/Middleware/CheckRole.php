@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class CheckRole
 {
@@ -27,7 +28,7 @@ class CheckRole
         // }else if(auth()->user()->level_user === 'admin'){
         //     return $next($request);
         // }
-        if (auth::check() && auth::user()->level_user == 'admin') {
+        if (auth::check() && (auth::user()->level_user == 'admin'||auth::user()->level_user == 'superAdmin')) {
             return $next($request);
         } else {
             return redirect('Login');

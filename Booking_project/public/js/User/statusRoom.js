@@ -2,7 +2,8 @@ function changStatus() {
     var select = event.target;
     var status_now = event.target.dataset.status;
     var id = event.target.dataset.id;
-    var herf = 'http://127.0.0.1:8000/Update_status_user/';
+    var host = 'http://127.0.0.1:8000/';
+    var herf = host+'Update_status_user/';
     console.log(herf)
     if (event.target.value === 'ยกเลิกการจอง') {
         Swal.fire({

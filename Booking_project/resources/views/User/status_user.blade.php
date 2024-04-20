@@ -17,33 +17,27 @@
     });
     </script>
 @endif
-<table class="table">
-    <thead>
-      <tr>
-        <th scope="col" class="col-2">ชื่อห้อง</th>
-        <th scope="col" class="col-2">เวลาในการจอง</th>
-        <th scope="col" class="col-3">สถานะห้อง</th>
-        <th scope="col" class="col-5">เวลาที่เหลือ</th>
-      </tr>
-    </thead>
-    <tbody>
-        @foreach ($book_details as $items)
-        <tr>
-            <td>{{$items->booking->work_time->listRoom->name_room}}</td>
-            <td>{{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</td>
-            <td>
-                <select class="form-select" id="select_status{{$items->id}}" onchange="changStatus()" data-status="{{$items->booking->status_book}}" data-id="{{$items->booking_id}}"  {{$items->booking->status_book === 'ยกเลิกการจอง' || $items->booking->status_book === 'ยืนยันการจอง' || $items->booking->status_book === 'ปฎิเสธการจอง' ? 'disabled' : '' }} disabled>
+<link rel="stylesheet" href="{{asset('css/User/status_user.css')}}">
+<div class="row">
+    <h1 class="text-center fw-bold text-greenlight mb-3">เช็คสถานะการจอง</h1>
+  @foreach ($book_details as $items)
+  <div class="col-md-6 col-xl-6 mt-1">
+    <div class="card shadow bg">
+      <div class="card-body">
+        <h5 class="card-title">ชื่อห้อง <span>{{$items->booking->work_time->listRoom->name_room}}</span></h5>
+        <p class="card-text">วันที่ถูกจอง <span>{{$items->booking->created_at->toDateString()}}</span></p>
+        <p class="card-text ">เวลาในการจอง <span>{{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</span></p>               
+                <p class="card-text">สถานะห้อง <span>
+                <select class="form-select rounded-5 w-100 text-center border-success" id="select_status{{$items->id}}" onchange="changStatus()" data-status="{{$items->booking->status_book}}" data-id="{{$items->booking_id}}"  {{$items->booking->status_book === 'ยกเลิกการจอง' || $items->booking->status_book === 'ยืนยันการจอง' || $items->booking->status_book === 'ปฎิเสธการจอง' ? 'disabled' : '' }} disabled>
                     <option value="{{$items->booking->status_book}}" class="text-warning" selected hidden>{{$items->booking->status_book}}</option>
                     <option value="ยกเลิกการจอง" class="text-danger">ยกเลิกการจอง</option>
-                </select>
-            </td>
-            <td id="countDown" data-timecancel="{{$items->booking->work_time->listRoom->typeRoom->time_cancel}}" data-id="{{$items->id}}" data-timestart="{{$items->booking->work_time->name_start_workTime}}">
-            
-            </td>
-          </tr>
-          
-    @endforeach
-    </tbody>
-  </table>
+                </select></span></p>               
+        <p class="card-text text-danger fw-bold fs-5" id="countDown" data-timecancel="{{$items->booking->work_time->listRoom->typeRoom->time_cancel}}" data-id="{{$items->id}}" data-timestart="{{$items->booking->work_time->name_start_workTime}}"></p>
+      </div>
+    </div>
+  </div>
+  @endforeach
+  
+</div>
   <script src="{{asset('js/User/statusRoom.js')}}"></script>
 @endsection

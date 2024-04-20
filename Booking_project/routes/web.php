@@ -24,6 +24,7 @@ Route::group(['middleware' => ['check.role']], function () {
     // System Admin //
     //DashBoard_Admin
     Route::get('DashBoard_Admin', [AdminController::class, 'dashBoard_admin'])->name('dashboard_admin');
+    Route::get('All_change_status', [AdminController::class, 'all_change_status'])->name('all_change_status');
     //Room_Admin
     Route::get('Create_Rooms', [AdminController::class, 'create_room'])->name('create_room');
     Route::post('Insert_Rooms', [AdminController::class, 'insert_room'])->name('insert_room');
@@ -48,10 +49,7 @@ Route::group(['middleware' => ['check.role']], function () {
     Route::post('insert_BookinAdmin', [AdminController::class, 'insert_booking_admin'])->name('insert_booking_admin');
 });
 
-Route::post('Booking_Rooms', [UserController::class, 'booking_rooms'])->name('booking_rooms');
-Route::get('Update_status_user/{id}/{value}', [UserController::class, 'update_status_user'])->name('update_status_user');
-Route::get('View_Status/{id}', [UserController::class, 'statusRoom'])->name('statusRoom');
-Route::get('History/{id}', [UserController::class, 'history'])->name('history');
+
 
 
 //Login
@@ -63,3 +61,9 @@ Route::get('Logout', [LevelUserController::class, 'logout'])->name('logout');
 
 //User
 Route::get('DashBoard_User', [UserController::class, 'dashboardUser'])->name('dashboard_user');
+Route::post('Booking_Rooms', [UserController::class, 'booking_rooms'])->name('booking_rooms');
+Route::get('Update_status_user/{id}/{value}', [UserController::class, 'update_status_user'])->name('update_status_user');
+Route::get('View_Status/{id}', [UserController::class, 'statusRoom'])->name('statusRoom');
+Route::get('History/{id}', [UserController::class, 'history'])->name('history');
+Route::get('ErrorUser/{id}', [UserController::class, 'error_user'])->name('error_user');
+Route::get('Update_status_user_User/{id}/{value}', [UserController::class, 'update_status_user_user'])->name('update_status_user_user');

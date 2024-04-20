@@ -27,6 +27,8 @@ class LevelUserController extends Controller
         $register->passWordNumber_user = $request->passwordNumber_user;
         $register->email = $request->email;
         $register->level_user = $request->selectStatus;
+        $register->goodness_user = 0;
+        $register->status_user = 'จองได้';
         $register->password = $hashedPassword;
         $register->save();
 
@@ -35,14 +37,24 @@ class LevelUserController extends Controller
 
     function Authlogin(Request $request)
     {
-        // dd($request);
         $credentials = $request->only('passWordNumber_user', 'password');
-        // dd($credentials);
+
         if (Auth::attempt($credentials)) {
-            return redirect('/'); // Redirect ไปยังหน้าที่ผู้ใช้งานเข้ามาจากก่อนหน้า
+            // ตรวจสอบว่ามีผู้ใช้ล็อกอินแล้วหรือไม่
+            if (Auth::check()) {
+                // ได้ผู้ใช้ล็อกอินแล้ว ตรวจสอบสถานะของผู้ใช้
+                $user = Auth::user();
+                if ($user->level_user === 'admin'||$user->level_user === 'superAdmin') {
+                    return redirect('DashBoard_Admin'); // หากเป็นแอดมินให้ไปยังหน้า dashboard
+                } else {
+                    return redirect('DashBoard_User'); // หากเป็น user ให้ไปยังหน้าหลัก
+                }
+            }
         }
+
         return back()->with('error', true);
     }
+
 
     function logout()
     {

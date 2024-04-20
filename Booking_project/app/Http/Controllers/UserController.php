@@ -21,7 +21,7 @@ class UserController extends Controller
         $book_details = book_details::with('booking')->get();
 
         // ดึงวันที่ปัจจุบัน
-        $today = Carbon::now()->toDateString();
+        $today = Carbon::now()->setTimezone('Asia/Bangkok');
 
         // ดึงข้อมูล booking ที่มีวันที่สร้างเท่ากับวันปัจจุบัน
         $booking = booking::with('work_time')
@@ -30,9 +30,31 @@ class UserController extends Controller
             ->get();
 
         // ดึง work_times ที่ไม่เหมือนกับค่าที่ได้จาก booking ในคอลัม workTime_id
-        $work_times = work_time::with('listRoom')
+        $work_times = work_time::with('booking')
             ->whereNotIn('id', $booking->pluck('workTime_id'))
             ->get();
+
+
+        foreach ($work_times as $work_time) {
+            // ดึงเวลาเริ่มงานจากคอลัม 'name_start_workTime'
+            $start_time = Carbon::createFromFormat('H:i:s', $work_time->name_start_workTime);
+            $end_time = Carbon::createFromFormat('H:i:s', $work_time->name_end_workTime);
+
+            // เปรียบเทียบเวลาปัจจุบันกับเวลาเริ่มงาน
+            if ($today  >= $start_time) {
+                // เปลี่ยนค่าคอลัม 'status_wt' เป็น 'ว็อกอิน'
+                $work_time->status_wt = 'ว็อกอิน';
+                $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
+                if ($today  >= $end_time) {
+                    $work_time->status_wt = 'หมดเวลาจอง';
+                    $work_time->save();
+                }
+            }
+        }
+
+        if (Auth::user()->status_user === 'จองไม่ได้') {
+            return redirect('ErrorUser/' . Auth::user()->id);
+        }
 
 
         return view('User.dashboard', compact('room', 'work_times', 'book_details'));
@@ -55,9 +77,9 @@ class UserController extends Controller
                     ->join('bookings', 'book_details.booking_id', '=', 'bookings.id')
                     ->whereIn('bookings.status_book', ['ยืนยันการจอง', 'รอยืนยันการจอง'])
                     ->exists();
-                    if ($findBookdetails) {
-                        return back()->with('error', 'มีชื่อผู้ใช้ทำการลงทะเบียนการจองไปแล้ว');
-                    }
+                if ($findBookdetails) {
+                    return back()->with('error', 'มีชื่อผู้ใช้ทำการลงทะเบียนการจองไปแล้ว');
+                }
             } else {
                 return back()->with('error', 'ไม่พบข้อมูลผู้ใช้');
             }
@@ -112,7 +134,7 @@ class UserController extends Controller
         if ($id != auth::user()->id) {
             return view('Login.login');
         } else {
-            $currentDate = Carbon::now()->toDateString();
+            $currentDate = Carbon::now()->setTimezone('Asia/Bangkok');
             $book_details = book_details::with('booking')->where('user_id', $id)->whereDate('created_at', $currentDate)->get();
             return view('User.status_user', compact('book_details'));
         }
@@ -123,8 +145,28 @@ class UserController extends Controller
         if ($id != auth::user()->id) {
             return view('Login.login');
         } else {
-            $book_details = book_details::with('booking')->where('user_id', $id)->get();
+            $book_details = book_details::with('booking')->where('user_id', $id)->paginate(20);
             return view('User.history_user', compact('book_details'));
         }
+    }
+
+    function error_user($id)
+    {
+        if ($id != auth::user()->id) {
+            return view('Login.login');
+        } else {
+            $error_user = Leveluser::where('id', $id)->first();
+            return view('User.error_user', compact('error_user'));
+        }
+    }
+
+    function update_status_user_user($id, $value)
+    {
+        $user = Leveluser::find($id);
+        $user->update([
+            'goodness_user' => 0,
+            'status_user' => $value,
+        ]);
+        return redirect('DashBoard_User');
     }
 }

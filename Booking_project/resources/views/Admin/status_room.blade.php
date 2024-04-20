@@ -23,11 +23,12 @@
     <table>
         <thead>
           <tr>
-            <th scope="col">ลำดับที่</th>
+            <th scope="col" class="col-1">ลำดับที่</th>
             <th scope="col">รายชื่อคนทำการจอง</th>
             <th scope="col">ชื่อห้อง</th>
             <th scope="col">ประเภทห้อง</th>
             <th scope="col">ระยะเวลาที่จอง</th>
+            <th scope="col">เวลาก่อนจะปฎิเสธ</th>
             <th scope="col">การอนุมัติ</th>
             
           </tr>
@@ -35,6 +36,7 @@
         @php
           $previous = null;
         @endphp
+        
         @foreach ($book_details as $items)
             @if($items->booking->workTime_id != $previous)
                 @php
@@ -49,11 +51,11 @@
                         <td data-label="ชื่อห้อง">{{$items->booking->work_time->listRoom->name_room}}</td>
                         <td data-label="ประเภทห้อง">{{$items->booking->work_time->listRoom->typeRoom->name_type}}</td>
                         <td data-label="ระยะเวลาที่จอง">{{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</td>
+                        <td data-label="เวลาก่อนจะปฎิเสธ" class="card-text text-danger fw-bold fs-5" id="countDown" data-timecancel="{{$items->booking->work_time->listRoom->typeRoom->time_late}}" data-id="{{$items->id}}" data-timestart="{{$items->booking->work_time->name_start_workTime}}"></td>
                         <td data-label="การอนุมัติ">
-                            <select class="form-select text-center border border-success rounded-4" onchange="changStatus()" data-status="{{$items->booking->status_book}}" data-id="{{$items->booking_id}}"  {{($items->booking->status_book === 'ยืนยันการจอง' || $items->booking->status_book === 'ปฎิเสธการจอง' || $items->booking->status_book === 'ยกเลิกการจอง') ? 'disabled' : '' }}>
+                            <select class="form-select text-center border border-success rounded-4" id="select_status{{$items->id}}" onchange="changStatus()" data-status="{{$items->booking->status_book}}" data-id="{{$items->booking_id}}"  {{($items->booking->status_book === 'ยืนยันการจอง' || $items->booking->status_book === 'ปฎิเสธการจอง' || $items->booking->status_book === 'ยกเลิกการจอง') ? 'disabled' : '' }}>
                                 <option value="{{$items->booking->status_book}}" class="text-warning" selected hidden>{{$items->booking->status_book}}</option>
                                 <option value="ยืนยันการจอง" class="text-success">ยืนยันการจอง</option>
-                                <option value="ปฎิเสธการจอง" class="text-danger">ปฎิเสธการจอง</option>
                             </select>
                         </td>
                     </tr>
@@ -61,7 +63,7 @@
             @endif
         @endforeach
       </table> 
-      {{$book_details->links()}} 
+      {{$book_details->withQueryString()->links('pagination::bootstrap-4')}} 
 
       
 </div>

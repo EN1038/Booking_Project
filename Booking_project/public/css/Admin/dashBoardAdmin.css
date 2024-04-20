@@ -5,9 +5,13 @@
     --root-icons: #1b8f59;
     --root-txhover: #1b8f59;
     --root-title: #a5a5a5;
+    --root-bgtbhover: #14ac65;
+    --root-txtbhover: #ffffff;
+    --root-borderbottom: #068348;
 }
 
 .card {
+    color: #212529;
     transition: all 0.5s;
 }
 
@@ -32,4 +36,120 @@
 
 .value-card {
     font-size: 23px;
+}
+
+/* เพิ่มสีให้กับลิงก์ทั้งหมดใน pagination */
+.pagination .page-link {
+    color: #000;
+    /* สีข้อความ */
+    background-color: #ffffff;
+    /* สีพื้นหลัง */
+    border-color: var(--root-txhover);
+    /* สีเส้นขอบ */
+    margin-top: 10px;
+}
+
+;
+
+/* เพิ่มสีให้กับลิงก์ที่ถูกเลือกใน pagination */
+.pagination .page-item.active .page-link {
+    color: #ffffff;
+    /* สีข้อความ */
+    background-color: var(--root-txhover);
+    /* สีพื้นหลัง */
+    border-color: var(--root-txhover);
+    /* สีเส้นขอบ */
+}
+
+/* เพิ่มสีให้กับลิงก์ที่เมื่อนำเม้าส์ไปชี้ที่ลิงก์ */
+.pagination .page-item .page-link:hover {
+    color: #ffffff;
+    /* สีข้อความ */
+    background-color: var(--root-icons);
+    /* สีพื้นหลัง */
+    border-color: var(--root-icons);
+    /* สีเส้นขอบ */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+table {
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+}
+
+table tr {
+    border-bottom: 1px solid var(--root-borderbottom);
+}
+
+table th,
+table td {
+    padding: 8px;
+    text-align: center;
+}
+
+table th {
+    font-size: 18px;
+    background-color: rgb(255, 255, 255);
+    color: black;
+}
+
+table tr:hover {
+    background-color: var(--root-bgtbhover);
+    color: var(--root-txtbhover);
+    border-bottom: 1px solid var(--root-borderbottom);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    /* เพิ่มเงาด้านล่าง */
+}
+
+
+.input-custume {
+    border-color: var(--root-borderbottom);
+    border-radius: 20px;
+    text-align: center;
+}
+
+@media screen and (max-width: 900px) {
+
+    table thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+    }
+
+    table tr {
+        border-bottom: 3px solid var(--root-borderbottom);
+        display: block;
+        margin-bottom: .625em;
+    }
+
+
+    table td {
+        border-bottom: 1px solid var(--root-borderbottom);
+        display: block;
+        font-size: .8em;
+        text-align: right;
+    }
+
+
+    table td::before {
+        /*
+      * aria-label has no advantage, it won't be read inside a table
+      content: attr(aria-label);
+      */
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    table td:last-child {
+        border-bottom: 0;
+    }
 }

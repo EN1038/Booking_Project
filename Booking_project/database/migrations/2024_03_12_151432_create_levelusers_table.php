@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('passWordNumber_user');
             $table->string('email');
             $table->string('level_user');
+            $table->integer('goodness_user');//ใช้เพื่อนับครั้งที่ user มาสายหรือไม่มาพอครบ 3 จะเปลี่ยนสถานะ user ให้ไม่สามารถจองออนไลน์ได้ต้อง walkin
+            $table->string('status_user');//ใช้เพื่อบอกสถานะว่าuserคนนี้สามารถจองออนไลน์ได้หรือไม่
+            $table->dateTime('cool_down_user')->nullable()->default(null);//ใช้ไว้เก็บเวลาที่ user โดนแบนจากการทำผิด 3 ครั้งพอถึงเวลาที่กำหนดไว้จะเปลี่ยนสถานะ user ใหม่
             $table->string('password');
             $table->timestamps();
         });

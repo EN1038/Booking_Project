@@ -46,6 +46,7 @@
             
         </div>
     </nav> --}}
+    
     {{-- SideBar --}}
     <div id="mySidenav" class="sidenav">
         <div class="d-flex flex-column text-white p-3 costome-hight">
@@ -88,26 +89,29 @@
               </div>
             </div>
           </a>
-          <a href="{{route('create_room')}}" class="text-decoration-none">
-            <div class="hover-btn d-flex flex-row mb-1 rounded-3  align-items-center">
-              <div class="col-2 fs-4 text-center">
-                <i class="fa-solid fa-folder-plus"></i>
-              </div>
-              <div class="col d-flex align-items-center justify-content-center fs-7">
-                <span class="divToHide ">สร้างห้อง</span>
-              </div>
-            </div>
-          </a>
-          <a href="{{route('create_typeroom')}}" class="text-decoration-none">
-            <div class="hover-btn d-flex flex-row mb-1 rounded-3  align-items-center">
-              <div class="col-2 fs-4 text-center">
-                <i class="fa-solid fa-circle-plus"></i>
-              </div>
-              <div class="col d-flex align-items-center justify-content-center fs-7">
-                <span class="divToHide ">สร้างประเภทห้อง</span>
-              </div>
-            </div>
-          </a>
+          @if(Auth::user()->level_user === 'superAdmin')
+              <a href="{{ route('create_room') }}" class="text-decoration-none">
+                  <div class="hover-btn d-flex flex-row mb-1 rounded-3 align-items-center">
+                      <div class="col-2 fs-4 text-center">
+                          <i class="fa-solid fa-folder-plus"></i>
+                      </div>
+                      <div class="col d-flex align-items-center justify-content-center fs-7">
+                          <span class="divToHide">สร้างห้อง</span>
+                      </div>
+                  </div>
+              </a>
+              <a href="{{ route('create_typeroom') }}" class="text-decoration-none">
+                  <div class="hover-btn d-flex flex-row mb-1 rounded-3 align-items-center">
+                      <div class="col-2 fs-4 text-center">
+                          <i class="fa-solid fa-circle-plus"></i>
+                      </div>
+                      <div class="col d-flex align-items-center justify-content-center fs-7">
+                          <span class="divToHide">สร้างประเภทห้อง</span>
+                      </div>
+                  </div>
+              </a>
+          @endif
+
           <a href="{{route('status_room')}}" class="text-decoration-none">
             <div class="hover-btn d-flex flex-row mb-1 rounded-3  align-items-center">
               <div class="col-2 fs-4 text-center">
@@ -178,7 +182,7 @@
         </div>
       </div>
       {{-- End Side Bar --}}
-      <div class="box " id="main">
+      <div class="box wrapper" id="main">
         {{-- Start_sidenav --}}
         <div class="row border-bottom ">
             <div class="d-none d-md-flex col-3 p-0 d-flex align-items-center">
@@ -204,13 +208,13 @@
 
                             <a href="{{route('dashboard_admin')}}"
                             class=' mx-2'><i class="bi bi-plus-circle-fill "></i> หน้าแรก</a>
-
+                            @if(Auth::user()->level_user === 'superAdmin')
                             <a href="{{route('create_room')}}"
                             class=' mx-2'><i class="bi bi-clipboard2-check-fill"></i> สร้างห้อง</a>
 
                             <a href="{{route('create_typeroom')}}"
                             class=' mx-2'><i class="bi bi-pie-chart-fill"></i> สร้างประเภทห้อง</a>
-
+                            @endif
                             <a href="{{route('status_room')}}"
                             class=' mx-2'><i class="bi bi-pie-chart-fill"></i> อนุมัติการจอง</a>
 
@@ -243,13 +247,13 @@
 
                             <a href="{{route('create_room')}}"
                             class=' mx-2'><i class="bi bi-clipboard2-check-fill"></i> สร้างห้อง</a>
-
+                            @if(Auth::user()->level_user === 'superAdmin')
                             <a href="{{route('create_typeroom')}}"
                             class=' mx-2'><i class="bi bi-pie-chart-fill"></i> สร้างประเภทห้อง</a>
 
                             <a href="{{route('status_room')}}"
                             class=' mx-2'><i class="bi bi-pie-chart-fill"></i> อนุมัติการจอง</a>
-
+                            @endif
                             <a href="{{route('history_room')}}"
                             class=' mx-2'><i class="bi bi-pie-chart-fill"></i> ประวัติ</a>
 
@@ -275,7 +279,7 @@
         </div>
         {{-- End_body --}}
         {{-- Footer --}}
-        <footer class="footer fixed-bottom text-light">
+        <footer class="footer text-light">
           <div class="container py-3">
             <div class="text-muted text-center">NSRU Nakhon Sawan Rajabhat University <br>
               NSRU All Rights Reserved</div>
@@ -285,7 +289,7 @@
     </div>
     {{-- End_main --}}
 
-
+    
     <script src="{{asset('js/Admin/layout_admin.js')}}"></script>
 </body>
 </html>

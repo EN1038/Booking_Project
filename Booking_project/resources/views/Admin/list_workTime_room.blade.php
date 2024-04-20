@@ -34,7 +34,7 @@
     </div>
   </div>
   @endforeach
-  {{$workTimes->links()}} 
+  {{$workTimes->withQueryString()->links('pagination::bootstrap-4')}} 
 </div>
 
 

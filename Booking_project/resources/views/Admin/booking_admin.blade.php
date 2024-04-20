@@ -20,47 +20,51 @@
 <link rel="stylesheet" href="{{asset('css/Admin/ิbooking_admin.css')}}">
 <div class="container text-center">
 <div class="row">
-    <h1 class="text-center fw-bold text-greenlight mb-3">จองห้อง</h1>
+    <h1 class="text-center fw-bold text-greenlight mb-3"><i class="fa-solid fa-bookmark  fs-2"></i> จองห้อง</h1>
     <div class="d-flex flex-row justify-content-center my-4">
       <i class="fa-solid fa-bookmark text-info fs-2"></i><p class="mx-4 fs-5">สีฟ้า : ห้องเปิดการจองออนไลน์</p>
       <i class="fa-solid fa-bookmark text-warning fs-2"></i><p class="mx-4 fs-5">สีส้ม : ห้องต้องว็อกอินเข้าไปจอง</p>
+      <i class="fa-solid fa-bookmark text-secondary fs-2"></i><p class="mx-4 fs-5">สีเทา : ห้องหมดเวลาการจอง</p>
     </div>
     
-  @foreach ($room as $items)
-  @if ($items->status_room == 'On')
-  <div class="col-md-6 my-2">
-    <div class="card rounded border-success">
-        <div class="row g-0">
-            <div class="col-lg-4">
-                <div class="image-container" style="height: 220px;">
-                    <img src="https://d27jswm5an3efw.cloudfront.net/app/uploads/2019/07/insert-image-html.jpg" class="full-size-image rounded-start" alt="...">
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div class="card-body" style="height: 220px;">
-                    <p class="card-title fs-3 fw-bold">{{$items->name_room}}</p>
-                    <button type="button" class="btn btn-success w-100 rounded-5 btn-custome" data-bs-toggle="modal" data-bs-target="#listRoom{{$items->id}}">
-                        <i class="fa-solid fa-bookmark"></i> ทำการจอง
-                    </button>
-                    <div class="row my-4 mx-1 d-flex flex-row justify-content-around">
-                        
+    @foreach ($room as $items)
+    @if ($items->status_room == 'On')
+    <div class="col-md-6 my-2" >
+      <div class="card rounded border-success">
+          <div class="row g-0">
+              <div class="col-lg-4">
+                  <div class="image-container" style="height: 220px;">
+                    <img src="{{ Storage::url('img/' . $items->image_room) }}" class="full-size-image rounded-start" alt="">
+                  </div>
+              </div>
+              <div class="col-lg-8">
+                  <div class="card-body" style="height: 220px;">
+                      <p class="card-title fs-3 fw-bold">{{$items->name_room}}</p>
+                      <button type="button" class="btn btn-success w-100 rounded-5 btn-custome" data-bs-toggle="modal" data-bs-target="#listRoom{{$items->id}}">
+                          <i class="fa-solid fa-bookmark"></i> ทำการจอง
+                      </button>
+                      <p class="p-0 m-0 mt-1 text-secondary"><i class="fa-solid fa-circle-info"></i> ยกเลิกการจองก่อน {{ date('H', strtotime($items->typeRoom->time_cancel)) !== '00' ? date('H', strtotime($items->typeRoom->time_cancel)) . ':' : '' }}{{ substr(date('i', strtotime($items->typeRoom->time_cancel)), -2) }} นาที</p>
+                      <div class="row mt-1 mx-1 d-flex flex-row justify-content-evenly">
                         @foreach ($work_times as $time)
-                            @if ($items->id == $time->id_room)
-                                <button class="col-3 btn text-light rounded-4 m-1 mb-2  btn-custome {{ $time->status_wt === 'จองห้อง' ? 'btn-info' : 'btn-warning' }}" style="cursor: default; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
-                                  {{ date('H', strtotime($time->name_start_workTime)) !== '00' ? date('H', strtotime($time->name_start_workTime)) . ':' : '' }}{{ substr(date('i', strtotime($time->name_start_workTime)), -2) }}
-
-                                  </>
-                            @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
+                        @if ($items->id == $time->id_room)
+                        <button class="col-3 btn text-light rounded-4 m-1 mb-2 btn-custome
+                        {{ $time->status_wt === 'จองห้อง' ? 'btn-info' : ($time->status_wt === 'หมดเวลาจอง' ? 'btn-secondary' : 'btn-warning') }}" 
+                        style="cursor: default; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                    {{ date('H', strtotime($time->name_start_workTime)) !== '00' ? date('H', strtotime($time->name_start_workTime)) . ':' : '' }}
+                    {{ substr(date('i', strtotime($time->name_start_workTime)), -2) }}
+                </button>                    
+                        @endif
+                    @endforeach
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
     </div>
-  </div>
-  @endif
-  
-  @endforeach
+    
+    @endif
+    
+    @endforeach
 </div>
 </div>
 
@@ -87,7 +91,7 @@
       <select class="form-select text-center" aria-label="Default select example" name="select_time">
         <option selected hidden disabled>เลือกเวลา</option>
         @foreach ($work_times as $time)
-        @if ($items->id == $time->id_room && $time->status_wt == 'จองห้อง')
+        @if ($items->id == $time->id_room && (($time->status_wt == 'จองห้อง')||($time->status_wt == 'ว็อกอิน')))
           <option value="{{$time->id}}">{{ date('H', strtotime($time->name_start_workTime)) !== '00' ? date('H', strtotime($time->name_start_workTime)) . ' : ' : '' }}
             {{ substr(date('i', strtotime($time->name_start_workTime)), -2) }} ถึง {{ date('H', strtotime($time->name_end_workTime)) !== '00' ? date('H', strtotime($time->name_end_workTime)) . ' : ' : '' }}
             {{ substr(date('i', strtotime($time->name_end_workTime)), -2) }}

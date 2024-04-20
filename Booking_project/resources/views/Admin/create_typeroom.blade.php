@@ -35,6 +35,7 @@
           <h5 class="card-title">ชื่อประเภท <span>{{$items->name_type}}</span></h5>
           <p class="card-text">ระยะเวลาการใช้งาน <span>{{ date('H', strtotime($items->time_duration)) !== '00' ? date('H', strtotime($items->time_duration)) . ' ชั่วโมง ' : '' }}{{ substr(date('i', strtotime($items->time_duration)), -2) }} นาที</span></p>               
           <p class="card-text">เวลาก่อนยกเลิกการจอง <span>{{ date('H', strtotime($items->time_cancel)) !== '00' ? date('H', strtotime($items->time_cancel)) . ' ชั่วโมง ' : '' }}{{ substr(date('i', strtotime($items->time_cancel)), -2) }} นาที</span></p>               
+          <p class="card-text">เวลาเข้าสาย <span>{{ date('H', strtotime($items->time_late)) !== '00' ? date('H', strtotime($items->time_late)) . ' ชั่วโมง ' : '' }}{{ substr(date('i', strtotime($items->time_late)), -2) }} นาที</span></p>               
           <p class="card-text">จำนวนคนขั้นต่ำ <span>{{$items->number_user}} คน</span></p> 
           <div class="col-12 d-flex flex-row justify-content-end align-items-center">
             <a href="{{route('delete_type_rooms',$items->id)}}" class="btn btn-danger rounded-5 mx-1" onclick="return confirmDelete(event)"><i class="fa-solid fa-trash-arrow-up"></i> ลบ</a>
@@ -47,7 +48,7 @@
       </div>
     </div>
     @endforeach
-  {{$type_rooms->links()}} 
+  {{$type_rooms->withQueryString()->links('pagination::bootstrap-4')}} 
 </div>
 @else
 <h1 class="text-center">ไม่มี้จา</h1>
@@ -99,6 +100,15 @@
           </div> 
           <label for="ErrorTimeCancel" class="form-label mx-3 text-danger fw-bold" id="ErrorTimeCancel"></label>
           <input type="time" class="form-control" id="trueTimeCancel" name="trueTimeCancel" hidden>
+        </div>
+        <div class="mb-3">
+          <label for="timeBeforCancel" class="form-label">เวลาในการมาสาย</label>
+          <div class="d-flex flex-row justify-contents-center align-items-center">
+            <input type="number" class="form-control text-center" id="timeBeforLate" name="timeBeforLate" placeholder="กรอกเวลาในการยกเลิกการจอง"> 
+            <label for="minuteDuration" class="form-label mx-3">นาที</label>
+          </div> 
+          <label for="ErrorTimeCancel" class="form-label mx-3 text-danger fw-bold" id="ErrorTimeLate"></label>
+          <input type="time" class="form-control" id="trueTimeLate" name="trueTimeLate" hidden>
         </div>
     </div>
       <div class="modal-footer">
@@ -156,9 +166,18 @@
           <label for="ErrorTimeCancel" class="form-label mx-3 text-danger fw-bold" id="ErrorEditTimeCancel{{$items->id}}"></label>
           <input type="time" class="form-control" id="trueEditTimeCancel{{$items->id}}" name="trueEditTimeCancel" hidden>
         </div>
+        <div class="mb-3">
+          <label for="timeBeforCancel" class="form-label">เวลาในการเข้าสาย</label>
+          <div class="d-flex flex-row justify-contents-center align-items-center">
+            <input type="number" class="form-control text-center" id="timeEditBeforLate{{$items->id}}" name="timeEditBeforLate" data-id="{{$items->id}}" placeholder="กรอกเวลาในการยกเลิกการจอง" onchange="convertEditMinutesToTimeLate()"> 
+            <label for="minuteDuration" class="form-label mx-3">นาที</label>
+          </div> 
+          <label for="ErrorTimeCancel" class="form-label mx-3 text-danger fw-bold" id="ErrorEditTimeLate{{$items->id}}"></label>
+          <input type="time" class="form-control" id="trueEditTimeLate{{$items->id}}" name="trueEditTimeLate" hidden>
+        </div>
     </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary rounded-5" disabled id="editButtonCreate{{$items->id}}"><i class="fa-solid fa-plus"></i> สร้างประเภทห้อง</button>
+        <button type="submit" class="btn btn-primary rounded-5" disabled id="editButtonCreate{{$items->id}}"><i class="fa-solid fa-plus"></i> แก้ไขประเภทห้อง</button>
       </div> 
       </form>
     </div>

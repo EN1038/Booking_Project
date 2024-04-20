@@ -43,7 +43,7 @@
       </div>
     </div>
     @endforeach
-    {{$room->links()}} 
+    {{$room->withQueryString()->links('pagination::bootstrap-4')}} 
   </div>
 
   @else
@@ -72,7 +72,8 @@
                 @csrf
                 <div class="mb-3">
                   <label for="formFile" class="form-label">เลือกรูปที่ใช้แสดง</label>
-                  <input class="form-control" type="file" id="formFile" name="image_room">
+                  <input class="form-control" type="file" id="formFile" name="image_room" onchange="validationImg()">
+                  <label for="errorImgRoom" class="form-label mx-3 text-danger fw-bold" id="errorImgRoom"></label>
                 </div>
                 <div class="mb-3">
                     <label for="nameRooms" class="form-label">กรอกชื่อห้อง</label>
@@ -120,8 +121,13 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form action="{{route('update_room',$items->id)}}" method="POST">
+            <form action="{{route('update_room',$items->id)}}" method="POST" enctype="multipart/form-data"  >
               @csrf
+              <div class="mb-3">
+                <label for="formFile" class="form-label">เลือกรูปที่ใช้แสดง</label>
+                <input class="form-control" type="file" id="formFile{{$items->id}}" data-id="{{$items->id}}" name="image_editroom" onchange="validationEditImg()">
+                <label for="errorImgRoom" class="form-label mx-3 text-danger fw-bold" id="errorImgRoom{{$items->id}}"></label>
+              </div>
               <div class="mb-3">
                   <label for="nameRooms" class="form-label">กรอกชื่อห้อง</label>
                   <input type="text" class="form-control text-center" id="updateNameRoom{{$items->id}}" data-id="{{$items->id}}" name="updateNameRoom" placeholder="{{$items->name_room}}" oninput="validationNameEdit(event)">

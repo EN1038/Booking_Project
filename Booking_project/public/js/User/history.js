@@ -5,7 +5,7 @@ function searchTable() {
     table = document.getElementById("dataTable");
     tr = table.getElementsByTagName("tr");
     for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName("td")[4]; // ห้ามลืม ->แก้ไขตำแหน่งที่ต้องการค้นหา
+        td = tr[i].getElementsByTagName("td")[2]; // ห้ามลืม ->แก้ไขตำแหน่งที่ต้องการค้นหา
         if (td) {
             txtValue = td.textContent || td.innerText;
             if (txtValue.toUpperCase().indexOf(filter) > -1) {
@@ -37,5 +37,6 @@ function checkStatus() {
         }
     });
 }
+
 
 checkStatus()
