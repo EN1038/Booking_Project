@@ -97,7 +97,8 @@ class AdminController extends Controller
         return view('Admin.dashboard', ['userCountsCollection' => $userCountsCollection], compact('message', 'count_status_booking_wait', 'count_status_booking_success', 'count_status_booking_insuccess', 'count_status_booking', 'paginator', 'typeRoom'));
     }
 
-    function count_status_booking_wait(){
+    function count_status_booking_wait()
+    {
         $today = Carbon::now()->setTimezone('Asia/Bangkok');
         $count_status_booking_wait = booking::whereDate('created_at', $today)->where('status_book', '=', 'รอยืนยันการจอง')->count();
         return response()->json($count_status_booking_wait);
@@ -171,6 +172,8 @@ class AdminController extends Controller
             }
         }
 
+
+
         $roomCountsCollection = collect(array_values($roomCounts));
         return response()->json($roomCountsCollection);
     }
@@ -214,6 +217,21 @@ class AdminController extends Controller
         return response()->json($roomCountsCollection);
     }
 
+    function getBookingDataTotal(Request $request)
+    {
+        $selectedMonth = $request->input('month') ?? now()->format('Y-m'); // เปลี่ยนเป็นรับค่าเดือน
+        [$year, $month] = explode('-', $selectedMonth);
+
+        $roomBookings = Booking::where('status_book', 'ยืนยันการจอง')
+            ->whereYear('created_at', $year) // เฉพาะปีปัจจุบัน
+            ->whereMonth('created_at', $month) // เฉพาะเดือนที่เลือก
+            ->pluck('id');
+
+        $book_detail = book_details::whereIn('booking_id', $roomBookings)->pluck('user_id')->count();
+
+
+        return response()->json($book_detail);
+    }
 
     function view_listroom($id)
     {

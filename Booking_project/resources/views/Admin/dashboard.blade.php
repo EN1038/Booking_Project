@@ -144,32 +144,23 @@ setInterval(fetchData, 10000); // 10000 มิลลิวินาที = 10 �
     </div>
   </div>
   <div class="row mt-1">
-    <div class="col-lg-8 py-1 pe-3">
-      <div class="border border-success rounded-4 p-3">
-        <table class="dataTable">
-          <p class="text-secondary text-center fw-bold fs-5">คนที่เข้าใช้การจองห้องมากที่สุด</p>
-          <thead>
-            <tr>
-              <th scope="col">รหัสประจำตัว</th>
-              <th scope="col">ชื่อ</th>
-              <th scope="col">จำนวนครั้ง</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach ($paginator as $item)
-        <tr>
-            <td>{{$item['pass_Wordnumber']}}</td>
-            <td>{{$item['name_user']}}</td>
-            <td>{{$item['count']}}</td>
-        </tr>
-        @endforeach
-          </tbody>
-        </table>
-        <div class="pagination justify-content-end">
-          {{ $paginator->withQueryString()->links('pagination::bootstrap-4') }}
-      </div>
-
-      </div>
+    <div class="col-lg-8 py-1 pe-3 ">
+      <div class="pt-4">
+      <input type="text" id="datePickerTotal" placeholder="เลือกวันที่ที่ต้องการค้นหา" class="w-100 rounded-5 border border-success text-center p-1 mb-1">
+            <div class="card border-success rounded-4 w-100">
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col">
+                    <i class="fa-solid fa-users icon-card"></i>
+                  </div>
+                  <div class="col">
+                      <p class="m-0 title-card">จำนวนทั้งหมดต่อเดือน</p>
+                      <p class="m-0 value-card " id="Total"> คน</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
     </div>
     <div class="col-lg-4 py-1 ps-3 d-flex align-items-center">
       <div class="border border-success rounded-4 p-3 ">
@@ -223,7 +214,8 @@ function updateChart(selectedDate = null) {
         .then(data => {
             // console.log(data);
             const backgroundColor = Array.from({ length: data.length }, () => getRandomColor());
-
+            const total = data.reduce((acc, item) => acc + item.count, 0);
+          data.push({ name_room: 'รวม', count: total });
             const labels = data.map(item => item.name_room);
             const dataTotal = data.map(item => item.count);
 
@@ -251,7 +243,7 @@ function updateChart(selectedDate = null) {
                   plugins: {
                         title: {
                             display: true,
-                            text: 'ข้อมูลการจองห้องประชุมตามวัน', // ข้อความที่จะแสดงเป็น title
+                            text: 'ข้อมูลการจองห้องตามวัน', // ข้อความที่จะแสดงเป็น title
                             font: {
                                 size: 18 // ขนาดตัวอักษรของ title
                             }
@@ -318,7 +310,8 @@ updateChart();
         .then(data => {
             // console.log(data);
             const backgroundColor = Array.from({ length: data.length }, () => getRandomColor());
-
+            const total = data.reduce((acc, item) => acc + item.count, 0);
+        data.push({ name_room: 'รวม', count: total });
             const labels = data.map(item => item.name_room);
             const dataTotal = data.map(item => item.count);
 
@@ -346,7 +339,7 @@ updateChart();
                   plugins: {
                         title: {
                             display: true,
-                            text: 'ข้อมูลการจองห้องประชุมตามเดือน', // ข้อความที่จะแสดงเป็น title
+                            text: 'ข้อมูลการจองห้องตามเดือน', // ข้อความที่จะแสดงเป็น title
                             font: {
                                 size: 18 // ขนาดตัวอักษรของ title
                             }
@@ -375,6 +368,41 @@ function getRandomColor() {
     return `rgba(${r}, ${g}, ${b}, 0.2)`;
 }
  
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      flatpickr("#datePickerTotal", {
+    dateFormat: "Y-m", // รูปแบบวันที่เป็นปี-เดือน (YYYY-MM)
+    onChange: function(selectedDates, dateStr, instance) {
+        // เมื่อเลือกวันที่เปลี่ยน ให้ดึงเดือนจากวันที่ที่เลือกและส่งไปยังฟังก์ชัน updateChart
+        const selectedMonths = dateStr.substring(0, 7); // ตัดเฉพาะส่วนของปี-เดือน (YYYY-MM)
+        // console.log(selectedMonth)
+        updatedTotal(selectedMonths);
+    }
+  });
+  updatedTotal();
+  function updatedTotal(selectedMonths = null){
+    // console.log(selectedMonths)
+    const url = selectedMonths ? `/api/bookingDataTotal?month=${selectedMonths}` : '/api/bookingDataTotal';
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // ทำสิ่งที่คุณต้องการกับข้อมูลที่ได้รับ
+        // console.log(data);
+        var Total = document.getElementById('Total');
+        Total.textContent = data + ' คน';
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  }
+  })
 </script>
 
    

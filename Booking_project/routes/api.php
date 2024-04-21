@@ -23,4 +23,5 @@ Route::get('Pie', [AdminController::class, 'api_pie'])->name('api_pie');
 Route::get('typeRoom', [AdminController::class, 'api_typeRoom'])->name('api_typeRoom');
 Route::get('bookingData', [AdminController::class, 'getBookingData']);
 Route::get('bookingDatapie', [AdminController::class, 'getBookingDataPie']);
+Route::get('bookingDataTotal', [AdminController::class, 'getBookingDataTotal']);
 Route::get('count_status_booking_wait', [AdminController::class, 'count_status_booking_wait']);
