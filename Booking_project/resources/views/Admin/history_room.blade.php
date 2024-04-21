@@ -21,7 +21,8 @@
 <div class="row">
   <h1 class="text-center fw-bold text-greenlight mb-3">ประวัติการจอง</h1>
 <div class="d-flex justify-content-end">
-  <input type="date" id="searchInput" onchange="searchTable()" class="form-control input-custume m-2 w-25" placeholder="ค้นหา...">
+  <input type="date" id="searchInput" onchange="searchTable(4)" class="form-control input-custume m-2 w-25" placeholder="ค้นหา...">
+  <input type="text" id="searchInput2" onkeyup="searchTable(2)" class="form-control input-custume m-2 w-25" placeholder="ค้นหา...">
 </div>
 
 <table id="dataTable">

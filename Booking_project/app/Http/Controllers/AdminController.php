@@ -500,6 +500,7 @@ class AdminController extends Controller
             $users = Leveluser::whereIn('id', $user_ids)->pluck('name_user')->toArray();
             $item->user_names = implode(', ', $users);
         }
+        // dd($book_details);
         return view('Admin.status_room', compact('book_details', 'book'));
     }
 
