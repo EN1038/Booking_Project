@@ -59,13 +59,15 @@
           </div>
           <div class="d-flex flex-row align-items-center mb-3">
             <div class="col-4">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/694px-Unknown_person.jpg" alt="" class="user-img-scale rounded-3" id="profiles">
+              <img src="{{Auth::user()->image}}" alt="" class="user-img-scale rounded-3" id="profiles">
             </div>
             <div class="col-8 " >
               <div class="d-flex flex-column divToHide" >
                 @if(Auth::check())
+                <div class="col text-greenlight"><span >{{Auth::user()->passWordNumber_user}}</span></div>
                 <div class="col"><span >{{Auth::user()->name_user}}</span></div>
-                <div class="col"><span >{{Auth::user()->passWordNumber_user}}</span></div>
+                <div class="col"><span >{{Auth::user()->last_name}}</span></div>
+                
   
                 @else
                 <div class="col"><span >USERNAME</span></div>
@@ -129,7 +131,7 @@
           </div>
           <div class="text-decoration-none">
   
-            <a href="{{route('logout')}}" class="hover-btn-logout d-flex flex-row rounded-3  align-items-center">
+            <a href="{{route('user.signoutCallback')}}" class="hover-btn-logout d-flex flex-row rounded-3  align-items-center">
                 <div class="col-2 fs-4 text-center">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </div>
@@ -138,7 +140,7 @@
                 </div>
               </a>
             @else
-            <a href="{{route('login')}}" class="hover-btn-logout d-flex flex-row rounded-3  align-items-center my-3">
+            <a href="{{route('user.signin')}}" class="hover-btn-logout d-flex flex-row rounded-3  align-items-center my-3">
                 <div class="col-2 fs-4 text-center">
                   <i class="fa-solid fa-right-to-bracket"></i>
                 </div>
@@ -146,14 +148,14 @@
                   <span class="divToHide ">เข้าสู่ระบบ</span>
                 </div>
             </a>
-            <a href="{{route('register')}}" class="hover-btn-logout d-flex flex-row rounded-3  align-items-center">
+            {{-- <a href="{{route('register')}}" class="hover-btn-logout d-flex flex-row rounded-3  align-items-center">
                 <div class="col-2 fs-4 text-center">
                   <i class="fa-solid fa-circle-up"></i>
                 </div>
                 <div class="col d-flex align-items-center justify-content-center fs-7">
                   <span class="divToHide ">สมัครการเข้าใช้งาน</span>
                 </div>
-              </a>
+              </a> --}}
             @endif
           </div>
         </div>
@@ -192,15 +194,15 @@
                             <a href="{{route('history', Auth::user()->id)}}"
                             class=' mx-2'><i class="bi bi-pie-chart-fill"></i> ประวัติการจอง</a>
 
-                            <a href="{{route('logout')}}"
+                            <a href="{{route('user.signoutCallback')}}"
                             class=" mx-2 "><i class="bi bi-box-arrow-left"></i> ออกจากระบบ</a>
                             @else
 
-                            <a href="{{route('login')}}"
+                            <a href="{{route('user.signin')}}"
                     class=" mx-3 "><i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ</a>
 
-                            <a href="{{route('register')}}"
-                            class=" mx-2 "><i class="fa-solid fa-circle-up"></i> สมัครสมาชิก</a>
+                            {{-- <a href="{{route('register')}}"
+                            class=" mx-2 "><i class="fa-solid fa-circle-up"></i> สมัครสมาชิก</a> --}}
                             @endif
                     </div>
 
@@ -220,15 +222,15 @@
                             <a href="{{route('history', Auth::user()->id)}}"
                             class=' mx-2'><i class="bi bi-pie-chart-fill"></i> ประวัติการจอง</a>
 
-                            <a href="{{route('logout')}}"
+                            <a href="{{route('user.signoutCallback')}}"
                             class=" mx-2 "><i class="bi bi-box-arrow-left"></i> ออกจากระบบ</a>
                             @else
 
-                            <a href="{{route('login')}}"
+                            <a href="{{route('user.signin')}}"
                     class=" mx-3 "><i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ</a>
 
-                            <a href="{{route('register')}}"
-                            class=" mx-2 "><i class="fa-solid fa-circle-up"></i> สมัครสมาชิก</a>
+                            {{-- <a href="{{route('register')}}"
+                            class=" mx-2 "><i class="fa-solid fa-circle-up"></i> สมัครสมาชิก</a> --}}
                             @endif
                   </div>
                 </div>
@@ -242,7 +244,7 @@
         </div>
         {{-- End_body --}}
         {{-- Footer --}}
-        <footer class="footer fixed-bottom text-light">
+        <footer class="footer text-light">
           <div class="container py-3">
             <div class="text-muted text-center">NSRU Nakhon Sawan Rajabhat University <br>
               NSRU All Rights Reserved</div>

@@ -31,7 +31,7 @@ class CheckRole
         if (auth::check() && (auth::user()->level_user == 'admin'||auth::user()->level_user == 'superAdmin')) {
             return $next($request);
         } else {
-            return redirect('Login');
+            return redirect('/');
         }
     }
 }

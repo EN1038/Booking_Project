@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class Leveluser extends Authenticatable
 {
     use HasFactory;
-    protected $fillable = ['goodness_user', 'status_user'];
+    protected $fillable = ['goodness_user', 'status_user', 'level_user'];
 
     public function book_detail()
     {

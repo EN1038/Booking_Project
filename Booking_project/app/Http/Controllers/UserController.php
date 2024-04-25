@@ -18,6 +18,7 @@ class UserController extends Controller
     function dashboardUser()
     {
         $room = listRoom::with('typeRoom')->get();
+        $typeRoom = typeRoom::all();
         $book_details = book_details::with('booking')->get();
 
         // ดึงวันที่ปัจจุบัน
@@ -52,12 +53,14 @@ class UserController extends Controller
             }
         }
 
-        if (Auth::user()->status_user === 'จองไม่ได้') {
+        if (Auth::user()->status_user == 'จองไม่ได้') {
             return redirect('ErrorUser/' . Auth::user()->id);
+        } else if (Auth::user()->status_user == null) {
+            return redirect('/');
         }
 
 
-        return view('User.dashboard', compact('room', 'work_times', 'book_details'));
+        return view('User.dashboard', compact('room', 'work_times', 'book_details', 'typeRoom'));
     }
 
     function booking_rooms(Request $request)
@@ -71,6 +74,9 @@ class UserController extends Controller
 
         foreach ($request->pass_number as $pass_user) {
             $userValidation = Leveluser::where('passWordNumber_user', $pass_user)->first();
+            if ($userValidation->status_user == 'จองไม่ได้') {
+                return back()->with('error', 'มีชื่อผู้ใช้ที่ไม่มีสิทในการเข้าจอง');
+            }
             if ($userValidation) {
                 $findBookdetails = Book_Details::where('user_id', $userValidation->id)
                     ->whereDate('book_details.created_at', $today)
@@ -116,7 +122,7 @@ class UserController extends Controller
     function update_status_user($id, $value)
     {
         if ($id != auth::user()->id) {
-            return view('Login.login');
+            return redirect('/');
         } else {
             booking::find($id)->update([
                 'status_book' => $value
@@ -132,7 +138,7 @@ class UserController extends Controller
     function statusRoom($id)
     {
         if ($id != auth::user()->id) {
-            return view('Login.login');
+            return redirect('/');
         } else {
             $currentDate = Carbon::now()->setTimezone('Asia/Bangkok');
             $book_details = book_details::with('booking')->where('user_id', $id)->whereDate('created_at', $currentDate)->get();
@@ -143,7 +149,7 @@ class UserController extends Controller
     function history($id)
     {
         if ($id != auth::user()->id) {
-            return view('Login.login');
+            return redirect('/');
         } else {
             $book_details = book_details::with('booking')->where('user_id', $id)->paginate(20);
             return view('User.history_user', compact('book_details'));
@@ -153,7 +159,7 @@ class UserController extends Controller
     function error_user($id)
     {
         if ($id != auth::user()->id) {
-            return view('Login.login');
+            return redirect('/');
         } else {
             $error_user = Leveluser::where('id', $id)->first();
             return view('User.error_user', compact('error_user'));

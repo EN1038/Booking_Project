@@ -11,6 +11,8 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
+        "bootstrap-datepicker": "^1.10.0",
+        "flatpickr": "^4.6.13",
         "sweetalert2": "^11.10.6"
     }
 }

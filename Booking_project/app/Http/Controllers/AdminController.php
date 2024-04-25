@@ -22,10 +22,14 @@ class AdminController extends Controller
     function dashBoard_admin()
     {
         $today = Carbon::now()->setTimezone('Asia/Bangkok');
-        $count_status_booking_wait = booking::whereDate('created_at', $today)->where('status_book', '=', 'รอยืนยันการจอง')->count();
-        $count_status_booking_success = booking::whereDate('created_at', $today)->where('status_book', '=', 'ยืนยันการจอง')->count();
-        $count_status_booking_insuccess = booking::whereDate('created_at', $today)->where('status_book', '=', 'ปฎิเสธการจอง')->count();
-        $count_status_booking = booking::whereDate('created_at', $today)->count();
+        $count_status_booking_wait = booking::whereDate('created_at', $today)->where('status_book', '=', 'รอยืนยันการจอง')->pluck('id');
+        $count_status_booking_wait_details = book_details::whereIn('booking_id', $count_status_booking_wait)->count();
+        $count_status_booking_success = booking::whereDate('created_at', $today)->where('status_book', '=', 'ยืนยันการจอง')->pluck('id');
+        $count_status_booking_success_details = book_details::whereIn('booking_id', $count_status_booking_success)->count();
+        $count_status_booking_insuccess = booking::whereDate('created_at', $today)->where('status_book', '=', 'ปฎิเสธการจอง')->pluck('id');
+        $count_status_booking_insuccess_details = book_details::whereIn('booking_id', $count_status_booking_insuccess)->count();
+        $count_status_booking = booking::whereDate('created_at', $today)->pluck('id');
+        $count_status_booking_details = book_details::whereIn('booking_id', $count_status_booking)->count();
 
         $booking_ids = Booking::where('status_book', 'ยืนยันการจอง')->pluck('id');
         $all_booking_details = [];
@@ -94,7 +98,7 @@ class AdminController extends Controller
 
 
 
-        return view('Admin.dashboard', ['userCountsCollection' => $userCountsCollection], compact('message', 'count_status_booking_wait', 'count_status_booking_success', 'count_status_booking_insuccess', 'count_status_booking', 'paginator', 'typeRoom'));
+        return view('Admin.dashboard', ['userCountsCollection' => $userCountsCollection], compact('message', 'count_status_booking_wait_details', 'count_status_booking_success_details', 'count_status_booking_insuccess_details', 'count_status_booking_details', 'paginator', 'typeRoom'));
     }
 
     function count_status_booking_wait()
@@ -144,6 +148,7 @@ class AdminController extends Controller
         $typeRoom = typeRoom::first();
         $selectType = $request->input('select') ?? $typeRoom->name_type;
         $typeRoomSe = typeRoom::where('name_type', $selectType)->pluck('id');
+        $typeRoomNu = typeRoom::where('name_type', $selectType)->pluck('number_user')->first();
         $selectedDate = $request->input('date') ?? now()->toDateString();
         // ดึงข้อมูลจากฐานข้อมูล
 
@@ -172,6 +177,10 @@ class AdminController extends Controller
             }
         }
 
+        foreach ($roomCounts as &$roomCount) {
+            $roomCount['count'] *= $typeRoomNu;
+        }
+
 
 
         $roomCountsCollection = collect(array_values($roomCounts));
@@ -183,6 +192,7 @@ class AdminController extends Controller
         $typeRoom = typeRoom::first();
         $selectType = $request->input('select') ?? $typeRoom->name_type;
         $typeRoomSe = typeRoom::where('name_type', $selectType)->pluck('id');
+        $typeRoomNu = typeRoom::where('name_type', $selectType)->pluck('number_user')->first();
         $selectedMonth = $request->input('month') ?? now()->format('Y-m'); // เปลี่ยนเป็นรับค่าเดือน
         [$year, $month] = explode('-', $selectedMonth);
 
@@ -212,6 +222,10 @@ class AdminController extends Controller
                     $roomCounts[$roomId]['count']++;
                 }
             }
+        }
+
+        foreach ($roomCounts as &$roomCount) {
+            $roomCount['count'] *= $typeRoomNu;
         }
         $roomCountsCollection = collect(array_values($roomCounts));
         return response()->json($roomCountsCollection);
@@ -560,7 +574,7 @@ class AdminController extends Controller
 
         $book_details = book_details::with('booking')
             ->latest()
-            ->paginate(15);
+            ->paginate(30);
 
         $book = book_details::with('Leveluser')
             ->groupBy('booking_id')
@@ -594,6 +608,7 @@ class AdminController extends Controller
 
     function booking_admin()
     {
+        $typeRoom = typeRoom::all();
         $room = listRoom::with('typeRoom')->get();
         $book_details = book_details::with('booking')->get();
 
@@ -629,7 +644,7 @@ class AdminController extends Controller
             }
         }
 
-        return view('Admin.booking_admin', compact('room', 'work_times', 'book_details'));
+        return view('Admin.booking_admin', compact('room', 'work_times', 'book_details', 'typeRoom'));
     }
 
     function insert_booking_admin(Request $request)
@@ -682,6 +697,31 @@ class AdminController extends Controller
             return back()->with('success', 'ทำการจองห้องเรียบร้อย รอการยืนยัน');
         } else {
             return back()->with('error', 'เวลานี้มีการเข้าจองแล้ว');
+        }
+    }
+
+    function api_userLevel()
+    {
+        $user = Leveluser::select('passWordNumber_user')->get();
+
+        return response()->json($user);
+    }
+
+    function change_leveluser()
+    {
+        return view('Admin.change_leveluser');
+    }
+
+    function change_level_user(Request $request)
+    {
+        if ($request->has('passNumberuser') && $request->has('select_level')) {
+            $user = Leveluser::where('passWordNumber_user', $request->passNumberuser)->first();
+            $user->update([
+                'level_user' => $request->select_level,
+            ]);
+            return back()->with('success', 'เปลี่ยนระดับสำเร็จ');
+        } else {
+            return back()->with('error', 'กรอกข้อมูลไม่ครบ');
         }
     }
 }

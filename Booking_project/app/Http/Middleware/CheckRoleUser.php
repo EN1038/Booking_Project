@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class CheckRoleUser
 {
@@ -15,11 +16,10 @@ class CheckRoleUser
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || auth()->user()->level_user != 'admin') {
-            // หากไม่ได้รับอนุญาตให้เข้าถึง ทำการ Redirect ไปยังหน้าที่เหมาะสม
-            return redirect('Login');
-        }else{
-            return redirect('DashBoard_Admin');
+        if (auth::check() && (auth::user()->level_user == 'user')) {
+            return $next($request);
+        } else {
+            return redirect('/');
         }
     }
 }

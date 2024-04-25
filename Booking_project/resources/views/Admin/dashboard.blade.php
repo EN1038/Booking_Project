@@ -32,7 +32,7 @@
             </div>
             <div class="col">
                 <p class="m-0 title-card">รอการอนุมัติ</p>
-                <p class="m-0 value-card " id="wait">{{$count_status_booking_wait}} คน</p>
+                <p class="m-0 value-card " id="wait">{{$count_status_booking_wait_details}} รายการ</p>
             </div>
           </div>
         </div>
@@ -52,7 +52,7 @@
       // ทำสิ่งที่คุณต้องการกับข้อมูลที่ได้รับ
       // console.log(data);
       var wait = document.getElementById('wait');
-      wait.textContent = data + ' คน';
+      wait.textContent = data + ' รายการ';
       if(data != 0){
         wait.classList.add('text-danger')
       }else{
@@ -81,7 +81,7 @@ setInterval(fetchData, 10000); // 10000 มิลลิวินาที = 10 �
             </div>
             <div class="col">
                 <p class="m-0 title-card">ยืนยันการจอง</p>
-                <p class="m-0 value-card ">{{$count_status_booking_success}} คน</p>
+                <p class="m-0 value-card ">{{$count_status_booking_success_details}} คน</p>
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@ setInterval(fetchData, 10000); // 10000 มิลลิวินาที = 10 �
             </div>
             <div class="col">
                 <p class="m-0 title-card">ปฎิเสธการจอง</p>
-                <p class="m-0 value-card ">{{$count_status_booking_insuccess}} คน</p>
+                <p class="m-0 value-card ">{{$count_status_booking_insuccess_details}} คน</p>
             </div>
           </div>
         </div>
@@ -114,7 +114,7 @@ setInterval(fetchData, 10000); // 10000 มิลลิวินาที = 10 �
             </div>
             <div class="col">
                 <p class="m-0 title-card">คำขอทั้งหมด</p>
-                <p class="m-0 value-card">{{$count_status_booking}} คน</p>
+                <p class="m-0 value-card">{{$count_status_booking_details}} คน</p>
             </div>
           </div>
         </div>
@@ -212,7 +212,7 @@ function updateChart(selectedDate = null) {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            // console.log(data);
+            console.log(data);
             const backgroundColor = Array.from({ length: data.length }, () => getRandomColor());
             const total = data.reduce((acc, item) => acc + item.count, 0);
           data.push({ name_room: 'รวม', count: total });
