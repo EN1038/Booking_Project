@@ -50,6 +50,9 @@ class UserController extends Controller
                     $work_time->status_wt = 'หมดเวลาจอง';
                     $work_time->save();
                 }
+            }else if($today  <= $start_time){
+                $work_time->status_wt = 'จองห้อง';
+                $work_time->save();
             }
         }
 
