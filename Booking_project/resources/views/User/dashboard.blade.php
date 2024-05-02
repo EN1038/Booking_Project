@@ -113,7 +113,7 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
-    <form action="{{route('insert_booking_admin',$items->id)}}" method="POST">
+    <form action="{{route('booking_rooms',$items->id)}}" method="POST">
       @csrf
       <div class="mb-3">
         <p class="text-danger p-0 m-0"><i class="fa-solid fa-circle-info"></i> การเข้าห้องสายหรือไม่มาครบ 3 ครั้ง</p>
@@ -152,6 +152,6 @@
 </div>
 </div>
 
-<script src="{{asset('js/User/dashboard.js')}}"></script>
+{{-- <script src="{{asset('js/User/dashboard.js')}}"></script> --}}
 @endforeach
 @endsection
