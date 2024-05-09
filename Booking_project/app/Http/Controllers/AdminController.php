@@ -677,7 +677,7 @@ class AdminController extends Controller
 
             $booking = new booking();
             $booking->workTime_id = $request->select_time;
-            $booking->status_book = 'รอยืนยันการจอง';
+            $booking->status_book = 'ยืนยันการจอง';
             $booking->save();
 
             $id_book = $booking->id;
