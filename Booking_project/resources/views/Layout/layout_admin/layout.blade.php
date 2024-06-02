@@ -213,39 +213,113 @@
 
             </div>
             <div class="col ">
-                <div class=" d-none d-sm-flex justify-content-sm-center justify-content-md-end">
+                <div class=" d-none d-sm-flex justify-content-sm-end justify-content-md-end">
                     <div class="ms-3 py-4 nav-link">
                             @if(Auth::check())
+                            <style>
+                              .dropdowns {
+                                  position: relative;
+                                  display: inline-block;
+                                  transition: all 0.5s;
+                              }
+
+                              .dropbtns {
+                                  background-color: #ffffff;
+                                  color: rgb(0, 0, 0);
+                                  padding: 12px;
+                                  font-size: 16px;
+                                  border: none;
+                                  cursor: pointer;
+                              }
+
+                              .dropdown-contents {
+                                  display: none;
+                                  position: absolute;
+                                  background-color: #212529;
+                                  min-width: 300px;
+                                  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                                  z-index: 1;
+                                  left: 0; /* ปรับตำแหน่ง dropdown-content ให้ชิดซ้ายของหน้าจอ */
+                                  transform: translateX(-58%); /* ขยับ dropdown-content ให้ชิดซ้าย */
+                              }
+
+                              .dropdown-contents a {
+                                  color: rgb(255, 255, 255);
+                                  padding: 12px 16px;
+                                  text-decoration: none;
+                                  display: block;
+                              }
+
+                              .dropdown-contents i {
+                                color: #1b8f59;
+                              }
+
+                              .dropdown-contents a:hover {
+                                  background-color: #39393975;
+                                  color: #1b8f59;
+                              }
+
+                              .dropdowns:hover .dropdown-contents {
+                                  display: block;
+                              }
+
+                              .user-img-scales{
+                                height: 50px;
+                              }
+                            </style>
+                            <div class="dropdowns">
+                              
+                              <button class="dropbtns rounded-4">
+                                <div class="d-flex flex-row align-items-center">
+                                  <div class="col-4">
+                                    <img src="{{Auth::user()->image}}" alt="" class="user-img-scales rounded-3" id="profiles">
+                                  </div>
+                                  <div class="col-8 " >
+                                    <div class="d-flex flex-column divToHide" >
+                                      @if(Auth::check())
+                                      <div class="col text-greenlight" ><span >{{Auth::user()->passWordNumber_user}}</span></div>
+                                      <div class="col"><span >{{Auth::user()->name_user}}</span> <i class="fa-solid fa-sort-down"></i></div>
+                        
+                                      @else
+                                      <div class="col"><span >USERNAME</span></div>
+                                      <div class="col"><span >USERS_ID</span></div>
+                                      @endif
+                                    </div>
+                                  </div>
+                                </div>
+                              </button>
+                              <div class="dropdown-contents rounded-3">
+                                <a href="{{route('dashboard_admin')}}"
+                                class=' mx-2'><i class="fa-solid fa-house"></i> หน้าแรก</a>
+                                @if(Auth::user()->level_user === 'superAdmin')
+                                <a href="{{route('create_room')}}"
+                                class=' mx-2'><i class="fa-solid fa-folder-plus"></i> สร้างห้อง</a>
+    
+                                <a href="{{route('create_typeroom')}}"
+                                class=' mx-2'><i class="fa-solid fa-circle-plus"></i> สร้างประเภทห้อง</a>
+    
+                                <a href="{{route('change_leveluser')}}"
+                                class=' mx-2'><i class="fa-solid fa-circle-user"></i> เปลี่ยนระดับผู้ใช้</a>
+                                @endif
+                                <a href="{{route('status_room')}}"
+                                class=' mx-2'><i class="fa-solid fa-square-check"></i> อนุมัติการจอง</a>
+    
+                                <a href="{{route('history_room')}}"
+                                class=' mx-2'><i class="fa-solid fa-clipboard"></i> ประวัติ</a>
+    
+                                <a href="{{route('user.signoutCallback')}}"
+                                class=" mx-2 "><i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ</a>
+                                @else
+    
+                                <a href="{{route('user.signin')}}"
+                        class=" mx-3 "><i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ</a>
+    
+                                {{-- <a href="{{route('register')}}"
+                                class=" mx-2 "><i class="fa-solid fa-circle-up"></i> สมัครสมาชิก</a> --}}
+                                @endif
+                              </div>
+                          </div>
                             
-
-                            <a href="{{route('dashboard_admin')}}"
-                            class=' mx-2'><i class="fa-solid fa-house"></i> หน้าแรก</a>
-                            @if(Auth::user()->level_user === 'superAdmin')
-                            <a href="{{route('create_room')}}"
-                            class=' mx-2'><i class="fa-solid fa-folder-plus"></i> สร้างห้อง</a>
-
-                            <a href="{{route('create_typeroom')}}"
-                            class=' mx-2'><i class="fa-solid fa-circle-plus"></i> สร้างประเภทห้อง</a>
-
-                            <a href="{{route('change_leveluser')}}"
-                            class=' mx-2'><i class="fa-solid fa-circle-user"></i> เปลี่ยนระดับผู้ใช้</a>
-                            @endif
-                            <a href="{{route('status_room')}}"
-                            class=' mx-2'><i class="fa-solid fa-square-check"></i> อนุมัติการจอง</a>
-
-                            <a href="{{route('history_room')}}"
-                            class=' mx-2'><i class="fa-solid fa-clipboard"></i> ประวัติ</a>
-
-                            <a href="{{route('user.signoutCallback')}}"
-                            class=" mx-2 "><i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ</a>
-                            @else
-
-                            <a href="{{route('user.signin')}}"
-                    class=" mx-3 "><i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ</a>
-
-                            {{-- <a href="{{route('register')}}"
-                            class=" mx-2 "><i class="fa-solid fa-circle-up"></i> สมัครสมาชิก</a> --}}
-                            @endif
                     </div>
 
                 </div>
