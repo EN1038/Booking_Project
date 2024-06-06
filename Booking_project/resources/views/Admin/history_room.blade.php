@@ -53,8 +53,9 @@
                     </button></td>
                     <td data-label="ชื่อห้อง">{{$items->booking->work_time->listRoom->name_room}}</td>
                     <td data-label="ประเภทห้อง">{{$items->booking->work_time->listRoom->typeRoom->name_type}}</td>
-                    <td data-label="ระยะเวลาที่จอง">{{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</td>
-                    <td data-label="ถูกจองวันที่">{{ $items->booking->created_at->toDateString() }}</td>
+                    <td data-label="ระยะเวลาที่จอง">{{ \Carbon\Carbon::parse($items->booking->work_time->name_start_workTime)->format('H:i') }} - {{ \Carbon\Carbon::parse($items->booking->work_time->name_end_workTime)->format('H:i') }}</td>
+                    {{-- <td data-label="ถูกจองวันที่">{{ $items->booking->created_at->toDateString() }}</td> --}}
+                    <td data-label="ถูกจองวันที่">{{ \Carbon\Carbon::parse($items->updated_at)->translatedFormat('d M') }} {{ \Carbon\Carbon::parse($items->updated_at)->year + 543 }} {{ \Carbon\Carbon::parse($items->updated_at)->format('H:i') }}</td>
                     <td data-label="การอนุมัติ" class="form-css fw-bold">{{$items->booking->status_book}}</td>
                 </tr>
               </tbody>
@@ -72,7 +73,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel">รายชื่อคนจองในเวลา {{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</h1>
+        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel">รายชื่อคนจองในเวลา {{ \Carbon\Carbon::parse($items->booking->work_time->name_start_workTime)->format('H:i') }} - {{ \Carbon\Carbon::parse($items->booking->work_time->name_end_workTime)->format('H:i') }}</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">

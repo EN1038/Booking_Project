@@ -11,6 +11,7 @@ use App\Models\booking;
 use App\Models\Leveluser;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
 
 class UserController extends Controller
 {
@@ -124,9 +125,6 @@ class UserController extends Controller
 
     function update_status_user($id, $value)
     {
-        if ($id != auth::user()->id) {
-            return redirect('/');
-        } else {
             booking::find($id)->update([
                 'status_book' => $value
             ]);
@@ -135,11 +133,13 @@ class UserController extends Controller
             } else {
                 return back()->with('error', 'การอัปเดทล้มเหลว');
             }
-        }
+        
     }
 
     function statusRoom($id)
     {
+        App::setLocale('th');
+        Carbon::setLocale('th');
         if ($id != auth::user()->id) {
             return redirect('/');
         } else {
@@ -151,6 +151,8 @@ class UserController extends Controller
 
     function history($id)
     {
+        App::setLocale('th');
+        Carbon::setLocale('th');
         if ($id != auth::user()->id) {
             return redirect('/');
         } else {

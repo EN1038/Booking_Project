@@ -32,7 +32,7 @@
         <div class="card-body">
           <h5 class="card-title">ชื่อห้อง <span>{{$items->name_room}}</span></h5>
           <p class="card-text">ประเภทห้อง <span>{{$items->typeRoom->name_type}}</span></p>               
-          <p class="card-text">ห้องถูกสร้างเมื่อ <span>{{$items->created_at->toDateString()}}</span></p>               
+          <p class="card-text">ห้องถูกสร้างเมื่อ <span>{{ \Carbon\Carbon::parse($items->updated_at)->translatedFormat('d M') }} {{ \Carbon\Carbon::parse($items->updated_at)->year + 543 }}</span></p>               
                 <a href="{{route('change_status',$items->id)}}" class="rounded-5 btn {{ $items->status_room === 'On' ? 'btn-success' : 'btn-danger' }}">
                   <i class="fa-solid fa-power-off"></i> {{ $items->status_room }}</a>
                   <a href="{{route('delete_room',$items->id)}}" class="btn btn-danger rounded-5" onclick="return confirmDelete(event)"><i class="fa-solid fa-trash-arrow-up"></i> ลบ</a>

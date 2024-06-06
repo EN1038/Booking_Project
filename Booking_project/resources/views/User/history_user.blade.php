@@ -41,8 +41,8 @@
     <tr>
         <td data-label="ชื่อห้อง">{{$items->booking->work_time->listRoom->name_room}}</td>
         <td data-label="ประเภทห้อง">{{$items->booking->work_time->listRoom->typeRoom->name_type}}</td>
-        <td data-label="วันที่ทำการจอง" >{{ $items->booking->created_at->toDateString() }}</td>
-        <td data-label="เวลาในการจอง">{{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</td>
+        <td data-label="วันที่ทำการจอง" >{{ \Carbon\Carbon::parse($items->booking->created_at)->translatedFormat('d M') }} {{ \Carbon\Carbon::parse($items->booking->created_at)->year + 543 }}</td>
+        <td data-label="เวลาในการจอง">{{ \Carbon\Carbon::parse($items->booking->work_time->name_start_workTime)->format('H:i') }} - {{ \Carbon\Carbon::parse($items->booking->work_time->name_end_workTime)->format('H:i') }}</td>
         <td class="form-css" data-label="สถานะห้อง">{{$items->booking->status_book}} </td>
     </tr>
     @endif    

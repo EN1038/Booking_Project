@@ -15,7 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
-
+use Illuminate\Support\Facades\App;
 class AdminController extends Controller
 {
     //
@@ -257,6 +257,9 @@ class AdminController extends Controller
 
     function create_room()
     {
+        App::setLocale('th');
+        Carbon::setLocale('th');
+
         $room = listRoom::with('typeRoom')->paginate(9);
         $type_rooms = typeRoom::all();
         $work_times = work_time::with('listRoom')->get();
@@ -570,6 +573,9 @@ class AdminController extends Controller
 
     function history_room()
     {
+        App::setLocale('th');
+        Carbon::setLocale('th');
+
         $today = Carbon::now()->setTimezone('Asia/Bangkok');
 
         $book_details = book_details::with('booking')
@@ -677,7 +683,7 @@ class AdminController extends Controller
 
             $booking = new booking();
             $booking->workTime_id = $request->select_time;
-            $booking->status_book = 'ยืนยันการจอง';
+            $booking->status_book = 'รอยืนยันการจอง';
             $booking->save();
 
             $id_book = $booking->id;

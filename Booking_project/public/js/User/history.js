@@ -26,7 +26,7 @@ function checkStatus() {
         
         // เปรียบเทียบค่าของ status และเพิ่มหรือลบ class ตามเงื่อนไข
         if (status === 'ยืนยันการจอง') {
-            td.classList.remove('text-danger', 'text-warning');
+            td.classList.remove('text-danger', 'text-success');
             td.classList.add('text-success');
         } else if (status === 'ปฎิเสธการจอง') {
             td.classList.remove('text-success', 'text-warning');

@@ -25,8 +25,8 @@
     <div class="card shadow bg">
       <div class="card-body">
         <h5 class="card-title">ชื่อห้อง <span>{{$items->booking->work_time->listRoom->name_room}}</span></h5>
-        <p class="card-text">วันที่ถูกจอง <span>{{$items->booking->created_at->toDateString()}}</span></p>
-        <p class="card-text ">เวลาในการจอง <span>{{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</span></p>               
+        <p class="card-text">วันที่ถูกจอง <span>{{ \Carbon\Carbon::parse($items->booking->created_at)->translatedFormat('d M') }} {{ \Carbon\Carbon::parse($items->booking->created_at)->year + 543 }}</span></p>
+        <p class="card-text ">เวลาในการจอง <span>{{ \Carbon\Carbon::parse($items->booking->work_time->name_start_workTime)->format('H:i') }} - {{ \Carbon\Carbon::parse($items->booking->work_time->name_end_workTime)->format('H:i') }}</span></p>               
                 <p class="card-text">สถานะห้อง <span>
                 <select class="form-select rounded-5 w-100 text-center border-success" id="select_status{{$items->id}}" onchange="changStatus()" data-status="{{$items->booking->status_book}}" data-id="{{$items->booking_id}}"  {{$items->booking->status_book === 'ยกเลิกการจอง' || $items->booking->status_book === 'ยืนยันการจอง' || $items->booking->status_book === 'ปฎิเสธการจอง' ? 'disabled' : '' }} disabled>
                     <option value="{{$items->booking->status_book}}" class="text-warning" selected hidden>{{$items->booking->status_book}}</option>

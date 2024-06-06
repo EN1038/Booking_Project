@@ -50,7 +50,7 @@
                         </button></td>
                         <td data-label="ชื่อห้อง">{{$items->booking->work_time->listRoom->name_room}}</td>
                         <td data-label="ประเภทห้อง">{{$items->booking->work_time->listRoom->typeRoom->name_type}}</td>
-                        <td data-label="ระยะเวลาที่จอง">{{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</td>
+                        <td data-label="ระยะเวลาที่จอง">{{ \Carbon\Carbon::parse($items->booking->work_time->name_start_workTime)->format('H:i') }} - {{ \Carbon\Carbon::parse($items->booking->work_time->name_end_workTime)->format('H:i') }}</td>
                         <td data-label="เวลาก่อนจะปฎิเสธ" class="card-text text-danger fw-bold fs-5" id="countDown" data-timecancel="{{$items->booking->work_time->listRoom->typeRoom->time_late}}" data-id="{{$items->id}}" data-timestart="{{$items->booking->work_time->name_start_workTime}}"></td>
                         <td data-label="การอนุมัติ">
                             <select class="form-select text-center border border-success rounded-4" id="select_status{{$items->id}}" onchange="changStatus()" data-status="{{$items->booking->status_book}}" data-id="{{$items->booking_id}}"  {{($items->booking->status_book === 'ยืนยันการจอง' || $items->booking->status_book === 'ปฎิเสธการจอง' || $items->booking->status_book === 'ยกเลิกการจอง') ? 'disabled' : '' }}>
@@ -72,7 +72,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel">รายชื่อคนจองในเวลา {{$items->booking->work_time->name_start_workTime}}-{{$items->booking->work_time->name_end_workTime}}</h1>
+        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel">รายชื่อคนจองในเวลา {{ \Carbon\Carbon::parse($items->booking->work_time->name_start_workTime)->format('H:i') }} - {{ \Carbon\Carbon::parse($items->booking->work_time->name_end_workTime)->format('H:i') }}</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
