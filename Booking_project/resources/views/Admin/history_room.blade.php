@@ -78,15 +78,15 @@
       </div>
       <div class="modal-body">
         <p class="fw-bold">ห้อง {{$items->booking->work_time->listRoom->name_room}}</p>
-        <ul>
-          @foreach ($book as $user)
-              @if ($user->booking_id == $items->booking_id)
-                  @foreach (explode(',', $user->user_names) as $name)
-                      <li>{{ $name }}</li>
-                  @endforeach
-              @endif
-          @endforeach
-          </ul>
+        @foreach ($book as $user)
+            @if ($user->booking_id == $items->booking_id)
+                <ul>
+                    @foreach (explode(',', $user->passWordNumber_user) as $index => $passWordNumber)
+                        <li>{{ $passWordNumber }} - {{ explode(',', $user->user_name)[$index] }} {{ explode(',', $user->last_name)[$index] }}</li>
+                    @endforeach
+                </ul>
+            @endif
+        @endforeach
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-circle-xmark"></i> ปิด</button>

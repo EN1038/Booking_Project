@@ -601,11 +601,18 @@ class AdminController extends Controller
             ->select('booking_id', DB::raw('GROUP_CONCAT(user_id) as user_ids'))
             ->get();
 
-        foreach ($book as $item) {
-            $user_ids = explode(',', $item->user_ids);
-            $users = Leveluser::whereIn('id', $user_ids)->pluck('name_user')->toArray();
-            $item->user_names = implode(', ', $users);
-        }
+            foreach ($book as $item) {
+                $user_ids = explode(',', $item->user_ids);
+                $users = Leveluser::whereIn('id', $user_ids)->get();
+                
+                $passWordNumbers = $users->pluck('passWordNumber_user')->implode(', ');
+                $userNames = $users->pluck('name_user')->implode(', ');
+                $lastNames = $users->pluck('last_name')->implode(', ');
+            
+                $item->passWordNumber_user = $passWordNumbers;
+                $item->user_name = $userNames;
+                $item->last_name = $lastNames;
+            }
         return view('Admin.history_room', compact('book_details', 'book'));
     }
 
