@@ -23,7 +23,7 @@
   <h2 class="text-center fw-bold mb-3">ห้อง {{$room->name_room}} ประเภทห้อง {{$room->typeRoom->name_type}}</h2>
   @foreach ($workTimes as $items)
   <div class="col-md-6 col-xl-4 mt-3">
-    <div class="card shadow bg">
+    <div class="card bg">
       <div class="card-body">
         <h5 class="card-title fw-bold">เวลาที่ {{ $loop->iteration }}</h5>
         <p class="card-text">เวลาการทำงาน <span class="text-success">{{ date('H', strtotime($items->name_start_workTime)) !== '00' ? date('H', strtotime($items->name_start_workTime)) . ' : ' : '' }}{{ substr(date('i', strtotime($items->name_start_workTime)), -2) }}</span> ถึง

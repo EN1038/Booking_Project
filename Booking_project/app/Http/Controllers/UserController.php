@@ -32,28 +32,35 @@ class UserController extends Controller
             ->get();
 
         // ดึง work_times ที่ไม่เหมือนกับค่าที่ได้จาก booking ในคอลัม workTime_id
-        $work_times = work_time::with('booking')
-            ->whereNotIn('id', $booking->pluck('workTime_id'))
-            ->get();
+        $work_times = work_time::with('booking')->get();
 
 
         foreach ($work_times as $work_time) {
             // ดึงเวลาเริ่มงานจากคอลัม 'name_start_workTime'
             $start_time = Carbon::createFromFormat('H:i:s', $work_time->name_start_workTime);
             $end_time = Carbon::createFromFormat('H:i:s', $work_time->name_end_workTime);
-
             // เปรียบเทียบเวลาปัจจุบันกับเวลาเริ่มงาน
-            if ($today  >= $start_time) {
+            if ($today >= $start_time) {
                 // เปลี่ยนค่าคอลัม 'status_wt' เป็น 'ว็อกอิน'
-                $work_time->status_wt = 'ว็อกอิน';
-                $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
-                if ($today  >= $end_time) {
-                    $work_time->status_wt = 'หมดเวลาจอง';
-                    $work_time->save();
+                if($work_time->status_wt === 'มีการจองแล้ว'){
+                    $work_time->status_wt = 'มีการจองแล้ว';
+                    $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
+                } else {
+                    $work_time->status_wt = 'ว็อกอิน';
+                    $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
                 }
-            }else if($today  <= $start_time){
-                $work_time->status_wt = 'จองห้อง';
-                $work_time->save();
+                if ($today >= $end_time) {
+                    $work_time->status_wt = 'หมดเวลาจอง';
+                    $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
+                }
+            }else if($today <= $start_time){
+                if($work_time->status_wt === 'มีการจองแล้ว'){
+                    $work_time->status_wt = 'มีการจองแล้ว';
+                    $work_time->save();
+                }else{
+                    $work_time->status_wt = 'จองห้อง';
+                    $work_time->save(); 
+                }   
             }
         }
 
@@ -102,6 +109,8 @@ class UserController extends Controller
             $booking->workTime_id = $request->select_time;
             $booking->status_book = 'รอยืนยันการจอง';
             $booking->save();
+
+            work_time::where('id', $request->select_time)->update(['status_wt' => 'มีการจองแล้ว']);
 
             $id_book = $booking->id;
 

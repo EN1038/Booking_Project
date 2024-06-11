@@ -171,8 +171,7 @@ function convertEditMinutesToTime() {
 
     errorTimeCancel.classList.add('d-none')
     input.value = formattedTime;
-    conf
-    irmEdit(id)
+    confirmEdit(id)
 }
 function convertEditMinutesToTimeLate() {
     var id = event.target.dataset.id;

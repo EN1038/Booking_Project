@@ -22,13 +22,13 @@
   <div class="row">
     <h1 class="text-center fw-bold text-greenlight ">สร้างห้อง</h1>
     <div class="col-12 d-flex flex-row justify-content-end align-items-center">
-        <button type="button" class="btn btn-primary m-1 rounded-5" data-bs-toggle="modal" data-bs-target="#createRooms">
+        <button type="button" class="btn btn-success m-1 rounded-5" data-bs-toggle="modal" data-bs-target="#createRooms">
           <i class="fa-solid fa-plus"></i> สร้างห้อง
         </button>
     </div>
     @foreach ($room as $items)
     <div class="col-md-6 col-xl-4 mt-1">
-      <div class="card shadow bg">
+      <div class="card bg">
         <div class="card-body">
           <h5 class="card-title">ชื่อห้อง <span>{{$items->name_room}}</span></h5>
           <p class="card-text">ประเภทห้อง <span>{{$items->typeRoom->name_type}}</span></p>               
@@ -47,15 +47,14 @@
   </div>
 
   @else
-    <h1 class="text-center">ไม่มี้จา</h1>
+  
+    <h1 class="text-center fw-bold text-greenlight">ประเภท {{$type_rooms->name_type}}</h1>
     <div class="col-12 d-flex flex-row justify-content-end align-items-center">
-      <button type="button" class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#createRooms">
-          สร้างห้อง
+      <button type="button" class="btn btn-success m-1 rounded-5" data-bs-toggle="modal" data-bs-target="#createRooms">
+        <i class="fa-solid fa-plus"></i> สร้างห้อง
       </button>
-      <a href="{{route('create_typeroom')}}" type="button" class="btn btn-secondary m-1">
-          สร้างประเภทห้อง
-      </a>
-  </div>
+    </div>
+
  
   @endif
     
@@ -80,13 +79,12 @@
                     <input type="text" class="form-control text-center" id="nameRooms" name="nameRoom" placeholder="กรอกชื่อห้องที่ต้องการ" oninput="validationName(event)">
                     <label for="errorNameRoom" class="form-label mx-3 text-danger fw-bold" id="errorNameRoom"></label>
                 </div>
-                <label for="typeRooms" class="form-label">เลือกประเภทห้อง</label>
-                <select class="form-select text-center" id="select_typeRoom" name="type_room" onchange="showDurationTime()">
-                  <option selected disabled hidden>ประเภทห้อง</option>
-                  @foreach ($type_rooms as $items)
-                    <option value="{{$items->id}}" data-timeDuration="{{$items->time_duration}}">{{$items->name_type}}</option>
-                  @endforeach
-                </select>
+                <label for="typeRooms" class="form-label">ประเภทห้อง</label>
+                {{-- <select class="form-select text-center" id="select_typeRoom" name="type_room" onchange="showDurationTime()"> --}}
+                  <input type="text" class="form-control text-center" id="select_typeRoom" data-timeduration="{{$type_rooms->time_duration}}" value="{{$type_rooms->name_type}}" readonly>
+                  <input type="text" class="form-control text-center" name="type_room" value="{{$type_rooms->id}}" readonly hidden>
+                    {{-- <option value="{{$items->id}}" data-timeDuration="{{$items->time_duration}}">{{$items->name_type}}</option> --}}
+                {{-- </select> --}}
                 <label for="errorSelectType" class="form-label mx-3 text-danger fw-bold" id="errorSelectType"></label>
                 <div class="mb-3 my-3">
                   <label for="time_duration" class="form-label">ระยะเวลาการทำงานของประเภทนี้ (ชั่วโมง:นาที)</label>
@@ -112,17 +110,20 @@
         </div>
     </div>
     
+    {{-- edit room --}}
     @foreach ($room as $items)
     <div class="modal fade" id="updateRooms{{$items->id}}" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">แก้ไขชื่อห้อง</h1>
+            <h1 class="modal-title fs-5" id="exampleModalLabel">แก้ไขชื่อห้อง <span class="text-greenlight fs-4"> {{$items->name_room}} </span></h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form action="{{route('update_room',$items->id)}}" method="POST" enctype="multipart/form-data"  >
               @csrf
+              <label for="image" class="form-label">รูปที่ใช้แสดงอยู่</label>
+                <img src="{{ Storage::url('img/' . $items->image_room) }}" class="img-thumbnail img-fluid image-container mb-2">
               <div class="mb-3">
                 <label for="formFile" class="form-label">เลือกรูปที่ใช้แสดง</label>
                 <input class="form-control" type="file" id="formFile{{$items->id}}" data-id="{{$items->id}}" name="image_editroom" onchange="validationEditImg()">
@@ -130,7 +131,7 @@
               </div>
               <div class="mb-3">
                   <label for="nameRooms" class="form-label">กรอกชื่อห้อง</label>
-                  <input type="text" class="form-control text-center" id="updateNameRoom{{$items->id}}" data-id="{{$items->id}}" name="updateNameRoom" placeholder="{{$items->name_room}}" oninput="validationNameEdit(event)">
+                  <input type="text" class="form-control text-center" id="updateNameRoom{{$items->id}}" data-id="{{$items->id}}" name="updateNameRoom"  placeholder="{{$items->name_room}}" oninput="validationNameEdit(event)">
                   <label for="errorNameRoom" class="form-label mx-3 text-danger fw-bold" id="errorNameRoom{{$items->id}}"></label>
               </div>
           </div>

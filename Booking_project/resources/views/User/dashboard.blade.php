@@ -25,6 +25,7 @@
       <div class="col"><i class="fa-solid fa-bookmark text-info fs-2"></i><p class="mx-4 fs-5">สีฟ้า : ห้องเปิดการจองออนไลน์</p></div>
       <div class="col"><i class="fa-solid fa-bookmark text-warning fs-2"></i><p class="mx-4 fs-5">สีส้ม : ห้องต้องว็อกอินเข้าไปจอง</p></div>
       <div class="col"><i class="fa-solid fa-bookmark text-secondary fs-2"></i><p class="mx-4 fs-5">สีเทา : ห้องหมดเวลาการจอง</p></div>
+      <div class="col"><i class="fa-solid fa-bookmark text-danger fs-2"></i><p class="mx-4 fs-5">สีแดง : ห้องทำการจองแล้ว</p></div>
     </div>
   @foreach ($typeRoom as $type_room)
     <p class="fs-2 fw-bold text-greenlight my-3">ประเภทห้อง {{$type_room->name_type}}</p>
@@ -47,8 +48,8 @@
                           @if ($items->id == $time->id_room)
                               @php $loopCount++; @endphp
                               <button class="col-3 btn text-light rounded-4 m-1 mb-2 btn-custome
-                                  {{ $time->status_wt === 'จองห้อง' ? 'btn-info' : ($time->status_wt === 'หมดเวลาจอง' ? 'btn-secondary' : 'btn-warning') }}" 
-                                  style="cursor: default; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                              {{ $time->status_wt === 'จองห้อง' ? 'btn-info' : ($time->status_wt === 'หมดเวลาจอง' ? 'btn-secondary' : ($time->status_wt === 'ว็อกอิน' ? 'btn-warning' : 'btn-danger')) }}" 
+                              style="cursor: default; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
                                   {{ date('H', strtotime($time->name_start_workTime)) !== '00' ? date('H', strtotime($time->name_start_workTime)) . ':' : '' }}
                                   {{ substr(date('i', strtotime($time->name_start_workTime)), -2) }}
                               </button>

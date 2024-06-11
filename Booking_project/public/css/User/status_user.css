@@ -5,27 +5,14 @@
 
 .bg {
     background-color: rgba(255, 255, 255, 0.5);
-    /* ปรับความโปร่งใสตามความต้องการ */
     backdrop-filter: blur(10px);
-    /* ปรับระดับของความเบลอตามความต้องการ */
     border-radius: 10px;
-    /* ปรับรูปร่างของการ์ดตามความต้องการ */
-    transition: all 0.5s;
+    transition: all 0.3s;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0);
 }
 
 .bg:hover {
-    background: linear-gradient(to right, #ffffff, #14ac65, #000000);
-    /* Gradient สีจากเขียวไปสีแดง */
-    background-size: 200% 250%;
-    /* ความกว้างของ Gradient */
-    color: var(--root-txcardhover);
-    transition: background-position 1s ease;
-    /* ทำให้การเปลี่ยนเส้นทางของ Gradient มีความนุ่มนวล */
-}
-
-.bg:hover {
-    background-position: right;
-    /* การเลื่อน Gradient ไปทางขวา */
+    box-shadow: 0 0 15px #1b8f59; 
 }
 
 .bg:hover span {

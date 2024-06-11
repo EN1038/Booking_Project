@@ -122,7 +122,7 @@ setInterval(fetchData, 10000); // 10000 มิลลิวินาที = 10 �
     </div>
   </div>
   <div class="row mt-3">
-    <div class="col-lg-8 py-1 pe-3">
+    <div class="col-lg-8 py-1 pe-3 ">
       <select class="form-select text-center border border-success mb-1 rounded-5" id="select_type" onchange="checkSelect(this)">
         <option selected disabled hidden>เลือกประเภทของห้องที่ต้องการดู</option>
         @foreach ($typeRoom as $item)
@@ -130,9 +130,9 @@ setInterval(fetchData, 10000); // 10000 มิลลิวินาที = 10 �
         @endforeach
       </select>
       <input type="text" id="datePicker" placeholder="เลือกวันที่ที่ต้องการค้นหา" class="w-100 rounded-5 border border-success text-center p-1 mb-1 d-none">
-      <canvas id="myChart" width="530" height="250" class="border border-success rounded-4 p-3 " ></canvas>
+      <canvas id="myChart" width="530" height="250" class="border border-success rounded-4 p-3 card" ></canvas>
     </div>
-    <div class="col-lg-4 py-1 ps-3">
+    <div class="col-lg-4 py-1 ps-3 ">
       <select class="form-select text-center border border-success mb-1 rounded-5" id="select_type_pie" onchange="checkSelectPie(this)">
         <option selected disabled hidden>เลือกประเภทของห้องที่ต้องการดู</option>
         @foreach ($typeRoom as $item)
@@ -140,7 +140,7 @@ setInterval(fetchData, 10000); // 10000 มิลลิวินาที = 10 �
         @endforeach
       </select>
       <input type="text" id="datePickerPie" placeholder="เลือกเดือนที่ที่ต้องการค้นหา" class="w-100 rounded-5 border border-success text-center p-1 mb-1 d-none">
-      <canvas id="myChartPie" width="auto" height="150" class="border border-success rounded-4 p-3 "></canvas>
+      <canvas id="myChartPie" width="auto" height="150" class="border border-success rounded-4 p-3 card"></canvas>
     </div>
   </div>
   <div class="row mt-1">
@@ -154,7 +154,7 @@ setInterval(fetchData, 10000); // 10000 มิลลิวินาที = 10 �
                     <i class="fa-solid fa-users icon-card"></i>
                   </div>
                   <div class="col">
-                      <p class="m-0 title-card">จำนวนทั้งหมดต่อเดือน</p>
+                      <p class="m-0 title-card">จำนวนทั้งหมดในเดือน <span id="Months"></span></p>
                       <p class="m-0 value-card " id="Total"> คน</p>
                   </div>
                 </div>
@@ -162,8 +162,8 @@ setInterval(fetchData, 10000); // 10000 มิลลิวินาที = 10 �
             </div>
           </div>
     </div>
-    <div class="col-lg-4 py-1 ps-3 d-flex align-items-center">
-      <div class="border border-success rounded-4 p-3 ">
+    <div class="col-lg-4 py-1 ps-3 d-flex align-items-center ">
+      <div class="card border border-success rounded-4 p-3 ">
         <div class="row px-4 py-2">
           <p class="text-secondary text-center fw-bold fs-5">กดเพื่อเปลี่ยนโหมดห้องทั้งหมด</p>
           <p class="text-dark text-center fw-bold fs-5">สถานะห้อง<span class="fs-3 
@@ -201,6 +201,17 @@ setInterval(fetchData, 10000); // 10000 มิลลิวินาที = 10 �
 
     // เรียกใช้ฟังก์ชันสำหรับการอัปเดตกราฟเมื่อโหลดเพจ
     updateChart();
+
+    function formatThaiDate(date) {
+      const days = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+      const months = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+      const thaiDay = days[date.getDay()];
+      const thaiMonth = months[date.getMonth()];
+      const thaiYear = date.getFullYear()+543;
+
+      return `วัน${thaiDay}ที่ ${date.getDate()} ${thaiMonth} พ.ศ. ${thaiYear}`;
+    }
     
     // ฟังก์ชันสำหรับอัปเดตข้อมูลในกราฟ
 function updateChart(selectedDate = null) {
@@ -212,7 +223,7 @@ function updateChart(selectedDate = null) {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            // console.log(data);
             const backgroundColor = Array.from({ length: data.length }, () => getRandomColor());
             const total = data.reduce((acc, item) => acc + item.count, 0);
           data.push({ name_room: 'รวม', count: total });
@@ -243,7 +254,7 @@ function updateChart(selectedDate = null) {
                   plugins: {
                         title: {
                             display: true,
-                            text: 'ข้อมูลการจองห้องตามวัน', // ข้อความที่จะแสดงเป็น title
+                            text: formatThaiDate(selectedDate ? new Date(selectedDate) : new Date()), // ข้อความที่จะแสดงเป็น title
                             font: {
                                 size: 18 // ขนาดตัวอักษรของ title
                             }
@@ -284,9 +295,6 @@ function updateChart(selectedDate = null) {
 
   }
 
- 
-
-
     document.addEventListener('DOMContentLoaded', function () {
       flatpickr("#datePickerPie", {
     dateFormat: "Y-m", // รูปแบบวันที่เป็นปี-เดือน (YYYY-MM)
@@ -297,6 +305,17 @@ function updateChart(selectedDate = null) {
         updateChart(selectedMonth);
     }
 });
+
+function formatThaiDate(date) {
+      const days = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+      const months = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+      const thaiDay = days[date.getDay()];
+      const thaiMonth = months[date.getMonth()];
+      const thaiYear = date.getFullYear()+543;
+
+      return ` ${thaiMonth} พ.ศ. ${thaiYear}`;
+    }
 
 updateChart();
       function updateChart(selectedMonth = null) {
@@ -339,7 +358,7 @@ updateChart();
                   plugins: {
                         title: {
                             display: true,
-                            text: 'ข้อมูลการจองห้องตามเดือน', // ข้อความที่จะแสดงเป็น title
+                            text: formatThaiDate(selectedMonth ? new Date(selectedMonth) : new Date()), // ข้อความที่จะแสดงเป็น title
                             font: {
                                 size: 18 // ขนาดตัวอักษรของ title
                             }
@@ -381,6 +400,18 @@ function getRandomColor() {
         updatedTotal(selectedMonths);
     }
   });
+
+  function formatThaiDate(date) {
+      const days = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+      const months = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+      const thaiDay = days[date.getDay()];
+      const thaiMonth = months[date.getMonth()];
+      const thaiYear = date.getFullYear()+543;
+
+      return ` ${thaiMonth} พ.ศ. ${thaiYear}`;
+    }
+
   updatedTotal();
   function updatedTotal(selectedMonths = null){
     // console.log(selectedMonths)
@@ -396,6 +427,8 @@ function getRandomColor() {
         // ทำสิ่งที่คุณต้องการกับข้อมูลที่ได้รับ
         // console.log(data);
         var Total = document.getElementById('Total');
+        var Months = document.getElementById('Months');
+        Months.textContent = formatThaiDate(selectedMonths ? new Date(selectedMonths) : new Date());
         Total.textContent = data + ' คน';
       })
       .catch(error => {

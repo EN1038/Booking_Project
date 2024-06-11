@@ -92,7 +92,7 @@
             </div>
           </a>
           @if(Auth::user()->level_user === 'superAdmin')
-              <a href="{{ route('create_room') }}" class="text-decoration-none">
+              {{-- <a href="{{ route('create_room') }}" class="text-decoration-none">
                   <div class="hover-btn d-flex flex-row mb-1 rounded-3 align-items-center">
                       <div class="col-2 fs-4 text-center">
                           <i class="fa-solid fa-folder-plus"></i>
@@ -101,7 +101,7 @@
                           <span class="divToHide">สร้างห้อง</span>
                       </div>
                   </div>
-              </a>
+              </a> --}}
               <a href="{{ route('create_typeroom') }}" class="text-decoration-none">
                   <div class="hover-btn d-flex flex-row mb-1 rounded-3 align-items-center">
                       <div class="col-2 fs-4 text-center">
@@ -292,8 +292,8 @@
                                 <a href="{{route('dashboard_admin')}}"
                                 class=' mx-2'><i class="fa-solid fa-house"></i> หน้าแรก</a>
                                 @if(Auth::user()->level_user === 'superAdmin')
-                                <a href="{{route('create_room')}}"
-                                class=' mx-2'><i class="fa-solid fa-folder-plus"></i> สร้างห้อง</a>
+                                {{-- <a href="{{route('create_room')}}"
+                                class=' mx-2'><i class="fa-solid fa-folder-plus"></i> สร้างห้อง</a> --}}
     
                                 <a href="{{route('create_typeroom')}}"
                                 class=' mx-2'><i class="fa-solid fa-circle-plus"></i> สร้างประเภทห้อง</a>
@@ -336,8 +336,8 @@
 
                             
                             @if(Auth::user()->level_user === 'superAdmin')
-                            <a href="{{route('create_room')}}"
-                            class=' mx-2'><i class="fa-solid fa-folder-plus"></i> สร้างห้อง</a>
+                            {{-- <a href="{{route('create_room')}}"
+                            class=' mx-2'><i class="fa-solid fa-folder-plus"></i> สร้างห้อง</a> --}}
 
                             <a href="{{route('create_typeroom')}}"
                             class=' mx-2'><i class="fa-solid fa-circle-plus"></i> สร้างประเภทห้อง</a>

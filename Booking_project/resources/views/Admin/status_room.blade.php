@@ -29,6 +29,7 @@
             <th scope="col">ประเภทห้อง</th>
             <th scope="col">ระยะเวลาที่จอง</th>
             <th scope="col">เวลาก่อนจะปฎิเสธ</th>
+            <th scope="col">สถานะรายการ</th>
             <th scope="col">การอนุมัติ</th>
             
           </tr>
@@ -51,12 +52,16 @@
                         <td data-label="ชื่อห้อง">{{$items->booking->work_time->listRoom->name_room}}</td>
                         <td data-label="ประเภทห้อง">{{$items->booking->work_time->listRoom->typeRoom->name_type}}</td>
                         <td data-label="ระยะเวลาที่จอง">{{ \Carbon\Carbon::parse($items->booking->work_time->name_start_workTime)->format('H:i') }} - {{ \Carbon\Carbon::parse($items->booking->work_time->name_end_workTime)->format('H:i') }}</td>
-                        <td data-label="เวลาก่อนจะปฎิเสธ" class="card-text text-danger fw-bold fs-5" id="countDown" data-timecancel="{{$items->booking->work_time->listRoom->typeRoom->time_late}}" data-id="{{$items->id}}" data-timestart="{{$items->booking->work_time->name_start_workTime}}"></td>
+                        <td data-label="เวลาก่อนจะปฎิเสธ" class="card-text text-danger fw-bold fs-6" id="countDown" data-status_wt='{{$items->booking->work_time->status_wt}}' data-timelate="{{$items->booking->work_time->listRoom->typeRoom->time_late}}" data-id="{{$items->id}}" data-timestart="{{$items->booking->work_time->name_start_workTime}}"></td>
+                        <td data-label="สถานะรายการ">
+                          {{$items->booking->status_book}}
+                        </td>
                         <td data-label="การอนุมัติ">
-                            <select class="form-select text-center border border-success rounded-4" id="select_status{{$items->id}}" onchange="changStatus()" data-status="{{$items->booking->status_book}}" data-id="{{$items->booking_id}}"  {{($items->booking->status_book === 'ยืนยันการจอง' || $items->booking->status_book === 'ปฎิเสธการจอง' || $items->booking->status_book === 'ยกเลิกการจอง') ? 'disabled' : '' }}>
+                            {{-- <select class="form-select text-center border border-success rounded-4" id="select_status{{$items->id}}" onchange="changStatus()" data-status="{{$items->booking->status_book}}" data-id="{{$items->booking_id}}"  {{($items->booking->status_book === 'ยืนยันการจอง' || $items->booking->status_book === 'ปฎิเสธการจอง' || $items->booking->status_book === 'ยกเลิกการจอง') ? 'disabled' : '' }}>
                                 <option value="{{$items->booking->status_book}}" class="text-warning" selected hidden>{{$items->booking->status_book}}</option>
-                                <option value="ยืนยันการจอง" class="text-success">ยืนยันการจอง</option>
-                            </select>
+                                <option value="ยืนยันการจอง" class="text-success" >ยืนยันการจอง</option>
+                            </select> --}}
+                            <button class="btn btn-success rounded-3" id="select_status{{$items->id}}" data-work_time_id="{{$items->booking->work_time->id}}" data-status="{{$items->booking->status_book}}" data-id="{{$items->booking_id}}" onclick="changStatus()" {{($items->booking->status_book === 'ยืนยันการจอง' || $items->booking->status_book === 'ปฎิเสธการจอง' || $items->booking->status_book === 'ยกเลิกการจอง') ? 'disabled' : '' }} value="ยืนยันการจอง"> ยืนยันการจอง </button>
                         </td>
                     </tr>
                 </tbody>
@@ -77,15 +82,16 @@
       </div>
       <div class="modal-body">
         <p class="fw-bold">ห้อง {{$items->booking->work_time->listRoom->name_room}}</p>
-        <ul>
-          @foreach ($book as $user)
-              @if ($user->booking_id == $items->booking_id)
-                  @foreach (explode(',', $user->user_names) as $name)
-                      <li>{{ $name }}</li>
-                  @endforeach
-              @endif
-          @endforeach
-          </ul>
+        @foreach ($book as $user)
+            @if ($user->booking_id == $items->booking_id)
+                <ul>
+                    @foreach (explode(',', $user->passWordNumber_user) as $index => $passWordNumber)
+                        <li>{{ $passWordNumber }} - {{ explode(',', $user->user_name)[$index] }} {{ explode(',', $user->last_name)[$index] }}</li>
+                    @endforeach
+                </ul>
+            @endif
+        @endforeach
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-circle-xmark"></i> ปิด</button>

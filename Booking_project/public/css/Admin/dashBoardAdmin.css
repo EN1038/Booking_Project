@@ -16,8 +16,8 @@
 }
 
 .card:hover {
-    background: var(--root-background);
-    color: var(--root-text);
+    box-shadow: 0 0 15px #1b8f59; 
+    color: var(--root-txhover);
 }
 
 .card:hover .title-card {

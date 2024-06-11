@@ -1,13 +1,12 @@
 function showDurationTime() {
-    const typeRoomsSelect = document.getElementById('select_typeRoom');
+    const typeRoomsInput = document.getElementById('select_typeRoom');
     const timeDurationDisplay = document.getElementById('time_duration');
-    const selectedOption = typeRoomsSelect.options[typeRoomsSelect.selectedIndex];
-    const timeDuration = selectedOption.dataset.timeduration;
+    const timeDuration = typeRoomsInput.dataset.timeduration;
     const [durationHour, durationMinute] = timeDuration.split(':').map(Number);
     const time = formatTime(durationHour, durationMinute)
     timeDurationDisplay.value = time;
     createOptionTime()
-    validateSelectType()
+
 }
 
 function createOptionTime() {
@@ -112,28 +111,23 @@ function createOptionTime() {
     }
 }
 
-
-
 function formatTime(hour, minute) {
     return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 }
 
-function validationName(event) {
-    const nameRooms = event.target.value;
+function validationName() {
+    const nameRooms = document.getElementById('nameRooms').value;
     const errorNameRoom = document.getElementById('errorNameRoom');
-    const button = document.getElementById('btn-create');
 
     if (nameRooms.length > 20) {
         errorNameRoom.classList.remove('d-none');
         errorNameRoom.textContent = 'ข้อความยาวเกินไป';
-        button.disabled = true;
         return;
     }
 
     if (nameRooms === "") {
         errorNameRoom.classList.remove('d-none');
         errorNameRoom.textContent = 'กรุณากรอกชื่อ';
-        button.disabled = true;
         return;
     }
 
@@ -158,12 +152,10 @@ function validationName(event) {
             });
             // ตรวจสอบว่า nameRoom ซ้ำกับค่าในอาเรย์ uniqueNames หรือไม่
             if (uniqueNames.includes(nameRooms)) {
-                const nameRoom = event.target;
-                const buttonx = document.getElementById('btn-create');
+                const nameRoom = document.getElementById('nameRooms').value;
                 nameRoom.value = '';
                 errorNameRoom.classList.remove('d-none');
                 errorNameRoom.textContent = 'มีชื่อนี้อยู่ในระบบแล้ว โปรดใช้ชื่ออื่น'
-                buttonx.disabled = true;
                 return;
             }
         })
@@ -173,8 +165,119 @@ function validationName(event) {
         });
 
     errorNameRoom.classList.add('d-none');
-    button.disabled = false;
+    showDurationTime();
+}
 
+function validateSelectStatus() {
+    const selectStatus = document.getElementById('selectStatus');
+    const errorSelectStatus = document.getElementById('errorSelectStatus');
+
+    errorSelectStatus.classList.remove('d-none');
+    errorSelectStatus.textContent = 'โปรดเลือกสถานะของห้อง';
+
+    if (selectStatus.value === "On" || selectStatus.value === 'Off') {
+        errorSelectStatus.classList.add('d-none');
+    }
+
+}
+
+function confirmDelete(event) {
+    event.preventDefault(); // ยกเลิกการทำงานของลิงก์
+
+    Swal.fire({
+        title: 'คุณแน่ใจหรือไม่?',
+        text: "คุณต้องการที่จะลบรายการนี้หรือไม่?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'ใช่, ฉันต้องการลบ',
+        cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = event.target.href;
+        }
+    });
+}
+
+function validationImg() {
+    var fileInput = document.getElementById('formFile');
+    var errorLabel = document.getElementById("errorImgRoom");
+    const button = document.getElementById('btn-create');
+    // ตรวจสอบว่ามีการเลือกไฟล์หรือไม่
+    if (fileInput.files.length === 0) {
+        errorLabel.textContent = "โปรดเลือกรูปภาพ";
+        button.disabled = true;
+    } else {
+        // ตรวจสอบขนาดของไฟล์
+        var maxSize = 2 * 1024 * 1024; // ขนาดสูงสุดของไฟล์ภาพ (2MB)
+        if (fileInput.files[0].size > maxSize) {
+            errorLabel.textContent = "ขนาดของไฟล์ภาพต้องไม่เกิน 2MB";
+            button.disabled = true;
+        } else {
+            // ตรวจสอบชนิดของไฟล์ภาพ
+            var allowedExtensions = ["jpg", "jpeg", "png", "gif"];
+            var extension = fileInput.files[0].name.split(".").pop().toLowerCase();
+            if (!allowedExtensions.includes(extension)) {
+                errorLabel.textContent = "รูปภาพไม่ได้รับอนุญาตให้ใช้";
+                button.disabled = true;
+            } else {
+                // ล้างข้อความผิดพลาดหากไม่มีปัญหา
+                errorLabel.textContent = "";
+            }
+        }
+    }
+
+}
+
+function create() {
+    const button = document.getElementById('btn-create');
+    const inputImg = document.getElementById('formFile');
+    const inputName = document.getElementById('nameRooms');
+    const inputStatus = document.getElementById('selectStatus');
+
+    function toggleButtonState() {
+        if (inputImg.value !== '' && inputName.value !== '' && inputStatus.value !== '') {
+            button.removeAttribute('disabled');
+        } else {
+            button.setAttribute('disabled', 'disabled');
+        }
+    }
+
+    // เรียกใช้ฟังก์ชัน toggleButtonState เมื่อมีการเปลี่ยนแปลงใน input fields
+    inputImg.addEventListener('change', toggleButtonState);
+    inputName.addEventListener('input', toggleButtonState);
+    inputStatus.addEventListener('change', toggleButtonState);
+}
+
+function validationEditImg() {
+    var fileInput = event.target;
+    var id = event.target.dataset.id;
+    var errorLabel = document.getElementById("errorImgRoom" + id);
+    const button = document.getElementById('editName' + id);
+    // ตรวจสอบว่ามีการเลือกไฟล์หรือไม่
+    if (fileInput.files.length === 0) {
+        errorLabel.textContent = "โปรดเลือกรูปภาพ";
+        button.disabled = true;
+    } else {
+        // ตรวจสอบขนาดของไฟล์
+        var maxSize = 2 * 1024 * 1024; // ขนาดสูงสุดของไฟล์ภาพ (2MB)
+        if (fileInput.files[0].size > maxSize) {
+            errorLabel.textContent = "ขนาดของไฟล์ภาพต้องไม่เกิน 2MB";
+            button.disabled = true;
+        } else {
+            // ตรวจสอบชนิดของไฟล์ภาพ
+            var allowedExtensions = ["jpg", "jpeg", "png", "gif"];
+            var extension = fileInput.files[0].name.split(".").pop().toLowerCase();
+            if (!allowedExtensions.includes(extension)) {
+                errorLabel.textContent = "รูปภาพไม่ได้รับอนุญาตให้ใช้";
+                button.disabled = true;
+            } else {
+                // ล้างข้อความผิดพลาดหากไม่มีปัญหา
+                errorLabel.textContent = "";
+            }
+        }
+    }
 }
 
 function validationNameEdit(event) {
@@ -236,124 +339,7 @@ function validationNameEdit(event) {
 }
 
 
-function validateSelectType() {
-    const time_duration = document.getElementById('time_duration');
-    const errorSelectType = document.getElementById('errorSelectType');
-
-    if (time_duration.value === "") {
-        errorSelectType.classList.remove('d-none');
-        errorSelectType.textContent = 'โปรดเลือกประเภทของห้อง';
-    } else {
-        errorSelectType.classList.add('d-none');
-    }
-
-}
-
-function validateSelectStatus() {
-    const selectStatus = document.getElementById('selectStatus');
-    const errorSelectStatus = document.getElementById('errorSelectStatus');
-
-    errorSelectStatus.classList.remove('d-none');
-    errorSelectStatus.textContent = 'โปรดเลือกสถานะของห้อง';
-
-    if (selectStatus.value === "On" || selectStatus.value === 'Off') {
-        errorSelectStatus.classList.add('d-none');
-    }
-
-}
-
-function confirmDelete(event) {
-    event.preventDefault(); // ยกเลิกการทำงานของลิงก์
-
-    Swal.fire({
-        title: 'คุณแน่ใจหรือไม่?',
-        text: "คุณต้องการที่จะลบรายการนี้หรือไม่?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'ใช่, ฉันต้องการลบ',
-        cancelButtonText: 'ยกเลิก'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = event.target.href;
-        }
-    });
-}
-
-// const id = event.target.dataset.id;
-//     const editTypeRoomsSelect = document.getElementById('editSelect_typeRoom'+id);
-//     console.log(id)
-//     const edits = document.getElementById('editduration'+id);
-//     console.log(edits)
-//     const selectedOption = editTypeRoomsSelect.options[editTypeRoomsSelect.selectedIndex];
-//     const timeDuration = selectedOption.dataset.timeduration;
-//     const [durationHour, durationMinute] = timeDuration.split(':').map(Number);
-//     const time = formatTime(durationHour, durationMinute)
-//     console.log(time)
-//     edits.value = time;
-//     // createOptionTime()
-//     // validateSelectType()
-
-function validationImg() {
-    var fileInput = event.target;
-    var errorLabel = document.getElementById("errorImgRoom");
-    const button = document.getElementById('btn-create');
-    // ตรวจสอบว่ามีการเลือกไฟล์หรือไม่
-    if (fileInput.files.length === 0) {
-        errorLabel.textContent = "โปรดเลือกรูปภาพ";
-        button.disabled = true;
-    } else {
-        // ตรวจสอบขนาดของไฟล์
-        var maxSize = 2 * 1024 * 1024; // ขนาดสูงสุดของไฟล์ภาพ (2MB)
-        if (fileInput.files[0].size > maxSize) {
-            errorLabel.textContent = "ขนาดของไฟล์ภาพต้องไม่เกิน 2MB";
-            button.disabled = true;
-        } else {
-            // ตรวจสอบชนิดของไฟล์ภาพ
-            var allowedExtensions = ["jpg", "jpeg", "png", "gif"];
-            var extension = fileInput.files[0].name.split(".").pop().toLowerCase();
-            if (!allowedExtensions.includes(extension)) {
-                errorLabel.textContent = "รูปภาพไม่ได้รับอนุญาตให้ใช้";
-                button.disabled = true;
-            } else {
-                // ล้างข้อความผิดพลาดหากไม่มีปัญหา
-                errorLabel.textContent = "";
-            }
-        }
-    }
-
-}
-
-function validationEditImg() {
-    var fileInput = event.target;
-    var id = event.target.dataset.id;
-    var errorLabel = document.getElementById("errorImgRoom" + id);
-    const button = document.getElementById('editName' + id);
-    // ตรวจสอบว่ามีการเลือกไฟล์หรือไม่
-    if (fileInput.files.length === 0) {
-        errorLabel.textContent = "โปรดเลือกรูปภาพ";
-        button.disabled = true;
-    } else {
-        // ตรวจสอบขนาดของไฟล์
-        var maxSize = 2 * 1024 * 1024; // ขนาดสูงสุดของไฟล์ภาพ (2MB)
-        if (fileInput.files[0].size > maxSize) {
-            errorLabel.textContent = "ขนาดของไฟล์ภาพต้องไม่เกิน 2MB";
-            button.disabled = true;
-        } else {
-            // ตรวจสอบชนิดของไฟล์ภาพ
-            var allowedExtensions = ["jpg", "jpeg", "png", "gif"];
-            var extension = fileInput.files[0].name.split(".").pop().toLowerCase();
-            if (!allowedExtensions.includes(extension)) {
-                errorLabel.textContent = "รูปภาพไม่ได้รับอนุญาตให้ใช้";
-                button.disabled = true;
-            } else {
-                // ล้างข้อความผิดพลาดหากไม่มีปัญหา
-                errorLabel.textContent = "";
-            }
-        }
-    }
-}
-
-validateSelectType()
+validationName()
+validationImg()
 validateSelectStatus()
+create()

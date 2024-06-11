@@ -35,6 +35,8 @@ class AdminController extends Controller
         $all_booking_details = [];
         $userCounts = [];
 
+    
+
         foreach ($booking_ids as $booking_id) {
             $booking_details = book_details::where('booking_id', '=', $booking_id)
                 ->orderBy('id') // เรียงลำดับ id ของ book_details
@@ -255,13 +257,14 @@ class AdminController extends Controller
         return view('Admin.list_workTime_room', compact('workTimes', 'room'));
     }
 
-    function create_room()
+    function create_room($typeRoom)
     {
         App::setLocale('th');
         Carbon::setLocale('th');
 
-        $room = listRoom::with('typeRoom')->paginate(9);
-        $type_rooms = typeRoom::all();
+        // dd($typeRoom);
+        $room = listRoom::with('typeRoom')->where('id_type_room','=',$typeRoom)->paginate(9);
+        $type_rooms = typeRoom::where('id','=',$typeRoom)->first();
         $work_times = work_time::with('listRoom')->get();
         return view('Admin.create_room', compact('type_rooms', 'room', 'work_times'));
     }
@@ -479,11 +482,7 @@ class AdminController extends Controller
     function edit_type_rooms(Request $request, $id)
     {
         if ($request->has('editNameTypeRooms') && $request->has('editNumberUser') && $request->has('editTrueTime') && $request->has('trueEditTimeCancel') && $request->has('trueEditTimeLate')) {
-            $existing_typeRoom = typeRoom::where('name_type', $request->editNameTypeRooms)->first();
-
-            if ($existing_typeRoom) {
-                return back()->with('error', 'มีชื่อห้องซ้ำ');
-            }
+            
             typeRoom::find($id)->update([
                 'name_type' => $request->editNameTypeRooms,
                 'time_duration' => $request->editTrueTime,
@@ -511,19 +510,29 @@ class AdminController extends Controller
             ->groupBy('booking_id')
             ->select('booking_id', DB::raw('GROUP_CONCAT(user_id) as user_ids'))
             ->get();
+        
 
-        foreach ($book as $item) {
-            $user_ids = explode(',', $item->user_ids);
-            $users = Leveluser::whereIn('id', $user_ids)->pluck('name_user')->toArray();
-            $item->user_names = implode(', ', $users);
-        }
-        // dd($book_details);
+            foreach ($book as $item) {
+                $user_ids = explode(',', $item->user_ids);
+                $users = Leveluser::whereIn('id', $user_ids)->get();
+                
+                $passWordNumbers = $users->pluck('passWordNumber_user')->implode(', ');
+                $userNames = $users->pluck('name_user')->implode(', ');
+                $lastNames = $users->pluck('last_name')->implode(', ');
+            
+                $item->passWordNumber_user = $passWordNumbers;
+                $item->user_name = $userNames;
+                $item->last_name = $lastNames;
+            }
+            
+            
+        // dd($book);
         return view('Admin.status_room', compact('book_details', 'book'));
     }
 
     function update_status_admin($id, $value)
     {
-
+        
         $booking = booking::find($id);
         $booking->update([
             'status_book' => $value
@@ -536,8 +545,10 @@ class AdminController extends Controller
         $book_details = book_details::with('Leveluser')->where('booking_id', $id)->pluck('user_id');
 
         if ($value == 'ยืนยันการจอง') {
+            $work_time->update([
+                'status_wt' => 'มีการจองแล้ว'
+            ]);
             if ($booking->updated_at <= $combined_time) { //มาสาย
-
                 foreach ($book_details as $item) {
                     $user = Leveluser::where('id', $item)->first();
                     if ($user->goodness_user < 3) {
@@ -552,6 +563,9 @@ class AdminController extends Controller
             }
             return back()->with('success', 'ทำการยืนยันการจองห้องเรียบร้อย');
         } else if ($value == 'ปฎิเสธการจอง') {
+            $work_time->update([
+                'status_wt' => 'จองห้อง'
+            ]);
             foreach ($book_details as $item) {
                 $user = Leveluser::where('id', $item)->first();
                 if ($booking->updated_at > $combined_time) { //ไม่มา
@@ -628,25 +642,35 @@ class AdminController extends Controller
             ->get();
 
         // ดึง work_times ที่ไม่เหมือนกับค่าที่ได้จาก booking ในคอลัม workTime_id
-        $work_times = work_time::with('booking')
-            ->whereNotIn('id', $booking->pluck('workTime_id'))
-            ->get();
+        $work_times = work_time::with('booking')->get();
 
-
+        
         foreach ($work_times as $work_time) {
             // ดึงเวลาเริ่มงานจากคอลัม 'name_start_workTime'
             $start_time = Carbon::createFromFormat('H:i:s', $work_time->name_start_workTime);
             $end_time = Carbon::createFromFormat('H:i:s', $work_time->name_end_workTime);
-
             // เปรียบเทียบเวลาปัจจุบันกับเวลาเริ่มงาน
-            if ($today  >= $start_time) {
+            if ($today >= $start_time) {
                 // เปลี่ยนค่าคอลัม 'status_wt' เป็น 'ว็อกอิน'
-                $work_time->status_wt = 'ว็อกอิน';
-                $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
-                if ($today  >= $end_time) {
-                    $work_time->status_wt = 'หมดเวลาจอง';
-                    $work_time->save();
+                if($work_time->status_wt === 'มีการจองแล้ว'){
+                    $work_time->status_wt = 'มีการจองแล้ว';
+                    $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
+                } else {
+                    $work_time->status_wt = 'ว็อกอิน';
+                    $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
                 }
+                if ($today >= $end_time) {
+                    $work_time->status_wt = 'หมดเวลาจอง';
+                    $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
+                }
+            }else if($today <= $start_time){
+                if($work_time->status_wt === 'มีการจองแล้ว'){
+                    $work_time->status_wt = 'มีการจองแล้ว';
+                    $work_time->save();
+                }else{
+                    $work_time->status_wt = 'จองห้อง';
+                    $work_time->save(); 
+                }   
             }
         }
 
@@ -654,13 +678,14 @@ class AdminController extends Controller
     }
 
     function insert_booking_admin(Request $request)
-    {
+    {   
+        
         $today = Carbon::now()->setTimezone('Asia/Bangkok');
         $bookValidation = Booking::where('workTime_id', $request->select_time)
             ->whereDate('created_at', $today)
             ->whereIn('status_book', ['ยืนยันการจอง', 'รอยืนยันการจอง'])
             ->first();
-
+        
 
         foreach ($request->pass_number as $pass_user) {
             $userValidation = Leveluser::where('passWordNumber_user', $pass_user)->first();
@@ -686,6 +711,15 @@ class AdminController extends Controller
             $booking->status_book = 'รอยืนยันการจอง';
             $booking->save();
 
+            $work_time = work_time::where('id', $request->select_time)->first();
+            
+            if( $work_time->status_wt === 'ว็อกอิน'){
+                work_time::where('id', $request->select_time)->update(['status_wt' => 'ว็อกอิน']);
+            }else{
+                work_time::where('id', $request->select_time)->update(['status_wt' => 'มีการจองแล้ว']);
+            }
+
+            
             $id_book = $booking->id;
 
             foreach ($request->pass_number as $pass_user) {

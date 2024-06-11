@@ -23,8 +23,8 @@
 }
 
 .card:hover {
-    background: var(--root-background);
-    color: var(--root-text);
+    box-shadow: 0 0 15px var(--root-txhover); 
+    color: var(--root-txhover);
     transform: scale(1.05);
 }
 

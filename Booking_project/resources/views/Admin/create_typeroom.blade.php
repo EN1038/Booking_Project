@@ -23,14 +23,14 @@
   <h1 class="text-center fw-bold text-greenlight">สร้างประเภทห้อง</h1>
     <div class="d-flex flex-column justify-content-center align-items-center">
       <div class="col-12 d-flex flex-row justify-content-end align-items-center">
-          <button type="button" class="btn btn-primary m-1 rounded-5" data-bs-toggle="modal" data-bs-target="#createTypeRooms">
+          <button type="button" class="btn btn-success m-1 rounded-5" data-bs-toggle="modal" data-bs-target="#createTypeRooms">
             <i class="fa-solid fa-plus"></i> สร้างประเภท
           </button>
       </div>
     </div>
     @foreach ($type_rooms as $items)
     <div class="col-xl-6 mt-1">
-      <div class="card shadow bg">
+      <div class="card bg">
         <div class="card-body">
           <h5 class="card-title">ชื่อประเภท <span>{{$items->name_type}}</span></h5>
           <p class="card-text">ระยะเวลาการใช้งาน <span>{{ date('H', strtotime($items->time_duration)) !== '00' ? date('H', strtotime($items->time_duration)) . ' ชั่วโมง ' : '' }}{{ substr(date('i', strtotime($items->time_duration)), -2) }} นาที</span></p>               
@@ -38,11 +38,11 @@
           <p class="card-text">เวลาเข้าสาย <span>{{ date('H', strtotime($items->time_late)) !== '00' ? date('H', strtotime($items->time_late)) . ' ชั่วโมง ' : '' }}{{ substr(date('i', strtotime($items->time_late)), -2) }} นาที</span></p>               
           <p class="card-text">จำนวนคนขั้นต่ำ <span>{{$items->number_user}} คน</span></p> 
           <div class="col-12 d-flex flex-row justify-content-end align-items-center">
-            <a href="{{route('delete_type_rooms',$items->id)}}" class="btn btn-danger rounded-5 mx-1" onclick="return confirmDelete(event)"><i class="fa-solid fa-trash-arrow-up"></i> ลบ</a>
+            <a href="{{route('create_room',$items->id)}}" class="btn btn-success rounded-5 mx-1" ><i class="fa-solid fa-folder-open"></i> รายการห้อง</a>
             <button type="button" class="btn btn-primary m-1 rounded-5" data-bs-toggle="modal" data-bs-target="#editTypeRooms{{$items->id}}">
-             <i class="fa-solid fa-gear"></i> แก้ไข
-             </button>
-           </a>
+              <i class="fa-solid fa-gear"></i> แก้ไข
+              </button>
+            <a href="{{route('delete_type_rooms',$items->id)}}" class="btn btn-danger rounded-5 mx-1" onclick="return confirmDelete(event)"><i class="fa-solid fa-trash-arrow-up"></i> ลบ</a>
           </div>             
         </div>
       </div>
@@ -129,7 +129,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">แก้ไขประเภทห้องชื่อ {{$items->name_type}}</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">แก้ไขประเภทห้องชื่อ <span class="text-greenlight fs-4">{{$items->name_type}}</span></h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -137,43 +137,44 @@
           @csrf
           <div class="mb-3">
             <label for="nameTypeRooms" class="form-label">แก้ไขชื่อประเภทห้อง</label>
-            <input type="text" class="form-control text-center" id="editNameTypeRooms{{$items->id}}" name="editNameTypeRooms" data-id="{{$items->id}}" placeholder="กรอกชื่อประเภทห้องที่ต้องการ" onchange="validate_EditNameTypeRoom()">
+            <input type="text" class="form-control text-center" id="editNameTypeRooms{{$items->id}}" name="editNameTypeRooms" data-id="{{$items->id}}" value="{{$items->name_type}}" placeholder="{{$items->name_type}}" onchange="validate_EditNameTypeRoom()">
             <label for="errornameTypeRooms" class="form-label mx-3 text-danger fw-bold" id="editErrornameTypeRooms{{$items->id}}"></label>
         </div>
         <div class="mb-3">
             <label for="numTypeRooms" class="form-label">แก้ไขจำนวนคนขั้นต่ำในการเข้าใช้งาน</label>
-            <input type="number" class="form-control text-center" name="editNumberUser" placeholder="กรอกจำนวนคน" step="1" id="editNumberUser{{$items->id}}" data-id="{{$items->id}}" onchange="validate_EditNumberUser()">
+            <input type="number" class="form-control text-center" name="editNumberUser" value="{{$items->number_user}}" placeholder="{{$items->number_user}}" step="1" id="editNumberUser{{$items->id}}" data-id="{{$items->id}}" onchange="validate_EditNumberUser()">
             <label for="ErrorNumUser" class="form-label mx-3 text-danger fw-bold" id="editErrorNumberUser{{$items->id}}"></label>
         </div>
         <div class="mb-3">
-          <label for="timeDuration" class="form-label">แก้ไขเวลาในการใช้งานของประเภทนี้</label>
+          <label for="timeDuration" class="form-label mb-0">แก้ไขเวลาในการใช้งานของประเภทนี้</label>
+          <label for="timeDurationAlert" class="form-label text-danger fs-7 my-0"><i class="fa-solid fa-circle-exclamation"></i> เวลานี้จะถูกใช้งานเฉพาะห้องที่สร้างใหม่เท่านั้น</label>
           <div class="d-flex flex-row justify-contents-center align-items-center">
-              <input type="number" class="form-control text-center" id="editHourInput{{$items->id}}" data-id="{{$items->id}}" placeholder="กรอกชั่วโมง" step="1" onchange="combineTimeEdit()">
+              <input type="number" class="form-control text-center" id="editHourInput{{$items->id}}" data-id="{{$items->id}}" value="{{ date('H', strtotime($items->time_duration)) == '00' ? '0' : ltrim(date('H', strtotime($items->time_duration)), '0') }}" placeholder="{{ date('H', strtotime($items->time_duration)) == '00' ? '0' : ltrim(date('H', strtotime($items->time_duration)), '0') }}" step="1" onchange="combineTimeEdit()">
               <label for="hourDuration" class="form-label mx-3">ชั่วโมง</label>
-              <input type="number" class="form-control text-center" id="editMinuteInput{{$items->id}}" data-id="{{$items->id}}" placeholder="กรอกนาที" step="1" onchange="combineTimeEdit()">
+              <input type="number" class="form-control text-center" id="editMinuteInput{{$items->id}}" data-id="{{$items->id}}" value="{{ date('i', strtotime($items->time_duration)) == '00' ? '0' : ltrim(date('i', strtotime($items->time_duration)), '0') }}" placeholder="{{ date('i', strtotime($items->time_duration)) == '00' ? '0' : ltrim(date('i', strtotime($items->time_duration)), '0') }}" step="1" onchange="combineTimeEdit()">
               <label for="minuteDuration" class="form-label mx-3">นาที</label>
               
           </div>
           <label for="ErrorTime" class="form-label mx-3 text-danger fw-bold" id="editErrorTime{{$items->id}}"></label>
-          <input type="time" class="form-control" id="editTrueTime{{$items->id}}" name="editTrueTime" hidden>      
+          <input type="time" class="form-control" id="editTrueTime{{$items->id}}" value="{{$items->time_duration}}" name="editTrueTime" hidden>      
         </div>
         <div class="mb-3">
           <label for="timeBeforCancel" class="form-label">เวลาในการยกเลิกการจอง</label>
           <div class="d-flex flex-row justify-contents-center align-items-center">
-            <input type="number" class="form-control text-center" id="timeEditBeforCancel{{$items->id}}" name="timeEditBeforCancel" data-id="{{$items->id}}" placeholder="กรอกเวลาในการยกเลิกการจอง" onchange="convertEditMinutesToTime()"> 
+            <input type="number" class="form-control text-center" id="timeEditBeforCancel{{$items->id}}" name="timeEditBeforCancel" data-id="{{$items->id}}" value="{{ date('i', strtotime($items->time_cancel)) == '00' ? '0' : ltrim(date('i', strtotime($items->time_cancel)), '0') }}" placeholder="{{ date('i', strtotime($items->time_cancel)) == '00' ? '0' : ltrim(date('i', strtotime($items->time_cancel)), '0') }}" onchange="convertEditMinutesToTime()"> 
             <label for="minuteDuration" class="form-label mx-3">นาที</label>
           </div> 
           <label for="ErrorTimeCancel" class="form-label mx-3 text-danger fw-bold" id="ErrorEditTimeCancel{{$items->id}}"></label>
-          <input type="time" class="form-control" id="trueEditTimeCancel{{$items->id}}" name="trueEditTimeCancel" hidden>
+          <input type="time" class="form-control" id="trueEditTimeCancel{{$items->id}}" name="trueEditTimeCancel" value="{{$items->time_cancel}}" hidden>
         </div>
         <div class="mb-3">
           <label for="timeBeforCancel" class="form-label">เวลาในการเข้าสาย</label>
           <div class="d-flex flex-row justify-contents-center align-items-center">
-            <input type="number" class="form-control text-center" id="timeEditBeforLate{{$items->id}}" name="timeEditBeforLate" data-id="{{$items->id}}" placeholder="กรอกเวลาในการยกเลิกการจอง" onchange="convertEditMinutesToTimeLate()"> 
+            <input type="number" class="form-control text-center" id="timeEditBeforLate{{$items->id}}" name="timeEditBeforLate" data-id="{{$items->id}}" value="{{ date('i', strtotime($items->time_late)) == '00' ? '0' : ltrim(date('i', strtotime($items->time_late)), '0') }}" placeholder="{{ date('i', strtotime($items->time_late)) == '00' ? '0' : ltrim(date('i', strtotime($items->time_late)), '0') }}" onchange="convertEditMinutesToTimeLate()"> 
             <label for="minuteDuration" class="form-label mx-3">นาที</label>
           </div> 
           <label for="ErrorTimeCancel" class="form-label mx-3 text-danger fw-bold" id="ErrorEditTimeLate{{$items->id}}"></label>
-          <input type="time" class="form-control" id="trueEditTimeLate{{$items->id}}" name="trueEditTimeLate" hidden>
+          <input type="time" class="form-control" id="trueEditTimeLate{{$items->id}}" name="trueEditTimeLate" value="{{$items->time_late}}" hidden>
         </div>
     </div>
       <div class="modal-footer">
