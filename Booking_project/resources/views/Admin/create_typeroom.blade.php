@@ -42,7 +42,7 @@
             <button type="button" class="btn btn-primary m-1 rounded-5" data-bs-toggle="modal" data-bs-target="#editTypeRooms{{$items->id}}">
               <i class="fa-solid fa-gear"></i> แก้ไข
               </button>
-            <a href="{{route('delete_type_rooms',$items->id)}}" class="btn btn-danger rounded-5 mx-1" onclick="return confirmDelete(event)"><i class="fa-solid fa-trash-arrow-up"></i> ลบ</a>
+            {{-- <a href="{{route('delete_type_rooms',$items->id)}}" class="btn btn-danger rounded-5 mx-1" onclick="return confirmDelete(event)"><i class="fa-solid fa-trash-arrow-up"></i> ลบ</a> --}}
           </div>             
         </div>
       </div>

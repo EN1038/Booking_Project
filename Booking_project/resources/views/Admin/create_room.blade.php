@@ -35,7 +35,7 @@
           <p class="card-text">ห้องถูกสร้างเมื่อ <span>{{ \Carbon\Carbon::parse($items->updated_at)->translatedFormat('d M') }} {{ \Carbon\Carbon::parse($items->updated_at)->year + 543 }}</span></p>               
                 <a href="{{route('change_status',$items->id)}}" class="rounded-5 btn {{ $items->status_room === 'On' ? 'btn-success' : 'btn-danger' }}">
                   <i class="fa-solid fa-power-off"></i> {{ $items->status_room }}</a>
-                  <a href="{{route('delete_room',$items->id)}}" class="btn btn-danger rounded-5" onclick="return confirmDelete(event)"><i class="fa-solid fa-trash-arrow-up"></i> ลบ</a>
+                  {{-- <a href="{{route('delete_room',$items->id)}}" class="btn btn-danger rounded-5" onclick="return confirmDelete(event)"><i class="fa-solid fa-trash-arrow-up"></i> ลบ</a> --}}
                   <button class="btn btn-primary rounded-5" data-bs-toggle="modal" data-bs-target="#updateRooms{{$items->id}}"><i class="fa-solid fa-gear"></i> แก้ไข</button>
                   <a href="{{route('view_listroom',$items->id)}}" class="btn btn-secondary rounded-5 text-light"><i class="fa-solid fa-up-right-from-square"></i> เวลา</a>
               </a>
