@@ -368,14 +368,22 @@
             </div>
         </div>
         {{-- End_sidenav --}}
-        
+        <style>
+          .scrollable {
+              overflow-y: auto; /* เลื่อนในแนวตั้ง */
+              overflow-x: hidden; /* เลื่อนในแนวนอน */
+              max-height: 700px; /* หรือกำหนดความสูงตามที่ต้องการ */
+          }
+
+        </style>
+      
         {{-- body --}}
-        <div class="body mt-4">
+        <div class="body mt-4 scrollable">
             @yield('content')
         </div>
         {{-- End_body --}}
         {{-- Footer --}}
-        <footer class="footer text-light" >
+        <footer class="footer text-light fixed-bottom" >
           <div class="container py-3">
             <div class="text-muted text-center">NSRU Nakhon Sawan Rajabhat University <br>
               NSRU All Rights Reserved</div>

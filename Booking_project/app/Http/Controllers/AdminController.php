@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\App;
+
 class AdminController extends Controller
 {
     //
@@ -35,7 +36,7 @@ class AdminController extends Controller
         $all_booking_details = [];
         $userCounts = [];
 
-    
+
 
         foreach ($booking_ids as $booking_id) {
             $booking_details = book_details::where('booking_id', '=', $booking_id)
@@ -263,8 +264,8 @@ class AdminController extends Controller
         Carbon::setLocale('th');
 
         // dd($typeRoom);
-        $room = listRoom::with('typeRoom')->where('id_type_room','=',$typeRoom)->paginate(9);
-        $type_rooms = typeRoom::where('id','=',$typeRoom)->first();
+        $room = listRoom::with('typeRoom')->where('id_type_room', '=', $typeRoom)->paginate(9);
+        $type_rooms = typeRoom::where('id', '=', $typeRoom)->first();
         $work_times = work_time::with('listRoom')->get();
         return view('Admin.create_room', compact('type_rooms', 'room', 'work_times'));
     }
@@ -482,7 +483,7 @@ class AdminController extends Controller
     function edit_type_rooms(Request $request, $id)
     {
         if ($request->has('editNameTypeRooms') && $request->has('editNumberUser') && $request->has('editTrueTime') && $request->has('trueEditTimeCancel') && $request->has('trueEditTimeLate')) {
-            
+
             typeRoom::find($id)->update([
                 'name_type' => $request->editNameTypeRooms,
                 'time_duration' => $request->editTrueTime,
@@ -510,29 +511,29 @@ class AdminController extends Controller
             ->groupBy('booking_id')
             ->select('booking_id', DB::raw('GROUP_CONCAT(user_id) as user_ids'))
             ->get();
-        
 
-            foreach ($book as $item) {
-                $user_ids = explode(',', $item->user_ids);
-                $users = Leveluser::whereIn('id', $user_ids)->get();
-                
-                $passWordNumbers = $users->pluck('passWordNumber_user')->implode(', ');
-                $userNames = $users->pluck('name_user')->implode(', ');
-                $lastNames = $users->pluck('last_name')->implode(', ');
-            
-                $item->passWordNumber_user = $passWordNumbers;
-                $item->user_name = $userNames;
-                $item->last_name = $lastNames;
-            }
-            
-            
+
+        foreach ($book as $item) {
+            $user_ids = explode(',', $item->user_ids);
+            $users = Leveluser::whereIn('id', $user_ids)->get();
+
+            $passWordNumbers = $users->pluck('passWordNumber_user')->implode(', ');
+            $userNames = $users->pluck('name_user')->implode(', ');
+            $lastNames = $users->pluck('last_name')->implode(', ');
+
+            $item->passWordNumber_user = $passWordNumbers;
+            $item->user_name = $userNames;
+            $item->last_name = $lastNames;
+        }
+
+
         // dd($book);
         return view('Admin.status_room', compact('book_details', 'book'));
     }
 
     function update_status_admin($id, $value)
     {
-        
+
         $booking = booking::find($id);
         $booking->update([
             'status_book' => $value
@@ -601,18 +602,18 @@ class AdminController extends Controller
             ->select('booking_id', DB::raw('GROUP_CONCAT(user_id) as user_ids'))
             ->get();
 
-            foreach ($book as $item) {
-                $user_ids = explode(',', $item->user_ids);
-                $users = Leveluser::whereIn('id', $user_ids)->get();
-                
-                $passWordNumbers = $users->pluck('passWordNumber_user')->implode(', ');
-                $userNames = $users->pluck('name_user')->implode(', ');
-                $lastNames = $users->pluck('last_name')->implode(', ');
-            
-                $item->passWordNumber_user = $passWordNumbers;
-                $item->user_name = $userNames;
-                $item->last_name = $lastNames;
-            }
+        foreach ($book as $item) {
+            $user_ids = explode(',', $item->user_ids);
+            $users = Leveluser::whereIn('id', $user_ids)->get();
+
+            $passWordNumbers = $users->pluck('passWordNumber_user')->implode(', ');
+            $userNames = $users->pluck('name_user')->implode(', ');
+            $lastNames = $users->pluck('last_name')->implode(', ');
+
+            $item->passWordNumber_user = $passWordNumbers;
+            $item->user_name = $userNames;
+            $item->last_name = $lastNames;
+        }
         return view('Admin.history_room', compact('book_details', 'book'));
     }
 
@@ -651,7 +652,7 @@ class AdminController extends Controller
         // ดึง work_times ที่ไม่เหมือนกับค่าที่ได้จาก booking ในคอลัม workTime_id
         $work_times = work_time::with('booking')->get();
 
-        
+
         foreach ($work_times as $work_time) {
             // ดึงเวลาเริ่มงานจากคอลัม 'name_start_workTime'
             $start_time = Carbon::createFromFormat('H:i:s', $work_time->name_start_workTime);
@@ -659,7 +660,7 @@ class AdminController extends Controller
             // เปรียบเทียบเวลาปัจจุบันกับเวลาเริ่มงาน
             if ($today >= $start_time) {
                 // เปลี่ยนค่าคอลัม 'status_wt' เป็น 'ว็อกอิน'
-                if($work_time->status_wt === 'มีการจองแล้ว'){
+                if ($work_time->status_wt === 'มีการจองแล้ว') {
                     $work_time->status_wt = 'มีการจองแล้ว';
                     $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
                 } else {
@@ -670,14 +671,14 @@ class AdminController extends Controller
                     $work_time->status_wt = 'หมดเวลาจอง';
                     $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
                 }
-            }else if($today <= $start_time){
-                if($work_time->status_wt === 'มีการจองแล้ว'){
+            } else if ($today <= $start_time) {
+                if ($work_time->status_wt === 'มีการจองแล้ว') {
                     $work_time->status_wt = 'มีการจองแล้ว';
                     $work_time->save();
-                }else{
+                } else {
                     $work_time->status_wt = 'จองห้อง';
-                    $work_time->save(); 
-                }   
+                    $work_time->save();
+                }
             }
         }
 
@@ -685,14 +686,14 @@ class AdminController extends Controller
     }
 
     function insert_booking_admin(Request $request)
-    {   
-        
+    {
+
         $today = Carbon::now()->setTimezone('Asia/Bangkok');
         $bookValidation = Booking::where('workTime_id', $request->select_time)
             ->whereDate('created_at', $today)
             ->whereIn('status_book', ['ยืนยันการจอง', 'รอยืนยันการจอง'])
             ->first();
-        
+
 
         foreach ($request->pass_number as $pass_user) {
             $userValidation = Leveluser::where('passWordNumber_user', $pass_user)->first();
@@ -719,14 +720,14 @@ class AdminController extends Controller
             $booking->save();
 
             $work_time = work_time::where('id', $request->select_time)->first();
-            
-            if( $work_time->status_wt === 'ว็อกอิน'){
+
+            if ($work_time->status_wt === 'ว็อกอิน') {
                 work_time::where('id', $request->select_time)->update(['status_wt' => 'ว็อกอิน']);
-            }else{
+            } else {
                 work_time::where('id', $request->select_time)->update(['status_wt' => 'มีการจองแล้ว']);
             }
 
-            
+
             $id_book = $booking->id;
 
             foreach ($request->pass_number as $pass_user) {
