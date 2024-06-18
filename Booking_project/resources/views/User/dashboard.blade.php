@@ -18,7 +18,7 @@
 </script>
 @endif
 <link rel="stylesheet" href="{{asset('css/Admin/ิbooking_admin.css')}}">
-<div class="container text-center " id="hideDiv">
+<div class="container text-center" id="hideDiv">
 <div class="row">
     <h1 class="text-center fw-bold text-greenlight mb-3"><i class="fa-solid fa-bookmark fs-2"></i> จองห้อง</h1>
     <div class="d-flex flex-row justify-content-center my-4">
@@ -136,8 +136,6 @@
           <option value="{{$time->id}}">{{ date('H', strtotime($time->name_start_workTime)) !== '00' ? date('H', strtotime($time->name_start_workTime)) . ' : ' : '' }}
             {{ substr(date('i', strtotime($time->name_start_workTime)), -2) }} ถึง {{ date('H', strtotime($time->name_end_workTime)) !== '00' ? date('H', strtotime($time->name_end_workTime)) . ' : ' : '' }}
             {{ substr(date('i', strtotime($time->name_end_workTime)), -2) }}
-            
-            
           </option>
         @endif
     @endforeach
@@ -153,6 +151,6 @@
 </div>
 </div>
 
-{{-- <script src="{{asset('js/User/dashboard.js')}}"></script> --}}
+<script src="{{asset('js/User/dashboard.js')}}"></script>
 @endforeach
 @endsection

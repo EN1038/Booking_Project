@@ -9,7 +9,8 @@ targetTimeTH.setHours(18); // กำหนดเวลาที่ต้อง�
 setInterval(function () {
     // รับเวลาปัจจุบัน
     var currentTime = new Date();
-
+    var time = document.getElementById('currentTime');
+    time.textContent = currentTime;
     // ถ้าเวลาปัจจุบันมากกว่าหรือเท่ากับเวลาที่กำหนดให้รีเฟรช
     if (currentTime >= targetTimeTH) {
         location.reload(); // รีเฟรชหน้าเว็บ
@@ -19,23 +20,30 @@ setInterval(function () {
 setInterval(currentTime, 1000);
 
 function currentTime() {
-    // กำหนดเวลาที่ต้องการให้แสดง div หลังเวลาปัจจุบันถึงเวลา 8:00 และซ่อน div เมื่อเวลาเกิน 16:30
-    var currentTime = new Date();
-    var targetTime = new Date(currentTime);
-    targetTime.setHours(8, 0, 0); // เวลา 8:00 นาฬิกา
-    var endOfDay = new Date(currentTime);
-    endOfDay.setHours(16, 30, 0); // เวลา 16:30 นาฬิกา
+    // รับเวลาปัจจุบันในโซนเวลาไทย
+    var currentTime = new Date().toLocaleString('en-US', { timeZone: 'Asia/Bangkok' });
 
-    if (currentTime >= targetTime && currentTime <= endOfDay) {
+    // แปลงเวลาปัจจุบันให้อยู่ในรูปแบบของวัตถุ Date
+    var currentTimeObj = new Date(currentTime);
+
+    // กำหนดเวลาเป้าหมาย 8:00 และ 16:30 ในโซนเวลาไทย
+    var targetTime = new Date(currentTimeObj);
+    targetTime.setHours(8, 0, 0);
+
+    var endOfDay = new Date(currentTimeObj);
+    endOfDay.setHours(16, 30, 0);
+
+    // ตรวจสอบว่า currentTime อยู่ระหว่างเวลาเริ่มต้นและสิ้นสุดหรือไม่
+    if (currentTimeObj >= targetTime && currentTimeObj <= endOfDay) {
+        // ถ้าอยู่ระหว่างเวลาเริ่มต้นและสิ้นสุด ให้แสดง hideDiv
         document.getElementById("hideDiv").classList.remove('d-none');
         document.getElementById("showDiv").classList.add('d-none');
-    } else if (currentTime >= endOfDay) {
+    } else {
+        // ถ้าเกินเวลาสิ้นสุดหรือยังไม่ถึงเวลาเริ่มต้น ให้แสดง showDiv
         document.getElementById("hideDiv").classList.add('d-none');
         document.getElementById("showDiv").classList.remove('d-none');
-        var refreshTimeTH = currentTime.toLocaleTimeString('en-US', {
-            timeZone: 'Asia/Bangkok'
-        });
-        document.getElementById("currentTime").innerText = "เวลาปัจจุบัน: " + refreshTimeTH;
-
     }
 }
+
+
+
