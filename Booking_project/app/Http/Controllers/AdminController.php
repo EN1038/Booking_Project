@@ -319,7 +319,6 @@ class AdminController extends Controller
                 $time_work = new work_time();
                 $time_work->name_start_workTime = $start_time;
                 $time_work->name_end_workTime = $end_time; // เวลาสิ้นสุดทำงาน
-                $time_work->status_wt = 'จองห้อง';
                 $time_work->id_room = $id_room; // ใช้ id ของห้องที่เพิ่งสร้าง
                 $time_work->save();
             }
@@ -546,9 +545,6 @@ class AdminController extends Controller
         $book_details = book_details::with('Leveluser')->where('booking_id', $id)->pluck('user_id');
 
         if ($value == 'ยืนยันการจอง') {
-            $work_time->update([
-                'status_wt' => 'มีการจองแล้ว'
-            ]);
             if ($booking->updated_at <= $combined_time) { //มาสาย
                 foreach ($book_details as $item) {
                     $user = Leveluser::where('id', $item)->first();
@@ -564,9 +560,6 @@ class AdminController extends Controller
             }
             return back()->with('success', 'ทำการยืนยันการจองห้องเรียบร้อย');
         } else if ($value == 'ปฎิเสธการจอง') {
-            $work_time->update([
-                'status_wt' => 'จองห้อง'
-            ]);
             foreach ($book_details as $item) {
                 $user = Leveluser::where('id', $item)->first();
                 if ($booking->updated_at > $combined_time) { //ไม่มา
@@ -617,22 +610,22 @@ class AdminController extends Controller
         return view('Admin.history_room', compact('book_details', 'book'));
     }
 
-    function update_wt($id)
-    {
-        $wt = work_time::where('id', $id)->first();
-        $status = $wt->status_wt;
-        if ($status === 'จองห้อง') {
-            work_time::find($id)->update([
-                'status_wt' => 'ว็อกอิน'
-            ]);
-            return back()->with('success', 'โหมดเวลาเปลี่ยนเป็น ว็อกอิน');
-        } else {
-            work_time::find($id)->update([
-                'status_wt' => 'จองห้อง'
-            ]);
-            return back()->with('success', 'โหมดเวลาเปลี่ยนเป็น จองห้อง');
-        }
-    }
+    // function update_wt($id)
+    // {
+    //     $wt = work_time::where('id', $id)->first();
+    //     $status = $wt->status_wt;
+    //     if ($status === 'จองห้อง') {
+    //         work_time::find($id)->update([
+    //             'status_wt' => 'ว็อกอิน'
+    //         ]);
+    //         return back()->with('success', 'โหมดเวลาเปลี่ยนเป็น ว็อกอิน');
+    //     } else {
+    //         work_time::find($id)->update([
+    //             'status_wt' => 'จองห้อง'
+    //         ]);
+    //         return back()->with('success', 'โหมดเวลาเปลี่ยนเป็น จองห้อง');
+    //     }
+    // }
 
     function booking_admin()
     {
@@ -643,46 +636,38 @@ class AdminController extends Controller
         // ดึงวันที่ปัจจุบัน
         $today = Carbon::now()->setTimezone('Asia/Bangkok');
 
-        // ดึงข้อมูล booking ที่มีวันที่สร้างเท่ากับวันปัจจุบัน
-        $booking = booking::with('work_time')
-            ->whereDate('created_at', $today)
-            ->where('status_book', 'ยืนยันการจอง')
-            ->get();
+        $work_times = work_time::get();
 
-        // ดึง work_times ที่ไม่เหมือนกับค่าที่ได้จาก booking ในคอลัม workTime_id
-        $work_times = work_time::with('booking')->get();
-
-
-        foreach ($work_times as $work_time) {
-            // ดึงเวลาเริ่มงานจากคอลัม 'name_start_workTime'
-            $start_time = Carbon::createFromFormat('H:i:s', $work_time->name_start_workTime);
-            $end_time = Carbon::createFromFormat('H:i:s', $work_time->name_end_workTime);
-            // เปรียบเทียบเวลาปัจจุบันกับเวลาเริ่มงาน
-            if ($today >= $start_time) {
-                // เปลี่ยนค่าคอลัม 'status_wt' เป็น 'ว็อกอิน'
-                if ($work_time->status_wt === 'มีการจองแล้ว') {
-                    $work_time->status_wt = 'มีการจองแล้ว';
-                    $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
-                } else {
-                    $work_time->status_wt = 'ว็อกอิน';
-                    $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
+        foreach ($work_times as $time) {
+            $booking = booking::where('workTime_id', $time->id)
+                            ->whereDate('created_at', $today)
+                            ->first();
+        
+            $start_time = Carbon::createFromFormat('H:i:s', $time->name_start_workTime);
+            $end_time = Carbon::createFromFormat('H:i:s', $time->name_end_workTime);
+        
+            if ($booking) {
+                // ถ้าห้องรับการยืนยัน
+                if ($booking->status_book === 'ยืนยันการจอง') {
+                    $time->work_status = 'booked';
+                    // ถ้าห้องยังไม่ได้่รับการยืนยัน
+                } elseif ($booking->status_book === 'รอยืนยันการจอง') {
+                    $time->work_status = 'wait_book';
                 }
-                if ($today >= $end_time) {
-                    $work_time->status_wt = 'หมดเวลาจอง';
-                    $work_time->save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
-                }
-            } else if ($today <= $start_time) {
-                if ($work_time->status_wt === 'มีการจองแล้ว') {
-                    $work_time->status_wt = 'มีการจองแล้ว';
-                    $work_time->save();
-                } else {
-                    $work_time->status_wt = 'จองห้อง';
-                    $work_time->save();
-                }
+            } elseif (Carbon::now()->greaterThan($end_time)) {
+                // ถ้าเวลาปัจจุบันเกินเวลาสิ้นสุด
+                $time->work_status = 'close_book';
+            } elseif (Carbon::now()->greaterThan($start_time)) {
+                // ถ้าเวลาปัจจุบันเกินเวลาเริ่มต้น
+                $time->work_status = 'walk_in';
+            } else {
+                // สถานะเริ่มต้น ถ้าเวลาปัจจุบันยังไม่เกินเวลาเริ่มต้น
+                $time->work_status = 'open';
             }
         }
+    // dd($work_times);
 
-        return view('Admin.booking_admin', compact('room', 'work_times', 'book_details', 'typeRoom'));
+        return view('Admin.booking_admin', compact('room', 'book_details', 'typeRoom','work_times'));
     }
 
     function insert_booking_admin(Request $request)
@@ -718,14 +703,6 @@ class AdminController extends Controller
             $booking->workTime_id = $request->select_time;
             $booking->status_book = 'รอยืนยันการจอง';
             $booking->save();
-
-            $work_time = work_time::where('id', $request->select_time)->first();
-
-            if ($work_time->status_wt === 'ว็อกอิน') {
-                work_time::where('id', $request->select_time)->update(['status_wt' => 'ว็อกอิน']);
-            } else {
-                work_time::where('id', $request->select_time)->update(['status_wt' => 'มีการจองแล้ว']);
-            }
 
 
             $id_book = $booking->id;

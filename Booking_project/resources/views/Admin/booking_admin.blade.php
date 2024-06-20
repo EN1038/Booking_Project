@@ -48,9 +48,13 @@
                       @foreach ($work_times as $time)
                           @if ($items->id == $time->id_room)
                               @php $loopCount++; @endphp
-                              <button class="col-3 btn text-light rounded-4 m-1 mb-2 btn-custome
-                                  {{ $time->status_wt === 'จองห้อง' ? 'btn-info' : ($time->status_wt === 'หมดเวลาจอง' ? 'btn-secondary' : ($time->status_wt === 'ว็อกอิน' ? 'btn-warning' : 'btn-danger')) }}" 
-                                  style="cursor: default; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                              <button class="col-3 btn text-light rounded-4 m-1 mb-2
+                                      @if($time->work_status === 'open') btn-info
+                                      @elseif($time->work_status === 'close_book') btn-secondary
+                                      @elseif($time->work_status === 'walk_in') btn-warning
+                                      @else btn-danger
+                                      @endif"
+                                      style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; cursor: default;">
                                   {{ date('H', strtotime($time->name_start_workTime)) !== '00' ? date('H', strtotime($time->name_start_workTime)) . ':' : '' }}
                                   {{ substr(date('i', strtotime($time->name_start_workTime)), -2) }}
                               </button>
@@ -63,7 +67,10 @@
               @elseif ($loopCount > 6)
                   <div class="mx-2 my-1">
               @endif
-                      <p class="p-0 m-0 mt-1 text-secondary"><i class="fa-solid fa-circle-info"></i> ยกเลิกการจองก่อน {{ date('H', strtotime($items->typeRoom->time_cancel)) !== '00' ? date('H', strtotime($items->typeRoom->time_cancel)) . ':' : '' }}{{ substr(date('i', strtotime($items->typeRoom->time_cancel)), -2) }} นาที</p>
+              <p class="p-0 m-0 mt-1 text-secondary">
+                <i class="fa-solid fa-circle-info"></i>
+                ยกเลิกการจองก่อน {{ ltrim(date('i', strtotime($items->typeRoom->time_cancel)), '0') }} นาที
+              </p>
                       <button type="button" class="btn btn-success w-100 rounded-5 btn-custome" data-bs-toggle="modal" data-bs-target="#listRoom{{$items->id}}">
                           <i class="fa-solid fa-bookmark"></i> ทำการจอง
                       </button>
@@ -130,7 +137,7 @@
       <select class="form-select text-center rounded-5" aria-label="Default select example" name="select_time">
         <option selected hidden disabled>เลือกเวลา</option>
         @foreach ($work_times as $time)
-        @if ($items->id == $time->id_room && (($time->status_wt == 'จองห้อง')||($time->status_wt == 'ว็อกอิน')))
+        @if ($items->id == $time->id_room && (($time->work_status == 'open')||($time->work_status == 'walk_in')))
           <option value="{{$time->id}}">{{ date('H', strtotime($time->name_start_workTime)) !== '00' ? date('H', strtotime($time->name_start_workTime)) . ' : ' : '' }}
             {{ substr(date('i', strtotime($time->name_start_workTime)), -2) }} ถึง {{ date('H', strtotime($time->name_end_workTime)) !== '00' ? date('H', strtotime($time->name_end_workTime)) . ' : ' : '' }}
             {{ substr(date('i', strtotime($time->name_end_workTime)), -2) }}
