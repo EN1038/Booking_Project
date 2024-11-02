@@ -38,6 +38,7 @@ class AuthController extends Controller
 
     public function signinCallback(Request $request)
     {
+        // dd($request);
         $username = $request->input('username');
         $email = $username . '@nsru.ac.th';
         $this->myauth->doSigninPostback();
